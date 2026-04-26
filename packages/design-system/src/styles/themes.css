@@ -1,0 +1,37 @@
+/* CSS Variables para tema light (padrão) */
+:root {
+  --color-primary: #4F46E5;
+  --color-background: #FFFFFF;
+  --color-surface: #F9FAFB;
+  --color-foreground: #111827;
+  --color-muted: #6B7280;
+  --color-border: #E5E7EB;
+  --color-accent: #3B82F6;
+}
+
+/* CSS Variables para tema dark */
+[data-theme="dark"] {
+  --color-primary: #6366F1;
+  --color-background: #0F172A;
+  --color-surface: #1E293B;
+  --color-foreground: #F8FAFC;
+  --color-muted: #94A3B8;
+  --color-border: #334155;
+  --color-accent: #60A5FA;
+}
+
+/* Transições suaves para mudança de tema */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Classes auxiliares para tema */
+.theme-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Garantir que o background do body mude com o tema */
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
