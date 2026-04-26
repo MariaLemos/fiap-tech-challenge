@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { applyThemeVariables } from "../atoms/tokens/theme-generator";
 
 type Theme = "light" | "dark";
 
@@ -40,6 +41,7 @@ export const ThemeProvider = ({ children, defaultTheme = "light" }: ThemeProvide
   useEffect(() => {
     if (typeof window !== "undefined") {
       document.documentElement.setAttribute("data-theme", theme);
+      applyThemeVariables(theme);
       localStorage.setItem("theme", theme);
     }
   }, [theme]);

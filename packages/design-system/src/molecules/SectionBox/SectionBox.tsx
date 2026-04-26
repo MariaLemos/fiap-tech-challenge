@@ -11,7 +11,7 @@ export const SectionBox = ({
 }) => {
   return (
     <section
-      className={`p-8 ${variant === "bg" ? "bg-primary" : "bg-blue-500"} text-white rounded-md w-full ${className}  `}
+      className={`p-8 ${variant === "bg" ? "bg-foreground" : "bg-blue-500"} text-font rounded-md w-full ${className}  `}
     >
       <Typography variant="h2" className="mb-2">
         {title}

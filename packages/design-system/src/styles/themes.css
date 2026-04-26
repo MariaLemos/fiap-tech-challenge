@@ -1,23 +1,14 @@
-/* CSS Variables para tema light (padrão) */
+/* CSS Variables serão aplicadas dinamicamente via JavaScript a partir de colors.ts */
+/* Valores padrão como fallback caso o JS ainda não tenha carregado */
 :root {
   --color-primary: #4F46E5;
-  --color-background: #FFFFFF;
+  --color-background: #DEE9EA;
   --color-surface: #F9FAFB;
-  --color-foreground: #111827;
+  --color-foreground: #fff;
   --color-muted: #6B7280;
   --color-border: #E5E7EB;
   --color-accent: #3B82F6;
-}
-
-/* CSS Variables para tema dark */
-[data-theme="dark"] {
-  --color-primary: #6366F1;
-  --color-background: #0F172A;
-  --color-surface: #1E293B;
-  --color-foreground: #F8FAFC;
-  --color-muted: #94A3B8;
-  --color-border: #334155;
-  --color-accent: #60A5FA;
+  --color-font: #111827;
 }
 
 /* Transições suaves para mudança de tema */

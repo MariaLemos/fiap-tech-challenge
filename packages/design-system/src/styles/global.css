@@ -28,8 +28,8 @@ html {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--color-foreground);
+  background: var(--color-background);
   font-family: var(--font-family, system-ui, -apple-system, sans-serif);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -57,39 +57,9 @@ svg {
   display: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-
-  .imgLight {
-    display: none;
-  }
-  
-  .imgDark {
-    display: unset;
-  }
-}
 
 /* Focus styles for accessibility */
 :focus-visible {
   outline: 2px solid var(--focus-color, #0070f3);
   outline-offset: 2px;
-}
-
-/* Print styles */
-@media print {
-  *,
-  *::before,
-  *::after {
-    background: transparent !important;
-    color: #000 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
-  
-  a,
-  a:visited {
-    text-decoration: underline;
-  }
 }

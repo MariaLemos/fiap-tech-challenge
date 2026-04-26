@@ -1,13 +1,16 @@
+
+
 // Definição dos temas
 export const themes = {
   light: {
     primary: "#4F46E5",
-    background: "#FFFFFF",
+    background: "#DEE9EA",
     surface: "#F9FAFB",
-    foreground: "#111827",
+    foreground: "#fff",
     muted: "#6B7280",
     border: "#E5E7EB",
     accent: "#3B82F6",
+    font: "#111827",
   },
   dark: {
     primary: "#6366F1",
@@ -17,6 +20,7 @@ export const themes = {
     muted: "#94A3B8",
     border: "#334155",
     accent: "#60A5FA",
+    font: "#F8FAFC",
   }
 } as const
 

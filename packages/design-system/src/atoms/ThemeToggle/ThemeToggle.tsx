@@ -1,7 +1,10 @@
 "use client";
 
+import { faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "../../hooks/useTheme";
 import { Button } from "../button/button";
+import "./ThemeToggle.css";
 
 export const ThemeToggle = ({ 
   className = "" 
@@ -11,13 +14,12 @@ export const ThemeToggle = ({
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <Button 
-      variant="icon" 
-      onClick={toggleTheme}
-      className={`theme-transition text-2xl ${className}`}
+    <div className={`theme-toggle ${theme} ${className}`} onClick={toggleTheme}
+    
+    
       aria-label={`Trocar para tema ${theme === 'light' ? 'escuro' : 'claro'}`}
     >
-      {theme === 'light' ? '🌙' : '☀️'}
-    </Button>
+      <div className="icon rounded"><FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} /></div>
+    </div>
   );
 };

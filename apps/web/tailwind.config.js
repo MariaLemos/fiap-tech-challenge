@@ -1,3 +1,5 @@
+import { themes, staticColors } from '../../packages/design-system/src/atoms/tokens/colors.ts'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -10,12 +12,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        mint: {
-          500: 'oklch(0.72 0.11 178)',
-        },
-        primary: {
-          DEFAULT: '#6750A4',
-        },
+        // Tema dinâmico via CSS variables
+        primary: 'var(--color-primary)',
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
+        foreground: 'var(--color-foreground)',
+        muted: 'var(--color-muted)',
+        border: 'var(--color-border)',
+        accent: 'var(--color-accent)',
+        font: 'var(--color-font)',
+        
+        // Cores estáticas (não mudam com tema)
+        mint: staticColors.mint,
+        blue: staticColors.blue,
+        red: staticColors.red,
+        green: staticColors.green,
       },
     },
   },

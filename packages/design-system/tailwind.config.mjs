@@ -42,7 +42,9 @@ export default {
     'bg-primary',
     'bg-background',
     'bg-surface',
+    'bg-foreground',
     'text-foreground',
+    'text-font',
     'text-muted',
     'border-border',
   ],
@@ -57,6 +59,7 @@ export default {
         muted: 'var(--color-muted)',
         border: 'var(--color-border)',
         accent: 'var(--color-accent)',
+        font: 'var(--color-font)',
         
         // Cores estáticas (não mudam com tema)
         mint: staticColors.mint,
