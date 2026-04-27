@@ -3,8 +3,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "./src",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "types": ["node"]
   },
-  "include": ["src"],
+  "include": ["src", "src/**/*", "src/types/assets.d.ts", "src/global.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

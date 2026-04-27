@@ -13,7 +13,8 @@ export const Button = ({
 }&React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button 
-      className={`px-4 py-2 bg-mint-500 text-white rounded-md transition-colors ${className}`}
+      className={`px-2  py-2 ${variant === "primary" ? "bg-primary text-white" :  "bg-foreground text-primary" }
+        border border-primary border-solid border-2 rounded-full transition-colors ${className}`}
       {...props}
     >
       {children}

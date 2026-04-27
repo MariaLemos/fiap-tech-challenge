@@ -16,7 +16,7 @@ export const themes = {
     primary: "#6366F1",
     background: "#0F172A",
     surface: "#1E293B",
-    foreground: "#F8FAFC",
+    foreground: "#1E293B",
     muted: "#94A3B8",
     border: "#334155",
     accent: "#60A5FA",

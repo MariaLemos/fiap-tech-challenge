@@ -1,0 +1,1 @@
+/// <reference types="./types/assets.d.ts" />

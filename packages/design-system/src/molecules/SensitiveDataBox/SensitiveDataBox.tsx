@@ -20,7 +20,7 @@ export const SensitiveDataBox = ({
     };
   return (
     <section
-      className={`p-8  rounded-md  ${className}`}
+      className={`p-6 justify-self-end rounded-md  ${className}`}
     >
 
       <Typography variant="h3" className="mb-2">
