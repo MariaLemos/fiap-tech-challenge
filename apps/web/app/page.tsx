@@ -1,23 +1,16 @@
-import { Typography, SectionBox, ThemeToggle, Navigation } from "@repo/design-system";
+import { Navigation } from "@repo/design-system";
 import "./page.css";
 import { Wellcome } from "./components/Welcome/welcome";
 import { Statement } from "./components/Statement/Statement";
+import { NewTransaction } from "./components/NewTransaction/NewTransaction";
 
 export default function Home() {
   return (
-    
-     
-      <main className="home-page">
-        <Navigation/>
-        <Wellcome/>
-        <SectionBox title="Demo Tema" variant="colored">
-          <Typography variant="p">
-            Este texto adapta automaticamente entre light e dark mode! 
-            Use o botão de tema no header para testar.
-          </Typography>
-        </SectionBox>
-        <Statement/>
-      </main>
-
+    <main className="home-page">
+      <Navigation className="navigation" />
+      <Wellcome />
+      <NewTransaction />
+      <Statement />
+    </main>
   );
 }

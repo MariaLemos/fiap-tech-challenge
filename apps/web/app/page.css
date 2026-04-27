@@ -1,12 +1,44 @@
 .home-page {
   display: grid;
- grid-template-columns:20% 1fr 30%;
+  grid-template-areas: 
+    "nav welcome statement"
+    "nav new-transaction statement";
+  grid-template-columns:20% 1fr 30%;
   grid-template-rows: 1fr 1fr;
   justify-items: center;
   max-width: 1200px;
+  width: 90%;
   margin: auto;
   min-height: calc(100vh - 4rem);
   padding: 2rem;
   gap: 1.5rem;
   font-synthesis: none;
+}
+@media screen and (max-width: 720px) {
+  .home-page {
+     grid-template-areas: 
+    "nav"
+    "welcome"
+    "new-transaction"
+    "statement";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  
+}
+.welcome{
+  grid-area: welcome;
+  width: 100%;
+}
+.statement{
+  grid-area: statement;
+  width: 100%;
+}
+.navigation{
+  grid-area: nav;
+  width: 100%;
+}
+.new-transaction{
+  grid-area: new-transaction;
+  width: 100%;
 }
