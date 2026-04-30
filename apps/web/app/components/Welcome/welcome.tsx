@@ -1,12 +1,13 @@
 import { SectionBox, SensitiveDataBox, Typography } from "@repo/design-system";
 import dayjs from "dayjs";
 import { Balance } from "../Balance/Balance";
+import { useUserInfo } from "../../hooks/UserInfo.provider";
 
 export const Wellcome = () => {
-  const user = "John Doe";
+  const { userName, balance } = useUserInfo();
   return (
     <SectionBox
-      title={`ola, ${user} :) `}
+      title={`ola, ${userName} :) `}
       className="bg-primary pb-0 welcome"
       variant="bg"
     >

@@ -25,7 +25,7 @@ export const SectionBox = ({
       }
     >
       {title && (
-        <Typography variant="h2" className="mb-2">
+        <Typography variant="h2" className="mb-2 w-full">
           {title}
         </Typography>
       )}

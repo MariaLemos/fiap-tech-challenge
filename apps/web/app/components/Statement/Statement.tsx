@@ -1,30 +1,20 @@
-import { SectionBox, List } from "@repo/design-system";
+"use client";
+
+import { SectionBox, List, Button } from "@repo/design-system";
+import { Transaction, useUserInfo } from "../../hooks/UserInfo.provider";
 
 export const Statement = () => {
+  const { transactions } = useUserInfo();
   return (
     <SectionBox
       title="Extrato"
-      className="statement size-dvh"
+      className="statement h-[calc(100vh-6rem)] overflow-overlay"
       variant="colored"
     >
-      <List
-        data={[
-          {
-            id: "1",
-            type: "deposito",
-            value: 100.234,
-            category: "Deposito",
-            date: "01/01/2023",
-          },
-          {
-            id: "2",
-            type: "saque",
-            value: 100.234,
-            category: "Saque",
-            date: "01/01/2023",
-          },
-        ]}
-      />
+      <Button variant="icon" className="mb-4">
+        Button
+      </Button>
+      <List<Transaction> data={transactions} />
     </SectionBox>
   );
 };

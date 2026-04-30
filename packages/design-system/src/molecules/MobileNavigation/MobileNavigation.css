@@ -1,0 +1,7 @@
+.close-button {
+  position: fixed;
+  top: 2.5rem;
+  right: 2.5rem;
+  z-index: 1000;
+
+}

@@ -18,7 +18,10 @@ interface ThemeProviderProps {
   defaultTheme?: Theme;
 }
 
-export const ThemeProvider = ({ children, defaultTheme = "light" }: ThemeProviderProps) => {
+export const ThemeProvider = ({
+  children,
+  defaultTheme = "light",
+}: ThemeProviderProps) => {
   const [theme, setTheme] = useState<Theme>(defaultTheme);
 
   // Verificar preferência salva ou do sistema na inicialização
@@ -31,8 +34,10 @@ export const ThemeProvider = ({ children, defaultTheme = "light" }: ThemeProvide
     }
 
     // Verificar preferência do sistema
-    if (typeof window !== "undefined") {
-      const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (!savedTheme || typeof window !== "undefined") {
+      const systemPrefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
       setTheme(systemPrefersDark ? "dark" : "light");
     }
   }, []);
@@ -49,7 +54,7 @@ export const ThemeProvider = ({ children, defaultTheme = "light" }: ThemeProvide
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
   };
-
+  console.log(theme);
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}
