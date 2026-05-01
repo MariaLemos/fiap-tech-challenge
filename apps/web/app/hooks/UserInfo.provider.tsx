@@ -46,25 +46,54 @@ type Action =
     }
   | { type: "DELETE_TRANSACTION"; payload: string };
 
+// Função utilitária para gerar ID único
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+// Função para sanitizar dados de transação
+function sanitizeTransaction(
+  transaction: Omit<Transaction, "id">,
+): Omit<Transaction, "id"> {
+  return {
+    amount: Math.abs(Number(transaction.amount)) || 0,
+    type: transaction.type,
+    date: dayjs.isDayjs(transaction.date)
+      ? transaction.date
+      : dayjs(transaction.date),
+  };
+}
+
 // Reducer
 function userInfoReducer(state: UserInfoState, action: Action): UserInfoState {
   switch (action.type) {
     case "ADD_TRANSACTION":
+      const sanitizedTransaction = sanitizeTransaction(action.payload);
       const newTransaction: Transaction = {
-        ...action.payload,
-        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        ...sanitizedTransaction,
+        id: generateId(),
       };
+
       return {
         ...state,
-        transactions: [...state.transactions, newTransaction],
+        transactions: [...state.transactions, newTransaction].sort(
+          (a, b) => b.date.valueOf() - a.date.valueOf(), // Ordena por data mais recente primeiro
+        ),
       };
 
     case "UPDATE_TRANSACTION":
+      const sanitizedUpdate = action.payload.transaction.amount
+        ? {
+            ...action.payload.transaction,
+            amount: Math.abs(Number(action.payload.transaction.amount)),
+          }
+        : action.payload.transaction;
+
       return {
         ...state,
         transactions: state.transactions.map((transaction) =>
           transaction.id === action.payload.id
-            ? { ...transaction, ...action.payload.transaction }
+            ? { ...transaction, ...sanitizedUpdate }
             : transaction,
         ),
       };
@@ -93,11 +122,32 @@ interface UserInfoProviderProps {
   initialTransactions?: Transaction[];
 }
 
+// Transações de exemplo para desenvolvimento
+const mockTransactions: Transaction[] = [
+  {
+    id: "1",
+    amount: 1500.0,
+    type: "deposit",
+    date: dayjs().subtract(2, "days"),
+  },
+  {
+    id: "2",
+    amount: 250.5,
+    type: "withdrawal",
+    date: dayjs().subtract(1, "day"),
+  },
+  {
+    id: "3",
+    amount: 800.0,
+    type: "transfer",
+    date: dayjs().subtract(3, "hours"),
+  },
+];
+
 // Provider
 export function UserInfoProvider({
   children,
-
-  initialTransactions = [],
+  initialTransactions = mockTransactions, // Usa mock por padrão para demonstração
 }: UserInfoProviderProps) {
   const [state, dispatch] = useReducer(userInfoReducer, {
     userName: "Maria Lemos",

@@ -6,40 +6,63 @@ import {
   Controller,
   FieldValues,
   useFormContext,
+  RegisterOptions,
 } from "react-hook-form";
 
-export const InputWrapper = ({
-  className,
-  label,
-  name,
-
-  type,
-  ...additionalInputProps
-}: {
+interface InputWrapperProps {
   className?: string;
   label: string;
   name: string;
   type?: "select" | "text" | "number" | "email" | "date";
   options?: { label: string; value: string }[];
   mask?: string;
-}) => {
+  required?: boolean;
+  rules?: RegisterOptions;
+  error?: string;
+  placeholder?: string;
+}
+
+export const InputWrapper = ({
+  className,
+  label,
+  name,
+  type,
+  required = false,
+  rules,
+
+  ...additionalInputProps
+}: InputWrapperProps) => {
   const {
     control,
-    formState: { errors: { [name]: error } = {} },
+    formState: { errors },
   } = useFormContext();
+
+  const fieldError = errors[name]?.message as string;
   return (
-    <label className={`flex flex-col ${className}`}>
-      <Typography variant="strong">{label}</Typography>
+    <label className={`flex flex-col gap-1 ${className}`}>
+      <div className="flex items-center gap-1">
+        <Typography
+          variant="strong"
+          className={`text-sm ${fieldError ? "text-red-600" : ""}`}
+        >
+          {label}
+        </Typography>
+        {required && <span>*</span>}
+      </div>
+
       <Controller
         name={name}
         control={control}
+        rules={rules}
         render={({ field }) => {
+          const inputClassName = `${fieldError ? "border-red-400 focus:border-red-500 focus:ring-red-200" : "border-primary focus:border-primary/80"} transition-colors`;
+
           switch (type) {
             case "select":
               return (
                 <Select
                   field={field}
-                  className={className}
+                  className={inputClassName}
                   {...additionalInputProps}
                 />
               );
@@ -48,17 +71,20 @@ export const InputWrapper = ({
                 <Input
                   type={type || "text"}
                   field={field}
-                  className={"text-white"}
+                  className={`text-white ${inputClassName}`}
                   {...additionalInputProps}
                 />
               );
           }
         }}
       />
-      {error && (
-        <Typography variant="span">
-          {typeof error.message === "string" && error.message}
-        </Typography>
+
+      {fieldError && (
+        <div className="flex items-center gap-1 mt-1">
+          <Typography variant="span" className="text-red-600 text-xs">
+            {fieldError}
+          </Typography>
+        </div>
       )}
     </label>
   );

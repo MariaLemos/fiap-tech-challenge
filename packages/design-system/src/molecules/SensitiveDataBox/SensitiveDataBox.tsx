@@ -20,7 +20,6 @@ export const SensitiveDataBox = ({
   const toggleVisibility = () => {
     setShowSensitiveData(!showSensitiveData);
   };
-  console.log("showSensitiveData", showSensitiveData, children);
   return (
     <section className={`p-6 justify-self-end rounded-md  ${className}`}>
       <Typography variant="h3" className="mb-2">
