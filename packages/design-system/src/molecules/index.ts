@@ -4,3 +4,4 @@ export * from "./SensitiveDataBox/SensitiveDataBox";
 export * from "./List/List";
 export * from "./Navigation/Navigation";
 export * from "./InputWrapper/InputWrapper";
+export * from "./DialogModal/DialogModal";

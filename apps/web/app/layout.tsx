@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Header, ThemeProvider } from "@repo/design-system";
+import { Header, ModalProvider, ThemeProvider } from "@repo/design-system";
 import { UserInfoProvider } from "./hooks/UserInfo.provider";
 
 const geistSans = localFont({
@@ -28,8 +28,11 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeProvider defaultTheme="light">
           <UserInfoProvider>
-            <Header userName="Maria Lemos" />
-            {children}
+            {" "}
+            <ModalProvider>
+              <Header userName="Maria Lemos" />
+              {children}{" "}
+            </ModalProvider>
           </UserInfoProvider>
         </ThemeProvider>
       </body>

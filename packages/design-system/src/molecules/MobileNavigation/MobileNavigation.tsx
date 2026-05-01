@@ -14,7 +14,7 @@ export const MobileNavigation = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  console.log(isMenuOpen);
+
   return (
     <>
       <button
@@ -25,11 +25,14 @@ export const MobileNavigation = () => {
       </button>
       {isMenuOpen && (
         <>
-          {" "}
-          <Button className="close-button" variant="icon" onClick={toggleMenu}>
+          <Button
+            className="navigation-close-button"
+            variant="icon"
+            onClick={toggleMenu}
+          >
             <FontAwesomeIcon icon={faX} />
           </Button>
-          <Navigation></Navigation>
+          <Navigation />
         </>
       )}
     </>

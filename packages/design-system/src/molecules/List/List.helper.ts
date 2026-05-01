@@ -1,9 +1,9 @@
 
 import dayjs from "dayjs"
 import "dayjs/locale/pt-br"
-import { ListItem } from "./List";
+import { ListItemType } from "./List";
 dayjs.locale('pt-br')
-export const groupByMonth = <T extends ListItem>(items: T[]) => {
+export const groupByMonth = <T extends ListItemType>(items: T[]) => {
   const groups = new Map<string, { monthName: string; items: T[]; date: dayjs.Dayjs }>();
   
   items.forEach(item => {

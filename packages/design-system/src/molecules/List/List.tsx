@@ -2,21 +2,30 @@ import { Typography } from "../../atoms";
 import { useMemo } from "react";
 import { groupByMonth } from "./List.helper";
 import dayjs, { Dayjs } from "dayjs";
+import { ListItem } from "./ListItem";
 
-export type ListItem = {
+export type ListItemType = {
   id: string;
   type: string;
   amount: number;
   date: Dayjs;
 };
 
-export const List = <T extends ListItem>({ data }: { data: T[] }) => {
+export const List = <T extends ListItemType>({
+  data,
+  onEditItem,
+  onDeleteItem,
+}: {
+  data: T[];
+  onEditItem?: (item: T) => void;
+  onDeleteItem?: (item: T) => void;
+}) => {
   const groupedData = useMemo(() => groupByMonth(data), [data]);
 
   if (groupedData.length === 0) {
     return (
       <div className="text-center text-muted p-8">
-        <Typography variant="h3">Nenhum item encontrado</Typography>
+        <Typography variant="span">Nenhum item encontrado</Typography>
       </div>
     );
   }
@@ -31,31 +40,12 @@ export const List = <T extends ListItem>({ data }: { data: T[] }) => {
 
           <div className="divide-primary divide-solid divide-y-2">
             {items.map((item) => (
-              <div
+              <ListItem
                 key={item.id}
-                className="grid grid-cols-2 gap-2 py-4 justify-between align-middle items-center"
-              >
-                <Typography variant="p" className="mb-1 truncate col-span-2">
-                  {item.type}
-                </Typography>
-
-                <Typography
-                  variant="span"
-                  className=" text-primary rounded-md font-medium"
-                >
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(item.amount)}
-                </Typography>
-
-                <Typography
-                  variant="span"
-                  className="text-right text-sm text-muted"
-                >
-                  {dayjs(item.date).format("DD/MM HH:mm")}
-                </Typography>
-              </div>
+                item={item}
+                onEdit={onEditItem}
+                onDelete={onDeleteItem}
+              />
             ))}
           </div>
         </div>
