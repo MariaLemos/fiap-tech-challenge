@@ -6,7 +6,6 @@ export default {
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     // Incluir apps que usam o design system
     '../../apps/web/app/**/*.{js,ts,jsx,tsx,mdx}',
-    '../../apps/docs/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   safelist: [
     // Forçar geração das utilities essenciais

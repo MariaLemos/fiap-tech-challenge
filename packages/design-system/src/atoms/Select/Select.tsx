@@ -8,11 +8,10 @@ export const Select = ({
   className?: string;
   field: ControllerRenderProps<FieldValues, string>;
 }) => {
-  console.log("options", options);
   return (
     <select
       {...field}
-      className={`border p-2 rounded-lg bg-foreground ${className}`}
+      className={`border p-2 rounded-lg bg-foreground text-font ${className}`}
     >
       {options?.map((option, index) => (
         <option key={index} value={option.value}>
