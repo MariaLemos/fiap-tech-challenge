@@ -53,45 +53,49 @@ export const WithCustomClass: Story = {
 // Demonstração com múltiplos toggles
 export const MultipleToggles: Story = {
   render: () => (
-    <div className="flex gap-4 items-center">
-      <div className="text-center">
-        <ThemeToggle />
-        <p className="text-xs text-muted mt-2">Padrão</p>
+    <ThemeProvider>
+      <div className="flex gap-4 items-center">
+        <div className="text-center">
+          <ThemeToggle />
+          <p className="text-xs text-muted mt-2">Padrão</p>
+        </div>
+        <div className="text-center">
+          <ThemeToggle className="border border-accent p-2 rounded-lg" />
+          <p className="text-xs text-muted mt-2">Com borda</p>
+        </div>
+        <div className="text-center">
+          <ThemeToggle className="shadow-lg" />
+          <p className="text-xs text-muted mt-2">Com sombra</p>
+        </div>
       </div>
-      <div className="text-center">
-        <ThemeToggle className="border border-accent p-2 rounded-lg" />
-        <p className="text-xs text-muted mt-2">Com borda</p>
-      </div>
-      <div className="text-center">
-        <ThemeToggle className="shadow-lg" />
-        <p className="text-xs text-muted mt-2">Com sombra</p>
-      </div>
-    </div>
+    </ThemeProvider>
   ),
 };
 
 // Demonstração em contexto de UI
 export const InContext: Story = {
   render: () => (
-    <div className="bg-surface p-6 rounded-lg border max-w-md">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Configurações</h3>
-        <ThemeToggle />
+    <ThemeProvider>
+      <div className="bg-surface p-6 rounded-lg border max-w-md">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Configurações</h3>
+          <ThemeToggle />
+        </div>
+        <div className="space-y-3">
+          <div className="flex justify-between items-center py-2">
+            <span>Notificações</span>
+            <div className="w-12 h-6 bg-primary rounded-full"></div>
+          </div>
+          <div className="flex justify-between items-center py-2">
+            <span>Modo escuro</span>
+            <ThemeToggle className="scale-75" />
+          </div>
+          <div className="flex justify-between items-center py-2">
+            <span>Privacidade</span>
+            <div className="w-12 h-6 bg-muted rounded-full"></div>
+          </div>
+        </div>
       </div>
-      <div className="space-y-3">
-        <div className="flex justify-between items-center py-2">
-          <span>Notificações</span>
-          <div className="w-12 h-6 bg-primary rounded-full"></div>
-        </div>
-        <div className="flex justify-between items-center py-2">
-          <span>Modo escuro</span>
-          <ThemeToggle className="scale-75" />
-        </div>
-        <div className="flex justify-between items-center py-2">
-          <span>Privacidade</span>
-          <div className="w-12 h-6 bg-muted rounded-full"></div>
-        </div>
-      </div>
-    </div>
+    </ThemeProvider>
   ),
 };

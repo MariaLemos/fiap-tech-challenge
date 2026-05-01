@@ -1,6 +1,5 @@
 "use client";
-import { Select } from "../../atoms";
-import { Input } from "../../atoms/Input/Input";
+import { Select, Input } from "../../atoms";
 import { Typography } from "../../atoms/typography/typography";
 import {
   Control,
@@ -20,7 +19,7 @@ export const InputWrapper = ({
   className?: string;
   label: string;
   name: string;
-  type?: "select" | "text" | "number" | "email" | "password";
+  type?: "select" | "text" | "number" | "email" | "date";
   options?: { label: string; value: string }[];
   mask?: string;
 }) => {

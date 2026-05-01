@@ -6,8 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Navigation } from "../Navigation/Navigation";
 import { Button, useIsMobile } from "../..";
 import "./MobileNavigation.css";
+import { createPortal } from "react-dom";
 
-export const MobileNavigation = () => {
+export const MobileNavigation = ({
+  className = "",
+}: {
+  className?: string;
+}) => {
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   if (!isMobile) return null;
@@ -18,23 +23,25 @@ export const MobileNavigation = () => {
   return (
     <>
       <button
-        className="flex justify-end items-center gap-2 cursor-pointer h-16 w-full p-6 bg-primary text-white"
+        className={`flex justify-end items-center gap-2 cursor-pointer  bg-primary text-white ${className}`}
         onClick={toggleMenu}
       >
         <FontAwesomeIcon icon={faBars} />
       </button>
-      {isMenuOpen && (
-        <>
-          <Button
-            className="navigation-close-button"
-            variant="icon"
-            onClick={toggleMenu}
-          >
-            <FontAwesomeIcon icon={faX} />
-          </Button>
-          <Navigation />
-        </>
-      )}
+      {isMenuOpen &&
+        createPortal(
+          <>
+            <Button
+              className="navigation-close-button"
+              variant="icon"
+              onClick={toggleMenu}
+            >
+              <FontAwesomeIcon icon={faX} />
+            </Button>
+            <Navigation />
+          </>,
+          document.querySelector('main') || document.body,
+        )}
     </>
   );
 };

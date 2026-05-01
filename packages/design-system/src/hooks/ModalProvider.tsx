@@ -134,7 +134,7 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
                       {modal.props?.title || ""}
                     </Typography>
                     <Button
-                      className="close-button justify-self-end"
+                      className="close-button justify-self-end border-none"
                       variant="icon"
                       onClick={() => closeModal(modal.id)}
                     >

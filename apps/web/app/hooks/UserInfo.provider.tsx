@@ -26,22 +26,22 @@ interface UserInfoContextType {
   userName: string;
   transactions: Transaction[];
   balance: number;
-  addTransaction: (transaction: Omit<Transaction, "id" | "date">) => void;
+  addTransaction: (transaction: Omit<Transaction, "id">) => void;
   updateTransaction: (
     id: string,
-    transaction: Partial<Omit<Transaction, "id" | "date">>,
+    transaction: Partial<Omit<Transaction, "id">>,
   ) => void;
   deleteTransaction: (id: string) => void;
 }
 
 // Actions do reducer
 type Action =
-  | { type: "ADD_TRANSACTION"; payload: Omit<Transaction, "id" | "date"> }
+  | { type: "ADD_TRANSACTION"; payload: Omit<Transaction, "id"> }
   | {
       type: "UPDATE_TRANSACTION";
       payload: {
         id: string;
-        transaction: Partial<Omit<Transaction, "id" | "date">>;
+        transaction: Partial<Omit<Transaction, "id">>;
       };
     }
   | { type: "DELETE_TRANSACTION"; payload: string };
@@ -53,7 +53,6 @@ function userInfoReducer(state: UserInfoState, action: Action): UserInfoState {
       const newTransaction: Transaction = {
         ...action.payload,
         id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-        date: dayjs(),
       };
       return {
         ...state,
@@ -115,13 +114,13 @@ export function UserInfoProvider({
   }, [state.transactions]);
 
   // Funções do contexto
-  const addTransaction = (transaction: Omit<Transaction, "id" | "date">) => {
+  const addTransaction = (transaction: Omit<Transaction, "id">) => {
     dispatch({ type: "ADD_TRANSACTION", payload: transaction });
   };
 
   const updateTransaction = (
     id: string,
-    transaction: Partial<Omit<Transaction, "id" | "date">>,
+    transaction: Partial<Omit<Transaction, "id">>,
   ) => {
     dispatch({ type: "UPDATE_TRANSACTION", payload: { id, transaction } });
   };

@@ -9,7 +9,11 @@ const config: StorybookConfig = {
   ],
   framework: {
     name: '@storybook/react-vite',
-    options: {},
+    options: {
+      builder: {
+        viteConfigPath: undefined,
+      },
+    },
   },
   viteFinal: (config) => {
     return mergeConfig(config, {
@@ -17,6 +21,18 @@ const config: StorybookConfig = {
         alias: {
           '@': '/src',
         },
+      },
+      server: {
+        watch: {
+          usePolling: false,
+          useFsEvents: true,
+        },
+        hmr: {
+          overlay: true,
+        },
+      },
+      optimizeDeps: {
+        exclude: ['@storybook/blocks'],
       },
     });
   },

@@ -3,9 +3,9 @@ import { UserMenu } from "../../molecules/UserMenu/UserMenu";
 
 export const Header = ({ userName }: { userName: string }) => {
   return (
-    <header className="flex justify-end items-center gap-2 cursor-pointer h-16 w-full p-6 bg-primary text-white ">
-      <MobileNavigation />
-      <UserMenu userName={userName} />
+    <header className="grid grid-cols-2 justify-end items-center gap-2 cursor-pointer h-16 w-full py-2 px-4 bg-primary text-white ">
+      <MobileNavigation className="justify-self-start" />
+      <UserMenu userName={userName} className="justify-self-end col-start-2" />
     </header>
   );
 };

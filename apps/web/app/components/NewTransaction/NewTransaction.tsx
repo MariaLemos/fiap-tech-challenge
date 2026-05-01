@@ -13,7 +13,7 @@ export const NewTransaction = () => {
     <SectionBox
       title="Nova transação"
       variant="bg"
-      className="flex flex-wrap gap-4 bg-accent new-transaction"
+      className="flex flex-col flex-wrap gap-4 bg-accent new-transaction"
     >
       <TransactionForm />
     </SectionBox>

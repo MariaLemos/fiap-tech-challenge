@@ -35,18 +35,26 @@ export const TransactionForm = ({
   return (
     <FormProvider {...formMethods}>
       <form
-        className="flex flex-wrap gap-4"
+        className="grid grid-cols-2 gap-4 w-full items-end"
         onSubmit={formMethods.handleSubmit(onSubmit)}
       >
+        <InputWrapper label="Data" name="date" type="date" className="w-full" />
         <InputWrapper
           label="Tipo"
           name="type"
           type="select"
+          className="w-full"
           options={categories}
         />
-        <InputWrapper label="Valor" name="amount" type="number" mask="money" />
+        <InputWrapper
+          label="Valor"
+          name="amount"
+          type="number"
+          mask="money"
+          className="w-full"
+        />
 
-        <Button type="submit" className="">
+        <Button type="submit" value="primary" className="">
           Concluir transacao
         </Button>
       </form>

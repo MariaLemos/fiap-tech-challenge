@@ -26,10 +26,10 @@ export const Navigation = ({
   return (
     <SectionBox
       variant="colored"
-      className={`flex flex-col flex-wrap justify-between items-center navigation ${className}`}
+      className={`flex flex-wrap justify-between items-center w-full navigation ${className}`}
     >
       {children}
-      <nav className="flex divide-primary divide-solid divide-y-2">
+      <nav className="flex divide-primary divide-solid divide-y-2 w-full">
         {pagesList.map((page) => {
           const isActive = pathname === page.path;
 

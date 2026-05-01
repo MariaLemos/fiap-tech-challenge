@@ -11,7 +11,7 @@ export const Select = ({
   return (
     <select
       {...field}
-      className={`border p-2 rounded-lg bg-foreground text-font ${className}`}
+      className={` max-h-10 border p-2 rounded-lg bg-foreground text-font ${className}`}
     >
       {options?.map((option, index) => (
         <option key={index} value={option.value}>

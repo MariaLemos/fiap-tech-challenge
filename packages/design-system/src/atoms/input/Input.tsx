@@ -10,7 +10,7 @@ export const Input = ({
   field,
   mask,
 }: {
-  type: "text" | "password" | "email" | "number";
+  type: "text" | "password" | "email" | "number" | "date";
   className?: string;
   mask?: string;
 
@@ -23,7 +23,7 @@ export const Input = ({
         type="number"
         step="0.01"
         min="0"
-        className={`border p-2 rounded-lg bg-foreground ${className}`}
+        className={`h-10 border leading-none p-2 rounded-lg bg-foreground ${className}`}
         placeholder="0.00"
       />
     );
@@ -34,7 +34,7 @@ export const Input = ({
         {...field}
         mask="R$ _"
         replacement={{ _: /[\d.,]/ }}
-        className={`border p-2 rounded-lg bg-foreground ${className}`}
+        className={`leading-none h-10 border p-2 rounded-lg bg-foreground ${className}`}
       />
     );
   }
@@ -42,7 +42,7 @@ export const Input = ({
     <input
       {...field}
       type={type}
-      className={`border p-2 rounded-lg bg-foreground ${className}`}
+      className={`h-10 border p-2 leading-none rounded-lg bg-foreground ${className}`}
     />
   );
 };
