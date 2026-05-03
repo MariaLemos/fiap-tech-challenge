@@ -17,6 +17,15 @@ const config: StorybookConfig = {
   },
   viteFinal: (config) => {
     return mergeConfig(config, {
+      define: {
+        global: 'globalThis',
+        'process.env': '{}',
+        process: {
+          env: {},
+          title: 'browser',
+          version: '0.0.0',
+        },
+      },
       resolve: {
         alias: {
           '@': '/src',

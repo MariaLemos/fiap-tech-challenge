@@ -10,7 +10,6 @@ import {
 } from "@repo/design-system";
 import { Transaction, useUserInfo } from "../../hooks/UserInfo.provider";
 import { TransactionForm } from "../TransactionForm/TransactionForm";
-import { title } from "process";
 
 export const Statement = () => {
   const { transactions, deleteTransaction } = useUserInfo();

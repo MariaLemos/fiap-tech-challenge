@@ -3,7 +3,6 @@ import "../src/styles/global.css";
 import "../src/styles/tailwind.css";
 import "../src/styles/themes.css";
 import { ThemeProvider } from "../src/hooks/useTheme";
-import { ModalProvider } from "../src/hooks/ModalProvider";
 
 const preview: Preview = {
   parameters: {
@@ -45,11 +44,9 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <ThemeProvider>
-        <ModalProvider>
-          <div className="min-h-screen bg-background text-foreground p-6">
-            <Story />
-          </div>
-        </ModalProvider>
+        <div className="min-h-screen bg-background text-foreground p-6">
+          <Story />
+        </div>
       </ThemeProvider>
     ),
   ],

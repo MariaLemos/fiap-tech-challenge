@@ -40,10 +40,21 @@ Cada pacote/aplicação é 100% [TypeScript](https://www.typescriptlang.org/).
 - Formulário com campos para tipo (depósito, transferência, etc.), valor e data
 - Validação de formulários com React Hook Form
 
-### ✅ Em Desenvolvimento
+### ✅ Sistema de Modal Completo
 
-- Listagem completa de transações com opções de visualizar, editar e deletar
-- Funcionalidade de edição de transações existentes
+- **ModalProvider**: Sistema de gerenciamento de modals com pilha
+- **useModal**: Hook para criar modals customizados
+- **useDialogModal**: Hook para modals de confirmação pré-definidos
+- **Suporte a múltiplos modals** simultâneos
+- **Documentação interativa** completa no Storybook com demos funcionais
+
+### ✅ Gerenciamento de Transações
+
+- **Listagem completa** de transações com extrato interativo
+- **Edição de transações** existentes através de modals
+- **Exclusão de transações** com confirmação de segurança
+- **Formulários dinâmicos** com validação completa
+- **Cálculo automático** do saldo baseado nas transações
 
 ## Tecnologias Utilizadas
 
@@ -59,13 +70,56 @@ Cada pacote/aplicação é 100% [TypeScript](https://www.typescriptlang.org/).
 
 ## Design System
 
-O projeto inclui um design system inicial com:
+O projeto inclui um design system completo com documentação interativa no Storybook:
 
-- Componentes reutilizáveis documentados no Storybook
-- Sistema de cores e tipografia consistente
-- Tokens de design padronizados
-- Suporte a temas (claro/escuro)
-- Componentes responsivos
+### 📚 Documentação no Storybook
+
+**Acesse em**: `http://localhost:6006` (após executar `turbo storybook`)
+
+- **Componentes reutilizáveis** documentados com exemplos interativos
+- **Sistema de cores e tipografia** consistente
+- **Tokens de design** padronizados
+- **Suporte a temas** (claro/escuro)
+- **Componentes responsivos** testáveis em diferentes viewports
+
+### 🎯 Componentes Disponíveis
+
+#### Atoms (Componentes Básicos)
+
+- `Button`: Botões com variantes primary, secondary e icon
+- `Input`: Campos de entrada com máscaras e validação
+- `Select`: Listas de seleção customizáveis
+- `Typography`: Sistema de tipografia (h1-h6, p, span, strong)
+- `ThemeToggle`: Alternador de tema claro/escuro
+
+#### Molecules (Componentes Compostos)
+
+- `DialogModal`: Modals de confirmação e ações
+- `InputWrapper`: Input com label e validação
+- `List`: Lista de itens com ações (editar, deletar)
+- `SectionBox`: Container com título e variantes de estilo
+- `Navigation`: Componente de navegação
+- `UserMenu`: Menu do usuário
+
+#### Organisms (Componentes Complexos)
+
+- `Header`: Cabeçalho da aplicação
+
+#### Hooks (Funcionalidades Reutilizáveis)
+
+- `useModal`: Sistema completo de modals com pilha e gerenciamento
+- `useDialogModal`: Modals pré-definidos para confirmações
+- `useTheme`: Gerenciamento de temas
+- `useIsMobile`: Detecção de dispositivos móveis
+
+### 🎮 Demos Interativos
+
+Cada componente no Storybook inclui:
+
+- **Documentação completa** com exemplos de código
+- **Controles interativos** para testar props em tempo real
+- **Múltiplas variações** demonstrando todos os estados
+- **Testes visuais** em diferentes resoluções
 
 ### Ferramentas e Utilitários
 
@@ -132,9 +186,9 @@ turbo dev --filter=web
 npx turbo dev --filter=web
 ```
 
-### Storybook
+### Storybook (Design System)
 
-Para executar o Storybook do design system:
+Para executar o Storybook com a documentação completa do design system:
 
 ```sh
 turbo storybook
@@ -142,7 +196,23 @@ turbo storybook
 npx turbo storybook
 ```
 
-O Storybook estará disponível em `http://localhost:6006`
+**Acesso**: `http://localhost:6006`
+
+#### 📖 O que você encontrará no Storybook:
+
+- **Introdução**: Visão geral do Tech Challenge e melhorias implementadas
+- **Atoms**: Componentes básicos (Button, Input, Typography, etc.)
+- **Molecules**: Componentes compostos (DialogModal, List, InputWrapper, etc.)
+- **Organisms**: Componentes complexos (Header)
+- **Hooks**: Documentação completa do sistema de Modal e outros hooks
+- **Design Tokens**: Sistema de cores que se adapta aos temas
+
+#### 🎯 Destaques da Documentação:
+
+- **Sistema de Modal**: Documentação interativa completa com exemplos funcionais
+- **Temas**: Demonstração do alternador de tema com preview em tempo real
+- **Componentes**: Todos os componentes com controles interativos para testar props
+- **Código**: Exemplos de implementação prontos para copiar e usar
 
 ### Outros Comandos
 
@@ -199,13 +269,19 @@ Este projeto utiliza **dados mockados** para simular o backend, conforme especif
    turbo dev
    ```
 
-   - Aplicação web: `http://localhost:3000`
-   - Storybook: `http://localhost:6006`
+   Isso iniciará:
+   - **Aplicação web**: `http://localhost:3000`
+   - **Storybook**: `http://localhost:6006`
 
 3. **Para executar apenas o Storybook:**
    ```sh
    turbo storybook
    ```
+
+### 🎯 Principais URLs:
+
+- **Aplicação**: `http://localhost:3000` - Sistema de gerenciamento financeiro
+- **Storybook**: `http://localhost:6006` - Documentação do design system
 
 ## Cache Remoto (Opcional)
 
@@ -248,9 +324,17 @@ Este projeto atende aos requisitos do Tech Challenge Fase 01, incluindo:
 - ✅ Interface de gerenciamento financeiro
 - ✅ Design System com Storybook
 - ✅ Componentes reutilizáveis
+- ✅ Sistema de Modal documentado e interativo
 - ✅ Dados mockados
 - ✅ Estrutura escalável com Turborepo
 - ✅ Tipagem completa com TypeScript
+
+### 🏆 Melhorias Implementadas:
+
+- **Documentação interativa** no Storybook com demos funcionais
+- **Sistema de temas** com alternador claro/escuro
+- **Modal system** com gerenciamento de pilha e hooks especializados
+- **Componentes responsivos** testáveis em diferentes resoluções
 
 ---
 

@@ -9,10 +9,10 @@ import React, {
   ComponentType,
 } from "react";
 import { createPortal } from "react-dom";
-import { SectionBox } from "../molecules";
+import { SectionBox } from "../../molecules";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Typography } from "../atoms";
+import { Button, Typography } from "../../atoms";
 
 export interface ModalItem {
   id: string;
