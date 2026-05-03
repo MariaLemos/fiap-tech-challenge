@@ -1,5 +1,5 @@
+import { useModal } from "..";
 import { DialogModal } from "../../molecules";
-import { useModal } from "../ModalProvider";
 import { predefinedModals } from "./predefinedModals.config";
 
 type PreDefinedModalProps = {

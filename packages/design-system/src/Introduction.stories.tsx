@@ -124,4 +124,11 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Welcome: Story = {};
+// Story mínima apenas para manter a estrutura do Storybook funcionando
+export const Docs: Story = {
+  parameters: {
+    docs: {
+      disable: false,
+    },
+  },
+};
