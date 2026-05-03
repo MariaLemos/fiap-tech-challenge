@@ -9,7 +9,7 @@ import "./Navigation.css";
 
 const pagesList = [
   { name: "Home", path: "/" },
-  { name: "Transferencias", path: "/transfer" },
+  { name: "Transações", path: "/transactions" },
   { name: "Investimentos", path: "/investments" },
   { name: "Outros serviços", path: "/services" },
 ];
@@ -38,7 +38,7 @@ export const Navigation = ({
               className={`px-4 pt-4 pb-4 transition-all duration-300 ease-in-out rounded-md
                 ${
                   isActive
-                    ? "bg-primary text-primary-foreground font-semibold shadow-md"
+                    ? "bg-primary text-white font-semibold shadow-md"
                     : "text-muted-foreground hover:bg-primary/10 hover:text-primary hover:scale-105 active:scale-95"
                 }
                 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50

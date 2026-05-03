@@ -20,10 +20,10 @@ export const Input = ({
     return (
       <input
         {...field}
+        className={`text-font h-10 border leading-none p-2 rounded-lg bg-foreground ${className}`}
         type="number"
         step="0.01"
         min="0"
-        className={`h-10 border leading-none p-2 rounded-lg bg-foreground ${className}`}
         placeholder="0.00"
       />
     );
@@ -34,7 +34,7 @@ export const Input = ({
         {...field}
         mask="R$ _"
         replacement={{ _: /[\d.,]/ }}
-        className={`leading-none h-10 border p-2 rounded-lg bg-foreground ${className}`}
+        className={`text-font leading-none h-10 border p-2 rounded-lg bg-foreground ${className}`}
       />
     );
   }
@@ -42,7 +42,7 @@ export const Input = ({
     <input
       {...field}
       type={type}
-      className={`h-10 border p-2 leading-none rounded-lg bg-foreground ${className}`}
+      className={`text-font h-10 border p-2 leading-none rounded-lg bg-foreground ${className}`}
     />
   );
 };

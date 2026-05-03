@@ -11,7 +11,11 @@ import {
 import { Transaction, useUserInfo } from "../../hooks/UserInfo.provider";
 import { TransactionForm } from "../TransactionForm/TransactionForm";
 
-export const Statement = () => {
+export const Statement = ({
+  showAddButton = false,
+}: {
+  showAddButton?: boolean;
+}) => {
   const { transactions, deleteTransaction } = useUserInfo();
   const { openModal, closeModal } = useModal();
   const { openDialogModal } = useDialogModal({
@@ -21,10 +25,22 @@ export const Statement = () => {
   return (
     <SectionBox
       title="Extrato"
-      className="statement h-[calc(100vh-6rem)] overflow-y-scroll"
+      className="statement h-[calc(100vh-6rem)] overflow-y-scroll gap-4"
       variant="colored"
     >
+      {showAddButton && (
+        <Button
+          variant="primary"
+          className=""
+          onClick={() =>
+            openModal(TransactionForm, { title: "Nova Transação" })
+          }
+        >
+          Nova Transação
+        </Button>
+      )}
       <List<Transaction>
+        className="w-full"
         data={transactions}
         onEditItem={(transaction) =>
           openModal(TransactionForm, {

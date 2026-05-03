@@ -15,8 +15,10 @@ export const List = <T extends ListItemType>({
   data,
   onEditItem,
   onDeleteItem,
+  className = "",
 }: {
   data: T[];
+  className?: string;
   onEditItem?: (item: T) => void;
   onDeleteItem?: (item: T) => void;
 }) => {
@@ -31,7 +33,7 @@ export const List = <T extends ListItemType>({
   }
 
   return (
-    <div className="space-y-8">
+    <div className={`space-y-8 ${className}`}>
       {groupedData.map(({ monthName, items }, index) => (
         <div key={`${monthName}-${index}`} className="group">
           <Typography variant="h4" className="text-primary font-semibold">

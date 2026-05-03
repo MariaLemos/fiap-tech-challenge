@@ -71,7 +71,7 @@ export const InputWrapper = ({
                 <Input
                   type={type || "text"}
                   field={field}
-                  className={`text-white ${inputClassName}`}
+                  className={inputClassName}
                   {...additionalInputProps}
                 />
               );
