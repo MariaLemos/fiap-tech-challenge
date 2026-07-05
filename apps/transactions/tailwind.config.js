@@ -1,7 +1,10 @@
+import { staticColors } from "../../packages/design-system/src/atoms/tokens/colors.ts";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "../../packages/design-system/src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -10,14 +13,14 @@ export default {
         background: "var(--color-background)",
         surface: "var(--color-surface)",
         foreground: "var(--color-foreground)",
-        muted: "#6b7280",
-        border: "#e5e7eb",
-        accent: "#3b82f6",
+        muted: "var(--color-muted)",
+        border: "var(--color-border)",
+        accent: "var(--color-accent)",
         font: "var(--color-font)",
-        mint: "#cbf5e5",
-        blue: "#4f46e5",
-        red: "#ef4444",
-        green: "#10b981",
+        mint: staticColors.mint,
+        blue: staticColors.blue,
+        red: staticColors.red,
+        green: staticColors.green,
       },
     },
   },

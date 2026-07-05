@@ -1,5 +1,6 @@
 import { Header, ModalProvider, ThemeProvider } from "@repo/design-system";
 import "./globals.css";
+import "./transactions/transactions.css";
 import { UserInfoProvider } from "./hooks/UserInfo.provider";
 
 export default function RootLayout({
