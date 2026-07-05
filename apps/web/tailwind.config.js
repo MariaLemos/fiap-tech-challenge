@@ -1,4 +1,4 @@
-import { themes, staticColors } from '../../packages/design-system/src/atoms/tokens/colors.ts'
+import { staticColors } from '../../packages/design-system/src/atoms/tokens/colors.ts'
 
 /** @type {import('tailwindcss').Config} */
 export default {
