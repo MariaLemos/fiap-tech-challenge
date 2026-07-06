@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Input } from "./Input";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 const meta: Meta<typeof Input> = {
   title: "Atoms/Input",
@@ -28,12 +28,22 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Wrapper para demonstrar o input com estado
-const InputWrapper = ({ type, mask, className, placeholder }: any) => {
+const InputWrapper = ({
+  type = "text",
+  mask,
+  className,
+  placeholder,
+}: {
+  type?: "text" | "password" | "email" | "number" | "date";
+  mask?: string;
+  className?: string;
+  placeholder?: string;
+}) => {
   const [value, setValue] = useState("");
 
   const mockField = {
     value,
-    onChange: (e: any) => setValue(e.target.value),
+    onChange: (e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value),
     onBlur: () => {},
     name: "demo-input",
     ref: () => {},

@@ -1,13 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useModal, ModalProvider } from "./ModalProvider";
 import { useDialogModal } from "../useDialogModal/useDialogModal";
-import { DialogModal } from "../../molecules";
 import { Button, Input, Typography } from "../../atoms";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 // Componentes de exemplo para demonstração
 const ExampleConfirmModal = ({
-  title,
   message,
   onClose,
   onConfirm,
@@ -31,8 +29,6 @@ const ExampleConfirmModal = ({
 );
 
 const ExampleInputModal = ({
-  title,
-  placeholder,
   onClose,
   onSubmit,
 }: {
@@ -45,7 +41,7 @@ const ExampleInputModal = ({
 
   const mockField = {
     value,
-    onChange: (e: any) => setValue(e.target.value),
+    onChange: (e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value),
     onBlur: () => {},
     name: "modal-input",
     ref: () => {},

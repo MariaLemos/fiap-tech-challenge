@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Wrapper para mostrar informações sobre o tema atual
-const ThemeToggleWrapper = ({ className }: any) => {
+const ThemeToggleWrapper = ({ className }: { className?: string }) => {
   const { theme } = useTheme();
 
   return (

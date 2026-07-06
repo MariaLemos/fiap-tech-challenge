@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { applyThemeVariables } from "../atoms/tokens/theme-generator";
 
 type Theme = "light" | "dark";
+const THEME_STORAGE_KEY = "theme";
 
 interface ThemeContextType {
   theme: Theme;
@@ -18,43 +19,71 @@ interface ThemeProviderProps {
   defaultTheme?: Theme;
 }
 
+const isTheme = (theme: string | null): theme is Theme => {
+  return theme === "light" || theme === "dark";
+};
+
+const getSystemTheme = (): Theme => {
+  if (typeof window === "undefined") {
+    return "light";
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const getInitialTheme = (defaultTheme: Theme): Theme => {
+  if (typeof window === "undefined") {
+    return defaultTheme;
+  }
+
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+
+  if (isTheme(savedTheme)) {
+    return savedTheme;
+  }
+
+  return getSystemTheme();
+};
+
 export const ThemeProvider = ({
   children,
   defaultTheme = "light",
 }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [theme, setTheme] = useState<Theme>(() =>
+    getInitialTheme(defaultTheme),
+  );
 
-  // Verificar preferência salva ou do sistema na inicialização
   useEffect(() => {
-    // Verificar localStorage
-    const savedTheme = localStorage.getItem("theme") as Theme;
-    if (savedTheme && (savedTheme === "light" || savedTheme === "dark")) {
-      setTheme(savedTheme);
-      return;
-    }
+    if (typeof window === "undefined") return;
 
-    // Verificar preferência do sistema
-    if (!savedTheme || typeof window !== "undefined") {
-      const systemPrefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)",
-      ).matches;
-      setTheme(systemPrefersDark ? "dark" : "light");
-    }
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === THEME_STORAGE_KEY && isTheme(event.newValue)) {
+        setTheme(event.newValue);
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
-  // Aplicar tema ao DOM e salvar preferência
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      document.documentElement.setAttribute("data-theme", theme);
-      applyThemeVariables(theme);
-      localStorage.setItem("theme", theme);
-    }
+    if (typeof window === "undefined") return;
+
+    document.documentElement.setAttribute("data-theme", theme);
+    document.body.setAttribute("data-theme", theme);
+    applyThemeVariables(theme);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
   };
-  console.log(theme);
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
       {children}

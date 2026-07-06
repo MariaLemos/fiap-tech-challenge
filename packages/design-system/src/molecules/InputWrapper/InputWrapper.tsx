@@ -1,13 +1,7 @@
 "use client";
 import { Select, Input } from "../../atoms";
 import { Typography } from "../../atoms/typography/typography";
-import {
-  Control,
-  Controller,
-  FieldValues,
-  useFormContext,
-  RegisterOptions,
-} from "react-hook-form";
+import { Controller, useFormContext, RegisterOptions } from "react-hook-form";
 
 interface InputWrapperProps {
   className?: string;
@@ -18,7 +12,6 @@ interface InputWrapperProps {
   mask?: string;
   required?: boolean;
   rules?: RegisterOptions;
-  error?: string;
   placeholder?: string;
 }
 

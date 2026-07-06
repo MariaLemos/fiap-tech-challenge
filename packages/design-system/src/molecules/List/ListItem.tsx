@@ -1,7 +1,5 @@
 import { Button, Typography } from "../../atoms";
-import { useMemo } from "react";
-import { groupByMonth } from "./List.helper";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { ListItemType } from "./List";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,20 +22,24 @@ export const ListItem = <T extends ListItemType>({
         {item.type}
       </Typography>
       <div className=" justify-self-end">
-        <Button
-          variant="icon"
-          className="border-none"
-          onClick={() => onEdit?.(item)}
-        >
-          <FontAwesomeIcon icon={faPenToSquare} />
-        </Button>
-        <Button
-          variant="icon"
-          className="border-none"
-          onClick={() => onDelete?.(item)}
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </Button>
+        {onEdit && (
+          <Button
+            variant="icon"
+            className="border-none"
+            onClick={() => onEdit(item)}
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </Button>
+        )}
+        {onDelete && (
+          <Button
+            variant="icon"
+            className="border-none"
+            onClick={() => onDelete(item)}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </Button>
+        )}
       </div>
       <Typography
         variant="span"

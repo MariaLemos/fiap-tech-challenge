@@ -1,7 +1,7 @@
 import { Typography } from "../../atoms";
 import { useMemo } from "react";
 import { groupByMonth } from "./List.helper";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { ListItem } from "./ListItem";
 
 export type ListItemType = {

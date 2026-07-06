@@ -1,4 +1,6 @@
-// Declarações de tipos para assets estáticos
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+// Declaracoes de tipos para assets estaticos
 declare module "*.svg" {
   const content: any;
   export default content;

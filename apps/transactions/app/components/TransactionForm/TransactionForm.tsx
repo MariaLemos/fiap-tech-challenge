@@ -48,19 +48,22 @@ interface FormData {
 
 export const TransactionForm = ({
   transaction,
+  initialValues,
   onSubmitCallback,
 }: {
   transaction?: Transaction;
+  initialValues?: Partial<FormData>;
   onSubmitCallback?: () => void;
 }) => {
   const { addTransaction, updateTransaction } = useUserInfo();
 
   const formMethods = useForm<FormData>({
     defaultValues: {
-      type: transaction?.type || "deposit",
-      amount: transaction?.amount || 0,
+      type: transaction?.type || initialValues?.type || "deposit",
+      amount: transaction?.amount || initialValues?.amount || 0,
       date:
         dayjs(transaction?.date).format("YYYY-MM-DD") ||
+        initialValues?.date ||
         dayjs().format("YYYY-MM-DD"),
     },
     mode: "onChange",
