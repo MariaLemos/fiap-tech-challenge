@@ -1,10 +1,15 @@
 "use client";
 
-import { Button, SectionBox } from "@repo/design-system";
+import { Button, InputWrapper, SectionBox } from "@repo/design-system";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
 type TransactionType = "deposit" | "transfer" | "withdrawal";
+
+type QuickTransactionStartForm = {
+  type: TransactionType;
+  amount: string;
+};
 
 const transactionTypes = [
   { label: "Deposito", value: "deposit" },
@@ -14,13 +19,16 @@ const transactionTypes = [
 
 export const QuickTransactionStart = () => {
   const router = useRouter();
-  const [type, setType] = useState<TransactionType>("deposit");
-  const [amount, setAmount] = useState("");
+  const formMethods = useForm<QuickTransactionStartForm>({
+    defaultValues: {
+      type: "deposit",
+      amount: "",
+    },
+  });
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = ({ type, amount }: QuickTransactionStartForm) => {
     const params = new URLSearchParams({ type });
+
     if (amount.trim()) {
       params.set("amount", amount);
     }
@@ -30,50 +38,41 @@ export const QuickTransactionStart = () => {
 
   return (
     <SectionBox
-      title="Nova transação"
+      title="Nova transacao"
       variant="bg"
       className="flex flex-col flex-wrap gap-4 bg-accent new-transaction"
     >
-      <form
-        className="grid grid-cols-1 gap-4 w-full items-end sm:grid-cols-2"
-        onSubmit={handleSubmit}
-      >
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-semibold">Tipo</span>
-          <select
-            className="h-10 rounded-lg border border-primary bg-foreground p-2 text-font"
-            value={type}
-            onChange={(event) => setType(event.target.value as TransactionType)}
-          >
-            {transactionTypes.map((transactionType) => (
-              <option key={transactionType.value} value={transactionType.value}>
-                {transactionType.label}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-semibold">Valor</span>
-          <input
-            className="h-10 rounded-lg border border-primary bg-foreground p-2 text-font"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="R$ 0,00"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-          />
-        </label>
-
-        <Button
-          type="submit"
-          variant="primary"
-          className="w-full sm:col-span-2"
+      <FormProvider {...formMethods}>
+        <form
+          className="grid grid-cols-1 gap-4 w-full items-end sm:grid-cols-2"
+          onSubmit={formMethods.handleSubmit(handleSubmit)}
         >
-          Continuar
-        </Button>
-      </form>
+          <InputWrapper
+            label="Tipo"
+            name="type"
+            type="select"
+            options={transactionTypes}
+            className="w-full"
+          />
+
+          <InputWrapper
+            label="Valor"
+            name="amount"
+            type="number"
+            mask="money"
+            className="w-full"
+            placeholder="R$ 0,00"
+          />
+
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full sm:col-span-2"
+          >
+            Continuar
+          </Button>
+        </form>
+      </FormProvider>
     </SectionBox>
   );
 };
