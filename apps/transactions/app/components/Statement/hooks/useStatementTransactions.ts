@@ -2,18 +2,19 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { Transaction } from "../../../hooks/UserInfo.provider";
+import { initialStatementFilters } from "../Statement.constants";
 import {
   filterTransactions,
   getTransactionCategories,
 } from "../Statement.helpers";
-import type { TransactionTypeFilter } from "../Statement.types";
+import type { StatementFilterValues } from "../Statement.types";
 
 const pageSize = 5;
 
 const useTransactionFilters = (transactions: Transaction[]) => {
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<TransactionTypeFilter>("all");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [filters, setFilters] = useState<StatementFilterValues>(
+    initialStatementFilters,
+  );
 
   const categories = useMemo(
     () => getTransactionCategories(transactions),
@@ -24,33 +25,16 @@ const useTransactionFilters = (transactions: Transaction[]) => {
     () =>
       filterTransactions({
         transactions,
-        search,
-        typeFilter,
-        categoryFilter,
+        filters,
       }),
-    [categoryFilter, search, transactions, typeFilter],
+    [filters, transactions],
   );
 
-  const hasActiveFilters =
-    Boolean(search.trim()) || typeFilter !== "all" || categoryFilter !== "all";
-
-  const clearFilters = () => {
-    setSearch("");
-    setTypeFilter("all");
-    setCategoryFilter("all");
-  };
-
   return {
-    search,
-    setSearch,
-    typeFilter,
-    setTypeFilter,
-    categoryFilter,
-    setCategoryFilter,
+    filters,
+    setFilters,
     categories,
     filteredTransactions,
-    hasActiveFilters,
-    clearFilters,
   };
 };
 
@@ -99,7 +83,7 @@ export const useStatementTransactions = (transactions: Transaction[]) => {
   const filters = useTransactionFilters(transactions);
   const pagination = useStatementPagination({
     transactions: filters.filteredTransactions,
-    resetToken: `${filters.search}|${filters.typeFilter}|${filters.categoryFilter}`,
+    resetToken: `${filters.filters.description}|${filters.filters.type}|${filters.filters.category}`,
   });
 
   return {

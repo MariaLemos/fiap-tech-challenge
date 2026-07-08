@@ -1,14 +1,13 @@
 import { Button, InputWrapper } from "@repo/design-system";
-import { useUserInfo } from "../../hooks/UserInfo.provider";
 import type { Transaction } from "../../hooks/UserInfo.provider";
 import { FormProvider, useForm } from "react-hook-form";
-import { useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import {
   transactionTypeOptions,
   validationRules,
 } from "./TransactionForm.config";
-import { getSuggestedCategory } from "./TransactionForm.helpers";
+import { useTransactionCategorySuggestion } from "./hooks/useTransactionCategorySuggestion";
+import { useTransactionFormSubmit } from "./hooks/useTransactionFormSubmit";
 import type { TransactionFormData } from "./TransactionForm.types";
 
 export const TransactionForm = ({
@@ -20,8 +19,6 @@ export const TransactionForm = ({
   initialValues?: Partial<TransactionFormData>;
   onSubmitCallback?: () => void;
 }) => {
-  const { addTransaction, updateTransaction } = useUserInfo();
-
   const formMethods = useForm<TransactionFormData>({
     defaultValues: {
       type: transaction?.type || initialValues?.type || "deposit",
@@ -40,68 +37,13 @@ export const TransactionForm = ({
   const {
     handleSubmit,
     formState: { isSubmitting, isValid },
-    reset,
   } = formMethods;
-  const { getValues, setValue, watch } = formMethods;
-  const description = watch("description");
-  const type = watch("type");
-  const lastSuggestedCategory = useRef("");
-
-  useEffect(() => {
-    const suggestedCategory = getSuggestedCategory({
-      description: description || "",
-      type,
-    });
-
-    if (!suggestedCategory) {
-      return;
-    }
-
-    const currentCategory = getValues("category").trim();
-    const shouldApplySuggestion =
-      !currentCategory || currentCategory === lastSuggestedCategory.current;
-
-    if (shouldApplySuggestion && currentCategory !== suggestedCategory) {
-      setValue("category", suggestedCategory, {
-        shouldDirty: false,
-        shouldValidate: true,
-      });
-    }
-
-    lastSuggestedCategory.current = suggestedCategory;
-  }, [description, getValues, setValue, type]);
-
-  const onSubmit = async (data: TransactionFormData) => {
-    try {
-      const transactionData: Omit<Transaction, "id"> = {
-        ...data,
-        amount: Number(data.amount),
-        date: dayjs(data.date),
-      };
-
-      if (transaction) {
-        updateTransaction(transaction.id, transactionData);
-      } else {
-        addTransaction(transactionData);
-      }
-
-      if (!transaction) {
-        reset({
-          type: "deposit",
-          amount: 0,
-          description: "",
-          category: "",
-          date: dayjs().format("YYYY-MM-DD"),
-        });
-      }
-
-      if (onSubmitCallback) {
-        onSubmitCallback();
-      }
-    } catch (err) {
-      console.error("Erro ao processar transacao:", err);
-    }
-  };
+  useTransactionCategorySuggestion(formMethods);
+  const onSubmit = useTransactionFormSubmit({
+    formMethods,
+    onSubmitCallback,
+    transaction,
+  });
 
   return (
     <FormProvider {...formMethods}>

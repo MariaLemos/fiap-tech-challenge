@@ -51,9 +51,13 @@ export const ThemeProvider = ({
   children,
   defaultTheme = "light",
 }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>(() =>
-    getInitialTheme(defaultTheme),
-  );
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setTheme(getInitialTheme(defaultTheme));
+    setIsHydrated(true);
+  }, [defaultTheme]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -72,13 +76,13 @@ export const ThemeProvider = ({
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !isHydrated) return;
 
     document.documentElement.setAttribute("data-theme", theme);
     document.body.setAttribute("data-theme", theme);
     applyThemeVariables(theme);
     localStorage.setItem(THEME_STORAGE_KEY, theme);
-  }, [theme]);
+  }, [isHydrated, theme]);
 
   const toggleTheme = () => {
     setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));

@@ -1,5 +1,8 @@
 import type { Transaction } from "../../hooks/UserInfo.provider";
-import type { TransactionTypeFilter } from "./Statement.types";
+import type {
+  StatementFilterValues,
+  TransactionTypeFilter,
+} from "./Statement.types";
 
 export const getTransactionCategories = (transactions: Transaction[]) => {
   const categorySet = new Set(
@@ -13,16 +16,13 @@ export const getTransactionCategories = (transactions: Transaction[]) => {
 
 export const filterTransactions = ({
   transactions,
-  search,
-  typeFilter,
-  categoryFilter,
+  filters,
 }: {
   transactions: Transaction[];
-  search: string;
-  typeFilter: TransactionTypeFilter;
-  categoryFilter: string;
+  filters: StatementFilterValues;
 }) => {
-  const normalizedSearch = search.trim().toLowerCase();
+  const normalizedSearch = filters.description.trim().toLowerCase();
+  const typeFilter = filters.type as TransactionTypeFilter;
 
   return transactions.filter((transaction) => {
     const matchesSearch =
@@ -31,7 +31,7 @@ export const filterTransactions = ({
     const matchesType =
       typeFilter === "all" || transaction.type === typeFilter;
     const matchesCategory =
-      categoryFilter === "all" || transaction.category === categoryFilter;
+      filters.category === "all" || transaction.category === filters.category;
 
     return matchesSearch && matchesType && matchesCategory;
   });

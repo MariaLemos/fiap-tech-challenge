@@ -5,10 +5,12 @@ import "./SectionBox.css";
 export const SectionBox = ({
   children,
   className = "",
+  headerAction,
   title,
   variant = "colored",
 }: {
   children: React.ReactNode;
+  headerAction?: React.ReactNode;
   title?: React.ReactNode;
   className?: string;
   variant?: "bg" | "colored";
@@ -24,10 +26,11 @@ export const SectionBox = ({
           : undefined
       }
     >
-      {title && (
-        <Typography variant="h2" className="mb-2 w-full">
-          {title}
-        </Typography>
+      {(title || headerAction) && (
+        <div className="mb-2 flex w-full items-center justify-between gap-2">
+          {title && <Typography variant="h2">{title}</Typography>}
+          {headerAction}
+        </div>
       )}
       {children}
     </section>

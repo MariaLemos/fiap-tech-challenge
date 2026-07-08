@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   SectionBox,
   List,
@@ -9,9 +10,12 @@ import {
 } from "@repo/design-system";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
 import type { Transaction } from "../../hooks/UserInfo.provider";
+import { Filters } from "../Filters/Filters";
+import { PaginationNavigation } from "../PaginationNavigation/PaginationNavigation";
 import { TransactionForm } from "../TransactionForm/TransactionForm";
-import { StatementFilters } from "./components/StatementFilters";
+import { getStatementFilterDefinitions } from "./Statement.constants";
 import { useStatementTransactions } from "./hooks/useStatementTransactions";
+import type { StatementFilterField } from "./Statement.types";
 
 export const Statement = ({
   showAddButton = false,
@@ -25,49 +29,44 @@ export const Statement = ({
     itemName: "transacao",
   });
   const {
-    search,
-    setSearch,
-    typeFilter,
-    setTypeFilter,
-    categoryFilter,
-    setCategoryFilter,
+    filters,
+    setFilters,
     categories,
     filteredTransactions,
     paginatedTransactions,
     currentPage,
     totalPages,
-    hasActiveFilters,
-    clearFilters,
     previousPage,
     nextPage,
   } = useStatementTransactions(transactions);
+  const filterDefinitions = useMemo(
+    () => getStatementFilterDefinitions(categories),
+    [categories],
+  );
 
   return (
     <SectionBox
-      title="Extrato"
+      title="Transacoes"
+      headerAction={
+        showAddButton && (
+          <Button
+            variant="primary"
+            className=""
+            onClick={() =>
+              openModal(TransactionForm, { title: "Nova Transacao" })
+            }
+          >
+            Nova Transacao
+          </Button>
+        )
+      }
       className="statement h-[calc(100vh-6rem)] overflow-y-scroll gap-4"
       variant="colored"
     >
-      {showAddButton && (
-        <Button
-          variant="primary"
-          className=""
-          onClick={() => openModal(TransactionForm, { title: "Nova Transacao" })}
-        >
-          Nova Transacao
-        </Button>
-      )}
-
-      <StatementFilters
-        search={search}
-        typeFilter={typeFilter}
-        categoryFilter={categoryFilter}
-        categories={categories}
-        hasActiveFilters={hasActiveFilters}
-        onSearchChange={setSearch}
-        onTypeFilterChange={setTypeFilter}
-        onCategoryFilterChange={setCategoryFilter}
-        onClearFilters={clearFilters}
+      <Filters<StatementFilterField>
+        definitions={filterDefinitions}
+        values={filters}
+        onChangeFilters={setFilters}
       />
 
       {filteredTransactions.length === 0 ? (
@@ -77,7 +76,7 @@ export const Statement = ({
       ) : (
         <>
           <List<Transaction>
-            className="w-full"
+            className="w-full pt-4"
             data={paginatedTransactions}
             onEditItem={(transaction) =>
               openModal(TransactionForm, {
@@ -93,29 +92,12 @@ export const Statement = ({
             }
           />
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="text-sm text-muted">
-              Pagina {currentPage} de {totalPages}
-            </span>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={currentPage === 1}
-                onClick={previousPage}
-              >
-                Anterior
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={currentPage === totalPages}
-                onClick={nextPage}
-              >
-                Proxima
-              </Button>
-            </div>
-          </div>
+          <PaginationNavigation
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPreviousPage={previousPage}
+            onNextPage={nextPage}
+          />
         </>
       )}
     </SectionBox>
