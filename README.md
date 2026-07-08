@@ -1,340 +1,505 @@
-# Sistema de Gerenciamento Financeiro
+﻿# Sistema de gerenciamento financeiro
 
-Este projeto foi desenvolvido como parte do **Tech Challenge da Fase 01** do curso de Pós-graduação da **FIAP**. O objetivo é criar uma aplicação de gerenciamento financeiro utilizando Next.js e Design System, permitindo aos usuários gerenciar suas transações financeiras através de uma interface moderna e intuitiva.
+Monorepo Turborepo com uma aplicação financeira em Next.js, organizada para evoluir para uma arquitetura de microfrontends usando **Next Multi-Zones**.
 
-## Sobre o Tech Challenge
+O projeto ainda usa dados mockados e estado local. A separação atual prioriza a estrutura: uma app principal para dashboard e uma app separada para a área de transações.
 
-O Tech Challenge é um projeto que engloba os conhecimentos obtidos em todas as disciplinas da fase. Este desafio consiste em desenvolver o front-end de uma aplicação financeira que permite:
+## Tech Challenge
 
-- Visualizar saldo da conta corrente
-- Exibir extrato das últimas transações
-- Adicionar novas transações (depósito, transferência, etc.)
-- Editar transações existentes
-- Visualizar e gerenciar histórico completo de transações
+Este projeto foi desenvolvido como parte do **Tech Challenge da Fase 01** da Pós-graduação da **FIAP**.
 
-## Estrutura do Projeto
+O desafio consiste em desenvolver o front-end de uma aplicação financeira com foco em:
 
-Este monorepo Turborepo inclui os seguintes pacotes e aplicações:
+- visualizar saldo da conta corrente;
+- exibir extrato das últimas transações;
+- adicionar novas transações, como depósito, transferência e retirada;
+- editar transações existentes;
+- excluir transações com confirmação;
+- visualizar e gerenciar o histórico de transações;
+- usar dados mockados/estado local para simular o backend;
+- organizar uma base escalável com TypeScript, Next.js, Turborepo e design system.
 
-### Apps e Pacotes
+Nesta evolução do projeto, a aplicação também foi preparada para uma arquitetura de microfrontends usando **Next Multi-Zones**, mantendo o dashboard em `apps/web` e a área de transações em `apps/transactions`.
 
-- **`web`**: Aplicação principal [Next.js](https://nextjs.org/) do sistema de gerenciamento financeiro
-- **`@repo/design-system`**: Biblioteca de componentes React reutilizáveis com documentação via Storybook
-- **`@repo/eslint-config`**: Configurações do ESLint (inclui `eslint-config-next` e `eslint-config-prettier`)
-- **`@repo/typescript-config`**: Configurações do TypeScript (`tsconfig.json`) utilizadas em todo o monorepo
+## Funcionalidades implementadas
 
-Cada pacote/aplicação é 100% [TypeScript](https://www.typescriptlang.org/).
+### Home/dashboard
 
-## Funcionalidades Implementadas
+- Página inicial com boas-vindas aos usuários.
+- Exibição do saldo da conta corrente.
+- Extrato das últimas transações.
+- Seção para iniciar uma nova transação.
+- Navegação para a área completa de transações em `/transactions`.
 
-### ✅ Home Page
+### Adicionar nova transação
 
-- Página inicial com boas-vindas aos usuários
-- Exibição do saldo da conta corrente
-- Extrato das últimas transações
-- Seção para iniciar nova transação com seleção de tipo e inserção de valor
+- Formulário para adicionar transações.
+- Campos para tipo, valor e data.
+- Validação com React Hook Form.
+- Atualização do estado local após o envio.
 
-### ✅ Adicionar Nova Transação
+### Sistema de modal
 
-- Modal/página para adicionar transações
-- Formulário com campos para tipo (depósito, transferência, etc.), valor e data
-- Validação de formulários com React Hook Form
+- `ModalProvider` para gerenciamento de modals.
+- `useModal` para abrir componentes em modal.
+- `useDialogModal` para modals de confirmação.
+- Suporte a ações como editar e excluir transações.
 
-### ✅ Sistema de Modal Completo
+### Gerenciamento de transações
 
-- **ModalProvider**: Sistema de gerenciamento de modals com pilha
-- **useModal**: Hook para criar modals customizados
-- **useDialogModal**: Hook para modals de confirmação pré-definidos
-- **Suporte a múltiplos modals** simultâneos
-- **Documentação interativa** completa no Storybook com demos funcionais
+- Listagem de transações com o componente `List`.
+- Edição de transações via modal.
+- Exclusão de transações com confirmação.
+- Cálculo automático do saldo com base nas transações.
 
-### ✅ Gerenciamento de Transações
+## Arquitetura
 
-- **Listagem completa** de transações com extrato interativo
-- **Edição de transações** existentes através de modals
-- **Exclusão de transações** com confirmação de segurança
-- **Formulários dinâmicos** com validação completa
-- **Cálculo automático** do saldo baseado nas transações
+```txt
+apps/
+  web/
+    app principal em Next.js
+    home/dashboard
+    shell de navegação
+    rewrites para a zone de transactions
 
-## Tecnologias Utilizadas
+  transactions/
+    app Next.js separada
+    rota /transactions
+    componentes relacionados a transações
 
-- **[Next.js](https://nextjs.org/)**: Framework React para produção
-- **[React](https://reactjs.org/)**: Biblioteca para construção de interfaces
-- **[TypeScript](https://www.typescriptlang.org/)**: Tipagem estática para JavaScript
-- **[Tailwind CSS](https://tailwindcss.com/)**: Framework CSS utilitário
-- **[Storybook](https://storybook.js.org/)**: Documentação e desenvolvimento de componentes
-- **[React Hook Form](https://react-hook-form.com/)**: Gerenciamento de formulários
-- **[Turborepo](https://turborepo.dev/)**: Sistema de build para monorepos
-- **[ESLint](https://eslint.org/)**: Linting de código
-- **[Prettier](https://prettier.io)**: Formatação de código
+packages/
+  design-system/
+    componentes genéricos, tokens, tema, hooks e Storybook
 
-## Design System
+  contracts/
+    tipos e contratos compartilhados entre apps
 
-O projeto inclui um design system completo com documentação interativa no Storybook:
+  utils/
+    funções utilitárias compartilhadas
 
-### 📚 Documentação no Storybook
+  eslint-config/
+    configuração compartilhada de ESLint
 
-**Acesse em**: `http://localhost:6006` (após executar `turbo storybook`)
-
-- **Componentes reutilizáveis** documentados com exemplos interativos
-- **Sistema de cores e tipografia** consistente
-- **Tokens de design** padronizados
-- **Suporte a temas** (claro/escuro)
-- **Componentes responsivos** testáveis em diferentes viewports
-
-### 🎯 Componentes Disponíveis
-
-#### Atoms (Componentes Básicos)
-
-- `Button`: Botões com variantes primary, secondary e icon
-- `Input`: Campos de entrada com máscaras e validação
-- `Select`: Listas de seleção customizáveis
-- `Typography`: Sistema de tipografia (h1-h6, p, span, strong)
-- `ThemeToggle`: Alternador de tema claro/escuro
-
-#### Molecules (Componentes Compostos)
-
-- `DialogModal`: Modals de confirmação e ações
-- `InputWrapper`: Input com label e validação
-- `List`: Lista de itens com ações (editar, deletar)
-- `SectionBox`: Container com título e variantes de estilo
-- `Navigation`: Componente de navegação
-- `UserMenu`: Menu do usuário
-
-#### Organisms (Componentes Complexos)
-
-- `Header`: Cabeçalho da aplicação
-
-#### Hooks (Funcionalidades Reutilizáveis)
-
-- `useModal`: Sistema completo de modals com pilha e gerenciamento
-- `useDialogModal`: Modals pré-definidos para confirmações
-- `useTheme`: Gerenciamento de temas
-- `useIsMobile`: Detecção de dispositivos móveis
-
-### 🎮 Demos Interativos
-
-Cada componente no Storybook inclui:
-
-- **Documentação completa** com exemplos de código
-- **Controles interativos** para testar props em tempo real
-- **Múltiplas variações** demonstrando todos os estados
-- **Testes visuais** em diferentes resoluções
-
-### Ferramentas e Utilitários
-
-- [TypeScript](https://www.typescriptlang.org/) para checagem de tipos estáticos
-- [ESLint](https://eslint.org/) para linting de código
-- [Prettier](https://prettier.io) para formatação de código
-- [Turborepo](https://turborepo.dev/) para build e cache otimizados
-
-## Comandos de Desenvolvimento
-
-### Build
-
-Para fazer build de todas as aplicações e pacotes, execute:
-
-Com o [`turbo` global](https://turborepo.dev/docs/getting-started/installation#global-installation) instalado (recomendado):
-
-```sh
-cd meu-projeto-financeiro
-turbo build
+  typescript-config/
+    configuração compartilhada de TypeScript
 ```
 
-Sem o turbo global, use seu gerenciador de pacotes:
+## Monorepo
 
-```sh
-cd meu-projeto-financeiro
-npx turbo build
-# ou
-yarn turbo build
+Este repositório usa **Yarn Workspaces** e **Turborepo**.
+
+O objetivo do monorepo é manter apps e pacotes compartilhados no mesmo repositório, permitindo:
+
+- evoluir microfrontends de forma independente;
+- compartilhar design-system, contratos, configs e utilitários;
+- padronizar lint, typecheck e build;
+- evitar duplicação de componentes e regras comuns;
+- rodar tarefas por app/pacote ou no repo inteiro.
+
+### Workspaces
+
+Os workspaces são definidos no `package.json` da raiz:
+
+```json
+{
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
 ```
 
-Você pode fazer build de um pacote específico usando [filtros](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Isso permite que apps consumam pacotes internos com aliases como:
 
-```sh
-turbo build --filter=web
-# ou
-npx turbo build --filter=web
+```ts
+import { Header } from "@repo/design-system";
+import type { Transaction } from "@repo/contracts";
+import { formatCurrency } from "@repo/utils";
 ```
 
-### Desenvolvimento
+### Turborepo
 
-Para executar todas as aplicações em modo desenvolvimento:
+O `turbo.json` define as tarefas compartilhadas:
 
-Com o [`turbo` global](https://turborepo.dev/docs/getting-started/installation#global-installation) instalado (recomendado):
+- `build`
+- `dev`
+- `lint`
+- `check-types`
+- `storybook`
+- `build-storybook`
+
+As tarefas podem ser executadas para tudo:
 
 ```sh
-cd meu-projeto-financeiro
-turbo dev
+yarn build
+yarn lint
+yarn check-types
 ```
 
-Sem o turbo global:
+Ou filtradas por workspace:
 
 ```sh
-cd meu-projeto-financeiro
-npx turbo dev
-# ou
-yarn turbo dev
+yarn turbo build --filter=web
+yarn turbo build --filter=transactions
+yarn turbo lint --filter=@repo/design-system
 ```
 
-Para executar apenas a aplicação web:
+### Apps vs. packages
 
-```sh
-turbo dev --filter=web
-# ou
-npx turbo dev --filter=web
+Use `apps/*` para produtos executáveis:
+
+- apps Next.js
+- microfrontends
+- shells
+- surfaces independentes
+
+Use `packages/*` para código compartilhado:
+
+- componentes genéricos;
+- contratos;
+- helpers;
+- configurações;
+- tokens;
+- hooks reutilizáveis.
+
+Regra prática: uma app não deve importar código diretamente de outra app. Se algo precisa ser compartilhado entre `web` e `transactions`, mova para `packages/*` ou exponha por API/contrato.
+
+## Multi-Zones
+
+A app `web` roda como shell principal em `http://localhost:3000`.
+
+A app `transactions` roda separadamente em `http://localhost:3001`.
+
+O acesso público a transações continua sendo:
+
+```txt
+http://localhost:3000/transactions
 ```
 
-### Storybook (Design System)
+Isso funciona porque `apps/web/next.config.js` faz rewrites para a zone `transactions`:
 
-Para executar o Storybook com a documentação completa do design system:
-
-```sh
-turbo storybook
-# ou
-npx turbo storybook
+```txt
+/transactions -> http://localhost:3001/transactions
+/transactions/:path+ -> http://localhost:3001/transactions/:path+
+/transactions-static/:path+ -> http://localhost:3001/transactions-static/:path+
 ```
 
-**Acesso**: `http://localhost:6006`
+Na app `transactions`, o `assetPrefix` aponta para `/transactions-static`, como recomendado para Next Multi-Zones.
 
-#### 📖 O que você encontrará no Storybook:
+## Apps
 
-- **Introdução**: Visão geral do Tech Challenge e melhorias implementadas
-- **Atoms**: Componentes básicos (Button, Input, Typography, etc.)
-- **Molecules**: Componentes compostos (DialogModal, List, InputWrapper, etc.)
-- **Organisms**: Componentes complexos (Header)
-- **Hooks**: Documentação completa do sistema de Modal e outros hooks
-- **Design Tokens**: Sistema de cores que se adapta aos temas
+### `apps/web`
 
-#### 🎯 Destaques da Documentação:
+App principal e shell da experiência.
 
-- **Sistema de Modal**: Documentação interativa completa com exemplos funcionais
-- **Temas**: Demonstração do alternador de tema com preview em tempo real
-- **Componentes**: Todos os componentes com controles interativos para testar props
-- **Código**: Exemplos de implementação prontos para copiar e usar
+Responsabilidades atuais:
 
-### Outros Comandos
+- Renderizar a Home/dashboard.
+- Exibir saldo, formulário de nova transação e extrato na tela inicial.
+- Carregar `Header`, `Navigation`, tema e modals pelo design system.
+- Encaminhar `/transactions` para a zone `transactions`.
+
+Observação: por enquanto, alguns componentes de transação ainda existem em `web` para preservar o dashboard atual funcionando.
+
+### `apps/transactions`
+
+Zone separada para a área de transações.
+
+Responsabilidades atuais:
+
+- Renderizar a rota `/transactions`.
+- Concentrar componentes relacionados a transações para evolução futura.
+- Usar o mesmo `design-system`, tema, modals e estilos globais da app `web`.
+
+Componentes relacionados:
+
+- `TransactionForm`
+- `NewTransaction`
+- `Statement`
+- `Balance`
+- `Welcome`
+- `UserInfoProvider`
+
+## Packages
+
+### `packages/design-system`
+
+Biblioteca compartilhada de UI.
+
+Inclui:
+
+- Atoms: `Button`, `Input`, `Select`, `Typography`, `ThemeToggle`
+- Molecules: `DialogModal`, `InputWrapper`, `List`, `SectionBox`, `Navigation`, `UserMenu`
+- Organisms: `Header`
+- Hooks: `useModal`, `useDialogModal`, `useTheme`, `useIsMobile`
+- Estilos globais e tokens de tema
+- Storybook
+
+As apps devem importar `@repo/design-system/global.css` em seus estilos globais e configurar o Tailwind para escanear `packages/design-system/src`.
+
+### Componentes disponíveis
+
+#### Atoms
+
+- `Button`: botões com variantes `primary`, `secondary` e `icon`.
+- `Input`: campos de entrada com suporte a máscaras.
+- `Select`: listas de seleção.
+- `Typography`: sistema de tipografia (`h1` a `h6`, `p`, `span`, `strong`).
+- `ThemeToggle`: alternador de tema claro/escuro.
+
+#### Molecules
+
+- `DialogModal`: modal de confirmação e ações.
+- `InputWrapper`: input com label, integração com React Hook Form e mensagens de validação.
+- `List`: lista de transações com ações de edição e exclusão.
+- `SectionBox`: container com título e variantes visuais.
+- `Navigation`: navegação principal entre áreas.
+- `UserMenu`: menu do usuário.
+- `SensitiveDataBox`: exibição de dados sensíveis com ação de mostrar/ocultar.
+
+#### Organisms
+
+- `Header`: cabeçalho da aplicação.
+
+#### Hooks
+
+- `useModal`: gerenciamento de modals.
+- `useDialogModal`: modals pré-definidos para confirmação.
+- `useTheme`: gerenciamento de tema.
+- `useIsMobile`: detecção de viewport móvel.
+
+## Storybook
+
+O `packages/design-system` possui Storybook para documentar e testar os componentes compartilhados fora das apps.
+
+Rodar o Storybook:
 
 ```sh
-# Linting
-turbo lint
+yarn workspace @repo/design-system storybook
+```
 
-# Verificação de tipos
-turbo check-types
+Acessar:
 
-# Formatação de código
+```txt
+http://localhost:6006
+```
+
+O Storybook é o lugar recomendado para evoluir componentes genéricos antes de usá-los em `apps/web` ou `apps/transactions`.
+
+Conteúdos esperados no Storybook:
+
+- Introdução ao projeto e ao Tech Challenge
+- Atoms: `Button`, `Input`, `Select`, `Typography`, `ThemeToggle`
+- Molecules: `DialogModal`, `InputWrapper`, `List`, `SectionBox`, `Navigation`
+- Organisms: `Header`
+- Hooks e providers: tema, modals e hooks compartilhados
+- Tokens de design: cores, temas e estados visuais
+
+O Storybook também deve ser usado para:
+
+- documentar variações visuais dos componentes;
+- testar props com controles interativos;
+- demonstrar estados de erro, vazio e carregamento;
+- validar responsividade dos componentes reutilizáveis;
+- manter exemplos de implementação para consulta.
+
+Quando criar um componente que será reutilizado por mais de uma app, ele deve preferencialmente nascer ou ser documentado no `packages/design-system` e ganhar uma story correspondente.
+
+### `packages/contracts`
+
+Pacote para tipos e contratos compartilhados.
+
+Atualmente inclui:
+
+- `Transaction`
+- `TransactionInput`
+- `TransactionType`
+- `TransactionStatus`
+- `TransactionFilters`
+- labels de tipos/status
+- categorias de transação
+
+### `packages/utils`
+
+Pacote para funções puras compartilhadas.
+
+Atualmente inclui:
+
+- `formatCurrency`
+- `formatDate`
+- `calculateBalance`
+- `groupTransactionsByCategory`
+
+## Comandos
+
+Instalar dependências:
+
+```sh
+yarn install
+```
+
+Rodar as duas zones em desenvolvimento:
+
+```sh
+yarn dev:zones
+```
+
+Rodar apenas a app principal:
+
+```sh
+yarn dev:web
+```
+
+Rodar apenas a zone de transações:
+
+```sh
+yarn dev:transactions
+```
+
+Build completo:
+
+```sh
+yarn build
+```
+
+Lint:
+
+```sh
+yarn lint
+```
+
+Typecheck:
+
+```sh
+yarn check-types
+```
+
+Formatação:
+
+```sh
 yarn format
 ```
 
-## Dados e Backend
+## URLs
 
-Este projeto utiliza **dados mockados** para simular o backend, conforme especificado nos requisitos do Tech Challenge. Os dados das transações são gerenciados através de:
+Com `yarn dev:zones`:
 
-- **Estado local**: Utilizando `useState()` e `useReducer()` para gerenciar transações
-- **Dados fictícios**: Transações simuladas para demonstrar as funcionalidades
-- **Persistência local**: Os dados são mantidos durante a sessão do usuário
+```txt
+http://localhost:3000
+http://localhost:3000/transactions
+http://localhost:3001/transactions
+```
 
-## Estrutura de Componentes
+Storybook do design system:
 
-### Aplicação Web (`apps/web`)
+```sh
+yarn workspace @repo/design-system storybook
+```
 
-- **Home Page**: Página inicial com saldo e extrato
-- **Components**: Componentes específicos da aplicação
-  - `Balance`: Exibição do saldo da conta
-  - `Statement`: Componente de extrato de transações
-  - `TransactionForm`: Formulário para nova transação
-  - `NewTransaction`: Modal/página para adicionar transação
-  - `Welcome`: Componente de boas-vindas
+```txt
+http://localhost:6006
+```
 
-### Design System (`packages/design-system`)
+## Estado atual
 
-- **Atoms**: Componentes básicos (Button, Input, Select, etc.)
-- **Molecules**: Componentes compostos (DialogModal, InputWrapper, List, etc.)
-- **Organisms**: Componentes complexos (Header, Navigation, etc.)
-- **Tokens**: Sistema de design (cores, tipografia, temas)
-- **Hooks**: Hooks reutilizáveis (useTheme, useIsMobile, etc.)
+- `web` preserva o dashboard existente.
+- `transactions` já existe como app separada e renderiza a área de transações.
+- O design system é compartilhado entre as apps.
+- `contracts` e `utils` existem para suportar a evolução da separação entre microfrontends.
+- Ainda não há backend; os dados seguem em estado local/mock.
 
-## Como Executar o Projeto
+## Dados e backend
 
-1. **Instalar dependências:**
+Este projeto utiliza **dados mockados** para simular o backend, conforme os requisitos do Tech Challenge.
 
-   ```sh
-   yarn install
-   ```
+Atualmente, os dados de transações são gerenciados com:
 
-2. **Executar em modo desenvolvimento:**
+- estado local em React;
+- `useReducer` para operações de transação;
+- dados fictícios iniciais para demonstração;
+- cálculo de saldo derivado das transações.
 
-   ```sh
-   turbo dev
-   ```
+Não há persistência real em banco de dados. Ao recarregar a aplicação, o estado volta ao mock inicial.
 
-   Isso iniciará:
-   - **Aplicação web**: `http://localhost:3000`
-   - **Storybook**: `http://localhost:6006`
+## Referências do design
 
-3. **Para executar apenas o Storybook:**
-   ```sh
-   turbo storybook
-   ```
+- **Figma**: [Projeto Financeiro](https://www.figma.com/design/ns5TC3X5Xr8V7I3LYKg9KA/Projeto-Financeiro?node-id=503-4264&t=gZy56WDAUfXtS23Y-1)
+- O layout do Figma é uma referência para consistência visual, usabilidade e acessibilidade.
 
-### 🎯 Principais URLs:
+## Cache remoto
 
-- **Aplicação**: `http://localhost:3000` - Sistema de gerenciamento financeiro
-- **Storybook**: `http://localhost:6006` - Documentação do design system
+O Turborepo pode usar cache remoto para compartilhar artefatos de build entre máquinas e acelerar pipelines.
 
-## Cache Remoto (Opcional)
-
-O Turborepo pode usar [Cache Remoto](https://turborepo.dev/docs/core-concepts/remote-caching) para compartilhar artefatos de cache entre máquinas. Para habilitar:
+Para habilitar:
 
 ```sh
 turbo login
 turbo link
 ```
 
-## Referências do Design
-
-- **Figma**: [Projeto Financeiro](https://www.figma.com/design/ns5TC3X5Xr8V7I3LYKg9KA/Projeto-Financeiro?node-id=503-4264&t=gZy56WDAUfXtS23Y-1)
-- O layout do Figma é apenas uma referência, com foco na consistência visual, usabilidade e acessibilidade.
-
-## Links Úteis
-
-Documentações e recursos das tecnologias utilizadas:
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [React Documentation](https://reactjs.org/docs)
-- [Tailwind CSS](https://tailwindcss.com/docs)
-- [Storybook Documentation](https://storybook.js.org/docs)
-- [Turborepo Documentation](https://turborepo.dev/docs)
-- [React Hook Form](https://react-hook-form.com/get-started)
-
-### Turborepo
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+Mais detalhes: [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
 
 ## Tech Challenge - FIAP
 
 Este projeto atende aos requisitos do Tech Challenge Fase 01, incluindo:
 
-- ✅ Interface de gerenciamento financeiro
-- ✅ Design System com Storybook
-- ✅ Componentes reutilizáveis
-- ✅ Sistema de Modal documentado e interativo
-- ✅ Dados mockados
-- ✅ Estrutura escalável com Turborepo
-- ✅ Tipagem completa com TypeScript
+- interface de gerenciamento financeiro;
+- dashboard com saldo e extrato;
+- cadastro de transações;
+- edição de transações;
+- exclusão com confirmação;
+- dados mockados;
+- design system com Storybook;
+- componentes reutilizáveis;
+- sistema de tema;
+- sistema de modal;
+- estrutura escalável com Turborepo;
+- tipagem com TypeScript.
 
-### 🏆 Melhorias Implementadas:
+Melhorias já presentes no projeto:
 
-- **Documentação interativa** no Storybook com demos funcionais
-- **Sistema de temas** com alternador claro/escuro
-- **Modal system** com gerenciamento de pilha e hooks especializados
-- **Componentes responsivos** testáveis em diferentes resoluções
+- documentação interativa no Storybook;
+- suporte a tema claro/escuro;
+- modal system com hooks especializados;
+- estrutura preparada para Next Multi-Zones;
+- pacotes compartilhados para contratos e utilitários.
+
+## Tecnologias
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Turborepo
+- Storybook
+- React Hook Form
+- ESLint
+- Prettier
+
+## Links úteis
+
+Documentações oficiais das principais tecnologias usadas no projeto:
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Next.js Multi-Zones](https://nextjs.org/docs/app/guides/multi-zones)
+- [React Documentation](https://react.dev/)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Turborepo Documentation](https://turborepo.com/docs)
+- [Yarn Workspaces](https://classic.yarnpkg.com/lang/en/docs/workspaces/)
+- [Storybook Documentation](https://storybook.js.org/docs)
+- [React Hook Form Documentation](https://react-hook-form.com/get-started)
+- [ESLint Documentation](https://eslint.org/docs/latest/)
+- [Prettier Documentation](https://prettier.io/docs/)
+
+Referências úteis do Turborepo:
+
+- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
+- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
+- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
+- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
+- [Configuration Options](https://turborepo.com/docs/reference/configuration)
+- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
 
 ---
 

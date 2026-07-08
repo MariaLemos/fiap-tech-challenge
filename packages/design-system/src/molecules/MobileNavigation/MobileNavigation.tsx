@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useState } from "react";
+import React, { useState } from "react";
 import { faBars, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Navigation } from "../Navigation/Navigation";
@@ -40,7 +40,7 @@ export const MobileNavigation = ({
             </Button>
             <Navigation />
           </>,
-          document.querySelector('main') || document.body,
+          document.querySelector("main") || document.body,
         )}
     </>
   );

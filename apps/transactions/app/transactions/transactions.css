@@ -1,0 +1,21 @@
+.transactions-page {
+  display: grid;
+  grid-template-areas: "nav statement";
+  grid-template-columns: 20% 1fr;
+  align-items: start;
+}
+
+.transactions-page .navigation {
+  grid-area: nav;
+}
+
+.transactions-page .statement {
+  grid-area: statement;
+}
+
+@media screen and (max-width: 720px) {
+  .transactions-page {
+    grid-template-areas: "statement";
+    grid-template-columns: 1fr;
+  }
+}

@@ -4,6 +4,9 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:web": "yarn workspace web dev",
+    "dev:transactions": "yarn workspace transactions dev",
+    "dev:zones": "turbo run dev --filter=web --filter=transactions",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"

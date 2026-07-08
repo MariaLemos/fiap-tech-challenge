@@ -11,6 +11,17 @@
   --color-font: #111827;
 }
 
+[data-theme="dark"] {
+  --color-primary: #6366F1;
+  --color-background: #0F172A;
+  --color-surface: #1E293B;
+  --color-foreground: #1E293B;
+  --color-muted: #94A3B8;
+  --color-border: #334155;
+  --color-accent: #60A5FA;
+  --color-font: #F8FAFC;
+}
+
 /* Transições suaves para mudança de tema */
 * {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;

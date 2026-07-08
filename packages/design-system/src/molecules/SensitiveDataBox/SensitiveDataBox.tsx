@@ -9,7 +9,6 @@ export const SensitiveDataBox = ({
   children,
   className = "",
   title,
-  variant = "bg",
 }: {
   children: React.ReactNode;
   title?: React.ReactNode;
