@@ -1,5 +1,6 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
+  "globalEnv": ["TRANSACTIONS_ZONE_ORIGIN", "TRANSACTIONS_ASSET_PREFIX"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

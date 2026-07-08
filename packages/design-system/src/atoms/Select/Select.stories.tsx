@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Select } from "./Select";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 const meta: Meta<typeof Select> = {
   title: "Atoms/Select",
@@ -23,12 +23,18 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Wrapper para demonstrar o select com estado
-const SelectWrapper = ({ options, className }: any) => {
+const SelectWrapper = ({
+  options,
+  className,
+}: {
+  options?: { label: string; value: string }[];
+  className?: string;
+}) => {
   const [value, setValue] = useState("");
 
   const mockField = {
     value,
-    onChange: (e: any) => setValue(e.target.value),
+    onChange: (e: ChangeEvent<HTMLSelectElement>) => setValue(e.target.value),
     onBlur: () => {},
     name: "demo-select",
     ref: () => {},

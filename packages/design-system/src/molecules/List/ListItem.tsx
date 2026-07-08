@@ -1,7 +1,5 @@
 import { Button, Typography } from "../../atoms";
-import { useMemo } from "react";
-import { groupByMonth } from "./List.helper";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { ListItemType } from "./List";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,29 +13,43 @@ export const ListItem = <T extends ListItemType>({
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
 }) => {
+  const title = item.description || item.type;
+  const subtitle = item.category ? `${item.category} - ${item.type}` : item.type;
+
   return (
     <div
       key={item.id}
       className="grid grid-cols-2 gap-2 py-4 justify-between align-middle items-center"
     >
-      <Typography variant="p" className="mb-1 truncate ">
-        {item.type}
-      </Typography>
+      <div className="min-w-0">
+        <Typography variant="p" className="mb-1 truncate">
+          {title}
+        </Typography>
+        {subtitle !== title && (
+          <Typography variant="span" className="block truncate text-sm text-muted">
+            {subtitle}
+          </Typography>
+        )}
+      </div>
       <div className=" justify-self-end">
-        <Button
-          variant="icon"
-          className="border-none"
-          onClick={() => onEdit?.(item)}
-        >
-          <FontAwesomeIcon icon={faPenToSquare} />
-        </Button>
-        <Button
-          variant="icon"
-          className="border-none"
-          onClick={() => onDelete?.(item)}
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </Button>
+        {onEdit && (
+          <Button
+            variant="icon"
+            className="border-none"
+            onClick={() => onEdit(item)}
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </Button>
+        )}
+        {onDelete && (
+          <Button
+            variant="icon"
+            className="border-none"
+            onClick={() => onDelete(item)}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </Button>
+        )}
       </div>
       <Typography
         variant="span"

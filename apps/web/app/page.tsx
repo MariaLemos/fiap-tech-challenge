@@ -4,7 +4,7 @@ import { Navigation, useIsMobile } from "@repo/design-system";
 import "./page.css";
 import { Wellcome } from "./components/Welcome/welcome";
 import { Statement } from "./components/Statement/Statement";
-import { NewTransaction } from "./components/NewTransaction/NewTransaction";
+import { QuickTransactionStart } from "./components/QuickTransactionStart/QuickTransactionStart";
 
 export default function Home() {
   const isMobile = useIsMobile();
@@ -13,7 +13,7 @@ export default function Home() {
     <main className="home-page grid gap-4 py-4 h-[calc(100vh-4rem)]">
       {!isMobile && <Navigation />}
       <Wellcome />
-      <NewTransaction />
+      <QuickTransactionStart />
       <Statement />
     </main>
   );

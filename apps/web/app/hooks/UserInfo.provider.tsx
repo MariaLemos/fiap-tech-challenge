@@ -67,7 +67,7 @@ function sanitizeTransaction(
 // Reducer
 function userInfoReducer(state: UserInfoState, action: Action): UserInfoState {
   switch (action.type) {
-    case "ADD_TRANSACTION":
+    case "ADD_TRANSACTION": {
       const sanitizedTransaction = sanitizeTransaction(action.payload);
       const newTransaction: Transaction = {
         ...sanitizedTransaction,
@@ -80,8 +80,9 @@ function userInfoReducer(state: UserInfoState, action: Action): UserInfoState {
           (a, b) => b.date.valueOf() - a.date.valueOf(), // Ordena por data mais recente primeiro
         ),
       };
+    }
 
-    case "UPDATE_TRANSACTION":
+    case "UPDATE_TRANSACTION": {
       const sanitizedUpdate = action.payload.transaction.amount
         ? {
             ...action.payload.transaction,
@@ -97,6 +98,7 @@ function userInfoReducer(state: UserInfoState, action: Action): UserInfoState {
             : transaction,
         ),
       };
+    }
 
     case "DELETE_TRANSACTION":
       return {
