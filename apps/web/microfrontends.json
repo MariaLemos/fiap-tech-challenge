@@ -14,7 +14,6 @@
       "development": {
         "local": 3001
       },
-      "assetPrefix": "transactions-static",
       "routing": [
         {
           "paths": [
