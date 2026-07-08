@@ -20,7 +20,7 @@ export const DeleteTransaction = ({
   if (!transaction) {
     return (
       <div className="rounded-lg border border-dashed border-primary p-6 text-center text-muted">
-        Transacao nao encontrada.
+        Transacao não encontrada.
       </div>
     );
   }
