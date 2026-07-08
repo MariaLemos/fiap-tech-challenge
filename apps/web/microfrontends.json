@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "version": "1",
+  "applications": {
+    "fiap-tech-challenge-web": {
+      "packageName": "web",
+      "development": {
+        "local": 3000,
+        "fallback": "fiap-tech-challenge-web.vercel.app"
+      }
+    },
+    "fiap-tech-challenge-transactions": {
+      "packageName": "transactions",
+      "development": {
+        "local": 3001
+      },
+      "assetPrefix": "transactions-static",
+      "routing": [
+        {
+          "paths": [
+            "/transactions",
+            "/transactions/:path*",
+            "/transactions-static/:path*"
+          ]
+        }
+      ]
+    }
+  }
+}
