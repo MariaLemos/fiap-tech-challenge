@@ -1,43 +1,30 @@
 import { Button, Typography } from "../../atoms";
-import { useModal } from "../../hooks";
 
 export const DialogModal = ({
-  text,
-  onClose,
+  cancelLabel = "Cancelar",
+  confirmLabel = "Confirmar",
+  onCancel,
   onConfirm,
+  text,
 }: {
-  onClose: () => void;
+  cancelLabel?: string;
+  confirmLabel?: string;
+  onCancel: () => void;
   onConfirm: () => void;
   text: string;
 }) => {
-  const { closeModal } = useModal();
-
   return (
-    <>
-      {text && (
-        <Typography variant="p" className="mb-4 w-full">
-          {text}
-        </Typography>
-      )}
-      <Button
-        variant="primary"
-        className="mr-4"
-        onClick={() => {
-          onConfirm();
-          closeModal();
-        }}
-      >
-        Confirmar
-      </Button>
-      <Button
-        variant="secondary"
-        onClick={() => {
-          onClose();
-          closeModal();
-        }}
-      >
-        Cancelar
-      </Button>
-    </>
+    <div className="flex flex-col gap-4">
+      {text && <Typography variant="p">{text}</Typography>}
+
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="secondary" onClick={onCancel}>
+          {cancelLabel}
+        </Button>
+        <Button type="button" variant="primary" onClick={onConfirm}>
+          {confirmLabel}
+        </Button>
+      </div>
+    </div>
   );
 };

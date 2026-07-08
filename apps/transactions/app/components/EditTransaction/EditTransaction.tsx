@@ -6,8 +6,12 @@ import { TransactionForm } from "../TransactionForm/TransactionForm";
 
 export const EditTransaction = ({ transactionId }: { transactionId: string }) => {
   const router = useRouter();
-  const { transactions } = useUserInfo();
+  const { isReady, transactions } = useUserInfo();
   const transaction = transactions.find(({ id }) => id === transactionId);
+
+  if (!isReady) {
+    return null;
+  }
 
   if (!transaction) {
     return (

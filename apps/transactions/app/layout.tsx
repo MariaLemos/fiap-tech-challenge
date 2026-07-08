@@ -1,20 +1,26 @@
-import { Header, ThemeInitScript, ThemeProvider } from "@repo/design-system";
+import { cookies } from "next/headers";
+import { Header, ThemeProvider } from "@repo/design-system";
 import "./globals.css";
 import "./transactions/transactions.css";
 import { UserInfoProvider } from "./hooks/UserInfo.provider";
 
-export default function RootLayout({
+const getInitialTheme = async () => {
+  const theme = (await cookies()).get("theme")?.value;
+
+  return theme === "dark" || theme === "light" ? theme : "light";
+};
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialTheme = await getInitialTheme();
+
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <head>
-        <ThemeInitScript />
-      </head>
+    <html lang="pt-BR" data-theme={initialTheme} suppressHydrationWarning>
       <body>
-        <ThemeProvider defaultTheme="light">
+        <ThemeProvider defaultTheme={initialTheme}>
           <UserInfoProvider>
             <Header userName="Maria Lemos" />
             {children}

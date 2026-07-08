@@ -5,6 +5,7 @@ import { applyThemeVariables } from "../atoms/tokens/theme-generator";
 
 type Theme = "light" | "dark";
 const THEME_STORAGE_KEY = "theme";
+const THEME_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 interface ThemeContextType {
   theme: Theme;
@@ -82,6 +83,7 @@ export const ThemeProvider = ({
     document.body.setAttribute("data-theme", theme);
     applyThemeVariables(theme);
     localStorage.setItem(THEME_STORAGE_KEY, theme);
+    document.cookie = `${THEME_STORAGE_KEY}=${theme}; path=/; max-age=${THEME_COOKIE_MAX_AGE}; SameSite=Lax`;
   }, [isHydrated, theme]);
 
   const toggleTheme = () => {

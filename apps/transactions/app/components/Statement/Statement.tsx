@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SectionBox, List, Button } from "@repo/design-system";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
@@ -33,15 +33,6 @@ export const Statement = ({
     () => getStatementFilterDefinitions(categories),
     [categories],
   );
-
-  useEffect(() => {
-    router.prefetch("/transactions/new");
-
-    paginatedTransactions.forEach((transaction) => {
-      router.prefetch(`/transactions/${transaction.id}/edit`);
-      router.prefetch(`/transactions/${transaction.id}/delete`);
-    });
-  }, [paginatedTransactions, router]);
 
   return (
     <SectionBox

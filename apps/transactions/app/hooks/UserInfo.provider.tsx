@@ -7,6 +7,8 @@ import React, {
   useReducer,
   ReactNode,
   useMemo,
+  useEffect,
+  useState,
 } from "react";
 
 // Tipos
@@ -28,6 +30,7 @@ interface UserInfoContextType {
   userName: string;
   transactions: Transaction[];
   balance: number;
+  isReady: boolean;
   addTransaction: (transaction: Omit<Transaction, "id">) => void;
   updateTransaction: (
     id: string,
@@ -38,6 +41,7 @@ interface UserInfoContextType {
 
 // Actions do reducer
 type Action =
+  | { type: "SET_TRANSACTIONS"; payload: Transaction[] }
   | { type: "ADD_TRANSACTION"; payload: Omit<Transaction, "id"> }
   | {
       type: "UPDATE_TRANSACTION";
@@ -71,6 +75,14 @@ function sanitizeTransaction(
 // Reducer
 function userInfoReducer(state: UserInfoState, action: Action): UserInfoState {
   switch (action.type) {
+    case "SET_TRANSACTIONS":
+      return {
+        ...state,
+        transactions: action.payload.sort(
+          (a, b) => b.date.valueOf() - a.date.valueOf(),
+        ),
+      };
+
     case "ADD_TRANSACTION": {
       const sanitizedTransaction = sanitizeTransaction(action.payload);
       const newTransaction: Transaction = {
@@ -128,6 +140,36 @@ interface UserInfoProviderProps {
   initialTransactions?: Transaction[];
 }
 
+const TRANSACTIONS_STORAGE_KEY = "transactions";
+
+const parseStoredTransactions = (value: string | null): Transaction[] | null => {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    const transactions = JSON.parse(value) as Array<
+      Omit<Transaction, "date"> & { date: string }
+    >;
+
+    return transactions.map((transaction) => ({
+      ...transaction,
+      date: dayjs(transaction.date),
+    }));
+  } catch {
+    return null;
+  }
+};
+
+const serializeTransactions = (transactions: Transaction[]) => {
+  return JSON.stringify(
+    transactions.map((transaction) => ({
+      ...transaction,
+      date: transaction.date.toISOString(),
+    })),
+  );
+};
+
 // Transações de exemplo para desenvolvimento
 const mockTransactions: Transaction[] = [
   {
@@ -161,10 +203,34 @@ export function UserInfoProvider({
   children,
   initialTransactions = mockTransactions, // Usa mock por padrão para demonstração
 }: UserInfoProviderProps) {
+  const [isReady, setIsReady] = useState(false);
   const [state, dispatch] = useReducer(userInfoReducer, {
     userName: "Maria Lemos",
     transactions: initialTransactions,
   });
+
+  useEffect(() => {
+    const storedTransactions = parseStoredTransactions(
+      localStorage.getItem(TRANSACTIONS_STORAGE_KEY),
+    );
+
+    if (storedTransactions) {
+      dispatch({ type: "SET_TRANSACTIONS", payload: storedTransactions });
+    }
+
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
+    localStorage.setItem(
+      TRANSACTIONS_STORAGE_KEY,
+      serializeTransactions(state.transactions),
+    );
+  }, [isReady, state.transactions]);
 
   // Calcula o saldo baseado nas transações
   const balance = useMemo(() => {
@@ -195,6 +261,7 @@ export function UserInfoProvider({
     userName: state.userName,
     transactions: state.transactions,
     balance,
+    isReady,
     addTransaction,
     updateTransaction,
     deleteTransaction,
