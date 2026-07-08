@@ -10,11 +10,8 @@ import {
 import { useUserInfo } from "../../hooks/UserInfo.provider";
 import type { Transaction } from "../../hooks/UserInfo.provider";
 import { TransactionForm } from "../TransactionForm/TransactionForm";
-import {
-  transactionTypeOptions,
-  useStatementTransactions,
-} from "./hooks/useStatementTransactions";
-import type { TransactionTypeFilter } from "./Statement.types";
+import { StatementFilters } from "./components/StatementFilters";
+import { useStatementTransactions } from "./hooks/useStatementTransactions";
 
 export const Statement = ({
   showAddButton = false,
@@ -61,64 +58,17 @@ export const Statement = ({
         </Button>
       )}
 
-      <div className="grid gap-3 md:grid-cols-[1fr_12rem_12rem_auto]">
-        <label className="flex flex-col gap-1 text-sm font-semibold">
-          Buscar por descricao
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Ex: mercado"
-            className="h-10 rounded-lg border border-primary bg-foreground p-2 text-font"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm font-semibold">
-          Tipo
-          <select
-            value={typeFilter}
-            onChange={(event) =>
-              setTypeFilter(event.target.value as TransactionTypeFilter)
-            }
-            className="h-10 rounded-lg border border-primary bg-foreground p-2 text-font"
-          >
-            {transactionTypeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        {categories.length > 0 && (
-          <label className="flex flex-col gap-1 text-sm font-semibold">
-            Categoria
-            <select
-              value={categoryFilter}
-              onChange={(event) => setCategoryFilter(event.target.value)}
-              className="h-10 rounded-lg border border-primary bg-foreground p-2 text-font"
-            >
-              <option value="all">Todas</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {hasActiveFilters && (
-          <Button
-            type="button"
-            variant="secondary"
-            className="self-end"
-            onClick={clearFilters}
-          >
-            Limpar
-          </Button>
-        )}
-      </div>
+      <StatementFilters
+        search={search}
+        typeFilter={typeFilter}
+        categoryFilter={categoryFilter}
+        categories={categories}
+        hasActiveFilters={hasActiveFilters}
+        onSearchChange={setSearch}
+        onTypeFilterChange={setTypeFilter}
+        onCategoryFilterChange={setCategoryFilter}
+        onClearFilters={clearFilters}
+      />
 
       {filteredTransactions.length === 0 ? (
         <div className="rounded-lg border border-dashed border-primary p-8 text-center text-muted">

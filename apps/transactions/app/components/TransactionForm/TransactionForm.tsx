@@ -1,55 +1,15 @@
 import { Button, InputWrapper } from "@repo/design-system";
-import { Transaction, useUserInfo } from "../../hooks/UserInfo.provider";
+import { useUserInfo } from "../../hooks/UserInfo.provider";
+import type { Transaction } from "../../hooks/UserInfo.provider";
 import { FormProvider, useForm } from "react-hook-form";
+import { useEffect, useRef } from "react";
 import dayjs from "dayjs";
-
-const categories = [
-  { label: "Depósito", value: "deposit" },
-  { label: "Transferência", value: "transfer" },
-  { label: "Retirada", value: "withdrawal" },
-];
-
-// Schema de validação
-const validationRules = {
-  description: {
-    required: "A descricao e obrigatoria",
-  },
-  amount: {
-    required: "O valor é obrigatório",
-    min: {
-      value: 0.01,
-      message: "O valor deve ser maior que zero",
-    },
-    validate: (value: number) => {
-      if (isNaN(value)) return "Digite um valor numérico válido";
-      if (value > 1000000) return "Valor máximo de R$ 1.000.000,00";
-      return true;
-    },
-  },
-  type: {
-    required: "O tipo de transação é obrigatório",
-  },
-  date: {
-    required: "A data é obrigatória",
-    validate: (value: string) => {
-      if (!value) return "A data é obrigatória";
-      const date = dayjs(value);
-      if (!date.isValid()) return "Data inválida";
-      if (date.isAfter(dayjs())) return "A data não pode ser futura";
-      if (date.isBefore(dayjs().subtract(1, "year")))
-        return "Data não pode ser anterior a 1 ano";
-      return true;
-    },
-  },
-};
-
-interface FormData {
-  amount: number;
-  type: "deposit" | "transfer" | "withdrawal";
-  description: string;
-  category: string;
-  date: string;
-}
+import {
+  transactionTypeOptions,
+  validationRules,
+} from "./TransactionForm.config";
+import { getSuggestedCategory } from "./TransactionForm.helpers";
+import type { TransactionFormData } from "./TransactionForm.types";
 
 export const TransactionForm = ({
   transaction,
@@ -57,12 +17,12 @@ export const TransactionForm = ({
   onSubmitCallback,
 }: {
   transaction?: Transaction;
-  initialValues?: Partial<FormData>;
+  initialValues?: Partial<TransactionFormData>;
   onSubmitCallback?: () => void;
 }) => {
   const { addTransaction, updateTransaction } = useUserInfo();
 
-  const formMethods = useForm<FormData>({
+  const formMethods = useForm<TransactionFormData>({
     defaultValues: {
       type: transaction?.type || initialValues?.type || "deposit",
       amount: transaction?.amount || initialValues?.amount || 0,
@@ -82,10 +42,37 @@ export const TransactionForm = ({
     formState: { isSubmitting, isValid },
     reset,
   } = formMethods;
+  const { getValues, setValue, watch } = formMethods;
+  const description = watch("description");
+  const type = watch("type");
+  const lastSuggestedCategory = useRef("");
 
-  const onSubmit = async (data: FormData) => {
+  useEffect(() => {
+    const suggestedCategory = getSuggestedCategory({
+      description: description || "",
+      type,
+    });
+
+    if (!suggestedCategory) {
+      return;
+    }
+
+    const currentCategory = getValues("category").trim();
+    const shouldApplySuggestion =
+      !currentCategory || currentCategory === lastSuggestedCategory.current;
+
+    if (shouldApplySuggestion && currentCategory !== suggestedCategory) {
+      setValue("category", suggestedCategory, {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+
+    lastSuggestedCategory.current = suggestedCategory;
+  }, [description, getValues, setValue, type]);
+
+  const onSubmit = async (data: TransactionFormData) => {
     try {
-      // Converte dados do formulário para o formato da transação
       const transactionData: Omit<Transaction, "id"> = {
         ...data,
         amount: Number(data.amount),
@@ -98,7 +85,6 @@ export const TransactionForm = ({
         addTransaction(transactionData);
       }
 
-      // Reset form only for new transactions
       if (!transaction) {
         reset({
           type: "deposit",
@@ -109,14 +95,14 @@ export const TransactionForm = ({
         });
       }
 
-      // Callback de sucesso
       if (onSubmitCallback) {
         onSubmitCallback();
       }
     } catch (err) {
-      console.error("Erro ao processar transação:", err);
+      console.error("Erro ao processar transacao:", err);
     }
   };
+
   return (
     <FormProvider {...formMethods}>
       <form
@@ -148,7 +134,7 @@ export const TransactionForm = ({
           name="type"
           type="select"
           className="w-full"
-          options={categories}
+          options={transactionTypeOptions}
           required
           rules={validationRules.type}
         />
@@ -158,6 +144,8 @@ export const TransactionForm = ({
           name="category"
           type="text"
           className="w-full"
+          required
+          rules={validationRules.category}
           placeholder="Ex: Alimentacao"
         />
 

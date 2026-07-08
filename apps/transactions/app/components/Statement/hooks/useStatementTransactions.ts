@@ -8,13 +8,6 @@ import {
 } from "../Statement.helpers";
 import type { TransactionTypeFilter } from "../Statement.types";
 
-export const transactionTypeOptions = [
-  { label: "Todos os tipos", value: "all" },
-  { label: "Entrada", value: "deposit" },
-  { label: "Saida", value: "withdrawal" },
-  { label: "Transferencia", value: "transfer" },
-] as const;
-
 const pageSize = 5;
 
 const useTransactionFilters = (transactions: Transaction[]) => {
