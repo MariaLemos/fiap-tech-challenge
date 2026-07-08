@@ -14,6 +14,8 @@ export interface Transaction {
   id: string;
   amount: number;
   type: "deposit" | "transfer" | "withdrawal";
+  description?: string;
+  category?: string;
   date: Dayjs;
 }
 
@@ -58,6 +60,8 @@ function sanitizeTransaction(
   return {
     amount: Math.abs(Number(transaction.amount)) || 0,
     type: transaction.type,
+    description: transaction.description?.trim() || "",
+    category: transaction.category?.trim() || "",
     date: dayjs.isDayjs(transaction.date)
       ? transaction.date
       : dayjs(transaction.date),
@@ -130,18 +134,24 @@ const mockTransactions: Transaction[] = [
     id: "1",
     amount: 1500.0,
     type: "deposit",
+    description: "Salario",
+    category: "Trabalho",
     date: dayjs().subtract(2, "days"),
   },
   {
     id: "2",
     amount: 250.5,
     type: "withdrawal",
+    description: "Mercado",
+    category: "Alimentacao",
     date: dayjs().subtract(1, "day"),
   },
   {
     id: "3",
     amount: 800.0,
     type: "transfer",
+    description: "Reserva mensal",
+    category: "Investimentos",
     date: dayjs().subtract(3, "hours"),
   },
 ];

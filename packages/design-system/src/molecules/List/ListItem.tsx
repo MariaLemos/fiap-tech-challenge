@@ -13,14 +13,24 @@ export const ListItem = <T extends ListItemType>({
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
 }) => {
+  const title = item.description || item.type;
+  const subtitle = item.category ? `${item.category} - ${item.type}` : item.type;
+
   return (
     <div
       key={item.id}
       className="grid grid-cols-2 gap-2 py-4 justify-between align-middle items-center"
     >
-      <Typography variant="p" className="mb-1 truncate ">
-        {item.type}
-      </Typography>
+      <div className="min-w-0">
+        <Typography variant="p" className="mb-1 truncate">
+          {title}
+        </Typography>
+        {subtitle !== title && (
+          <Typography variant="span" className="block truncate text-sm text-muted">
+            {subtitle}
+          </Typography>
+        )}
+      </div>
       <div className=" justify-self-end">
         {onEdit && (
           <Button

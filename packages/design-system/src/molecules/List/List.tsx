@@ -7,6 +7,8 @@ import { ListItem } from "./ListItem";
 export type ListItemType = {
   id: string;
   type: string;
+  description?: string;
+  category?: string;
   amount: number;
   date: Dayjs;
 };

@@ -11,6 +11,9 @@ const categories = [
 
 // Schema de validação
 const validationRules = {
+  description: {
+    required: "A descricao e obrigatoria",
+  },
   amount: {
     required: "O valor é obrigatório",
     min: {
@@ -43,6 +46,8 @@ const validationRules = {
 interface FormData {
   amount: number;
   type: "deposit" | "transfer" | "withdrawal";
+  description: string;
+  category: string;
   date: string;
 }
 
@@ -61,6 +66,8 @@ export const TransactionForm = ({
     defaultValues: {
       type: transaction?.type || initialValues?.type || "deposit",
       amount: transaction?.amount || initialValues?.amount || 0,
+      description: transaction?.description || initialValues?.description || "",
+      category: transaction?.category || initialValues?.category || "",
       date:
         dayjs(transaction?.date).format("YYYY-MM-DD") ||
         initialValues?.date ||
@@ -96,6 +103,8 @@ export const TransactionForm = ({
         reset({
           type: "deposit",
           amount: 0,
+          description: "",
+          category: "",
           date: dayjs().format("YYYY-MM-DD"),
         });
       }
@@ -125,6 +134,16 @@ export const TransactionForm = ({
         />
 
         <InputWrapper
+          label="Descricao"
+          name="description"
+          type="text"
+          className="w-full"
+          required
+          rules={validationRules.description}
+          placeholder="Ex: Salario"
+        />
+
+        <InputWrapper
           label="Tipo"
           name="type"
           type="select"
@@ -132,6 +151,14 @@ export const TransactionForm = ({
           options={categories}
           required
           rules={validationRules.type}
+        />
+
+        <InputWrapper
+          label="Categoria"
+          name="category"
+          type="text"
+          className="w-full"
+          placeholder="Ex: Alimentacao"
         />
 
         <InputWrapper
