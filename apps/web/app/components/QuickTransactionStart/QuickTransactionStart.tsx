@@ -1,7 +1,6 @@
 "use client";
 
 import { Button, InputWrapper, SectionBox } from "@repo/design-system";
-import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 
 type TransactionType = "deposit" | "transfer" | "withdrawal";
@@ -18,7 +17,6 @@ const transactionTypes = [
 ] satisfies { label: string; value: TransactionType }[];
 
 export const QuickTransactionStart = () => {
-  const router = useRouter();
   const formMethods = useForm<QuickTransactionStartForm>({
     defaultValues: {
       type: "deposit",
@@ -33,7 +31,7 @@ export const QuickTransactionStart = () => {
       params.set("amount", amount);
     }
 
-    router.push(`/transactions/new?${params.toString()}`);
+    window.location.assign(`/transactions/new?${params.toString()}`);
   };
 
   return (

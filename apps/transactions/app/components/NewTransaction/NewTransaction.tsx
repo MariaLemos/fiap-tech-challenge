@@ -5,11 +5,13 @@ type TransactionType = "deposit" | "transfer" | "withdrawal";
 
 export const NewTransaction = ({
   initialValues,
+  onSubmitCallback,
 }: {
   initialValues?: {
     type?: TransactionType;
     amount?: number;
   };
+  onSubmitCallback?: () => void;
 }) => {
   return (
     <SectionBox
@@ -17,7 +19,10 @@ export const NewTransaction = ({
       variant="bg"
       className="flex flex-col flex-wrap gap-4 bg-accent new-transaction"
     >
-      <TransactionForm initialValues={initialValues} />
+      <TransactionForm
+        initialValues={initialValues}
+        onSubmitCallback={onSubmitCallback}
+      />
     </SectionBox>
   );
 };

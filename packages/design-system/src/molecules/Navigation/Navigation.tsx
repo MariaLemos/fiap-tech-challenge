@@ -14,6 +14,14 @@ const pagesList = [
   { name: "Outros serviços", path: "/services" },
 ];
 
+const getZoneFromPath = (path: string) => {
+  if (path.startsWith("/transactions")) {
+    return "transactions";
+  }
+
+  return "shell";
+};
+
 export const Navigation = ({
   className,
   children,
@@ -32,6 +40,8 @@ export const Navigation = ({
       <nav className="flex divide-primary divide-solid divide-y-2 w-full">
         {pagesList.map((page) => {
           const isActive = pathname === page.path;
+          const isCrossZone =
+            getZoneFromPath(pathname) !== getZoneFromPath(page.path);
           const className = `px-4 pt-4 pb-4 transition-all duration-300 ease-in-out rounded-md
                 ${
                   isActive
@@ -41,7 +51,7 @@ export const Navigation = ({
                 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50
               `;
 
-          if (page.zone) {
+          if (isCrossZone) {
             return (
               <a
                 className={className}
