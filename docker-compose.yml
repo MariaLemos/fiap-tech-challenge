@@ -1,0 +1,20 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        TRANSACTIONS_ZONE_ORIGIN: http://transactions:3001
+    ports:
+      - "3000:3000"
+    environment:
+      TRANSACTIONS_ZONE_ORIGIN: http://transactions:3001
+    depends_on:
+      - transactions
+
+  transactions:
+    build:
+      context: .
+      dockerfile: apps/transactions/Dockerfile
+    ports:
+      - "3001:3001"
