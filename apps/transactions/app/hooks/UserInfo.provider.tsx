@@ -11,6 +11,8 @@ import React, {
   useState,
 } from "react";
 
+import type { TransactionAttachment } from "../components/TransactionForm/TransactionForm.types";
+
 // Tipos
 export interface Transaction {
   id: string;
@@ -19,6 +21,7 @@ export interface Transaction {
   description?: string;
   category?: string;
   date: Dayjs;
+  attachment?: TransactionAttachment | null;
 }
 
 interface UserInfoState {
@@ -69,6 +72,7 @@ function sanitizeTransaction(
     date: dayjs.isDayjs(transaction.date)
       ? transaction.date
       : dayjs(transaction.date),
+    attachment: transaction.attachment ?? null,
   };
 }
 
@@ -179,6 +183,11 @@ const mockTransactions: Transaction[] = [
     description: "Salario",
     category: "Trabalho",
     date: dayjs().subtract(2, "days"),
+    attachment: {
+      name: "holerite-julho.pdf",
+      size: 238112,
+      type: "application/pdf",
+    },
   },
   {
     id: "2",

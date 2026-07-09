@@ -1,13 +1,12 @@
 import { Button, InputWrapper } from "@repo/design-system";
 import type { Transaction } from "../../hooks/UserInfo.provider";
-import { FormProvider, useForm } from "react-hook-form";
-import dayjs from "dayjs";
+import { FormProvider } from "react-hook-form";
 import {
   transactionTypeOptions,
   validationRules,
 } from "./TransactionForm.config";
-import { useTransactionCategorySuggestion } from "./hooks/useTransactionCategorySuggestion";
-import { useTransactionFormSubmit } from "./hooks/useTransactionFormSubmit";
+import { TransactionAttachmentField } from "./TransactionAttachmentField";
+import { useTransactionForm } from "./hooks/useTransactionForm";
 import type { TransactionFormData } from "./TransactionForm.types";
 
 export const TransactionForm = ({
@@ -19,37 +18,27 @@ export const TransactionForm = ({
   initialValues?: Partial<TransactionFormData>;
   onSubmitCallback?: () => void;
 }) => {
-  const formMethods = useForm<TransactionFormData>({
-    defaultValues: {
-      type: transaction?.type || initialValues?.type || "deposit",
-      amount: transaction?.amount || initialValues?.amount || 0,
-      description: transaction?.description || initialValues?.description || "",
-      category: transaction?.category || initialValues?.category || "",
-      date:
-        dayjs(transaction?.date).format("YYYY-MM-DD") ||
-        initialValues?.date ||
-        dayjs().format("YYYY-MM-DD"),
-    },
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
-
   const {
-    handleSubmit,
-    formState: { isSubmitting, isValid },
-  } = formMethods;
-  useTransactionCategorySuggestion(formMethods);
-  const onSubmit = useTransactionFormSubmit({
+    attachment,
+    attachmentInputRef,
+    attachmentSizeLabel,
     formMethods,
-    onSubmitCallback,
+    handleAttachmentChange,
+    handleAttachmentRemove,
+    isSubmitDisabled,
+    onSubmit,
+    submitLabel,
+  } = useTransactionForm({
     transaction,
+    initialValues,
+    onSubmitCallback,
   });
 
   return (
     <FormProvider {...formMethods}>
       <form
         className="grid grid-cols-2 gap-4 w-full items-start"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
         noValidate
       >
         <InputWrapper
@@ -102,17 +91,21 @@ export const TransactionForm = ({
           placeholder="R$ 0,00"
         />
 
+        <TransactionAttachmentField
+          attachment={attachment}
+          attachmentInputRef={attachmentInputRef}
+          attachmentSizeLabel={attachmentSizeLabel}
+          onAttachmentChange={handleAttachmentChange}
+          onAttachmentRemove={handleAttachmentRemove}
+        />
+
         <Button
           type="submit"
           variant="primary"
           className="w-full self-end"
-          disabled={isSubmitting || !isValid}
+          disabled={isSubmitDisabled}
         >
-          {isSubmitting
-            ? "Processando..."
-            : transaction
-              ? "Atualizar"
-              : "Adicionar"}
+          {submitLabel}
         </Button>
       </form>
     </FormProvider>

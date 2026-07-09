@@ -34,6 +34,7 @@ export const ListItem = <T extends ListItemType>({
       <div className=" justify-self-end">
         {onEdit && (
           <Button
+            type="button"
             variant="icon"
             className="border-none"
             onClick={() => onEdit(item)}
@@ -43,6 +44,7 @@ export const ListItem = <T extends ListItemType>({
         )}
         {onDelete && (
           <Button
+            type="button"
             variant="icon"
             className="border-none"
             onClick={() => onDelete(item)}

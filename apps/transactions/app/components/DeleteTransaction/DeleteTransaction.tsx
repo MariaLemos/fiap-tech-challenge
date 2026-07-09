@@ -5,11 +5,14 @@ import { useRouter } from "next/navigation";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
 
 export const DeleteTransaction = ({
+  onClose,
   transactionId,
 }: {
+  onClose?: () => void;
   transactionId: string;
 }) => {
   const router = useRouter();
+  const handleClose = onClose || (() => router.back());
   const { deleteTransaction, isReady, transactions } = useUserInfo();
   const transaction = transactions.find(({ id }) => id === transactionId);
 
@@ -27,14 +30,14 @@ export const DeleteTransaction = ({
 
   const confirmDelete = () => {
     deleteTransaction(transactionId);
-    router.back();
+    handleClose();
   };
 
   return (
     <DialogModal
       cancelLabel="Cancelar"
       confirmLabel="Excluir"
-      onCancel={() => router.back()}
+      onCancel={handleClose}
       onConfirm={confirmDelete}
       text={`Tem certeza que deseja excluir a transacao ${
         transaction.description || transaction.type

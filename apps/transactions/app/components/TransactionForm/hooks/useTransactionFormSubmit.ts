@@ -21,6 +21,7 @@ export const useTransactionFormSubmit = ({
         ...data,
         amount: Number(data.amount),
         date: dayjs(data.date),
+        attachment: data.attachment ?? null,
       };
 
       if (transaction) {
@@ -36,6 +37,7 @@ export const useTransactionFormSubmit = ({
           description: "",
           category: "",
           date: dayjs().format("YYYY-MM-DD"),
+          attachment: null,
         });
       }
 

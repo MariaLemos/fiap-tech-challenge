@@ -4,7 +4,13 @@ import { useRouter } from "next/navigation";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
 import { TransactionForm } from "../TransactionForm/TransactionForm";
 
-export const EditTransaction = ({ transactionId }: { transactionId: string }) => {
+export const EditTransaction = ({
+  onSubmitCallback,
+  transactionId,
+}: {
+  onSubmitCallback?: () => void;
+  transactionId: string;
+}) => {
   const router = useRouter();
   const { isReady, transactions } = useUserInfo();
   const transaction = transactions.find(({ id }) => id === transactionId);
@@ -24,7 +30,7 @@ export const EditTransaction = ({ transactionId }: { transactionId: string }) =>
   return (
     <TransactionForm
       transaction={transaction}
-      onSubmitCallback={() => router.back()}
+      onSubmitCallback={onSubmitCallback || (() => router.back())}
     />
   );
 };

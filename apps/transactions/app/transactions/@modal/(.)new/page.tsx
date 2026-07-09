@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RouteModal } from "../../../components/RouteModal/RouteModal";
 import { TransactionForm } from "../../../components/TransactionForm/TransactionForm";
@@ -29,7 +30,7 @@ const getInitialAmount = (amount: string | null): number | undefined => {
   return Number.isFinite(parsedAmount) ? parsedAmount : undefined;
 };
 
-export default function NewTransactionModalPage() {
+function NewTransactionModalContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -45,5 +46,13 @@ export default function NewTransactionModalPage() {
         onSubmitCallback={() => router.back()}
       />
     </RouteModal>
+  );
+}
+
+export default function NewTransactionModalPage() {
+  return (
+    <Suspense fallback={null}>
+      <NewTransactionModalContent />
+    </Suspense>
   );
 }
