@@ -11,6 +11,7 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@recharts/devtools": "^0.0.14",
     "@repo/contracts": "*",
     "@repo/design-system": "*",
     "@repo/utils": "*",
@@ -18,7 +19,8 @@
     "next": "16.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-hook-form": "^7.74.0"
+    "react-hook-form": "^7.74.0",
+    "recharts": "^3.9.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

@@ -1,0 +1,83 @@
+"use client";
+
+import { Pie, PieChart as RechartsPieChart, Tooltip } from "recharts";
+import type { TooltipIndex } from "recharts/types/state/tooltipSlice";
+import { RechartsDevtools } from "@recharts/devtools";
+
+export type PieChartItem = {
+  name: string;
+  value: number;
+};
+
+type TwoLevelPieChartProps = {
+  innerData?: PieChartItem[];
+  outerData?: PieChartItem[];
+  isAnimationActive?: boolean;
+  defaultIndex?: TooltipIndex;
+  maxWidth?: number;
+};
+
+const innerSampleData: PieChartItem[] = [
+  { name: "Group A", value: 400 },
+  { name: "Group B", value: 300 },
+  { name: "Group C", value: 300 },
+  { name: "Group D", value: 200 },
+];
+
+const outerSampleData: PieChartItem[] = [
+  { name: "A1", value: 100 },
+  { name: "A2", value: 300 },
+  { name: "B1", value: 100 },
+  { name: "B2", value: 80 },
+  { name: "B3", value: 40 },
+  { name: "B4", value: 30 },
+  { name: "B5", value: 50 },
+  { name: "C1", value: 100 },
+  { name: "C2", value: 200 },
+  { name: "D1", value: 150 },
+  { name: "D2", value: 50 },
+];
+
+export default function TwoLevelPieChart({
+  innerData = innerSampleData,
+  outerData = outerSampleData,
+  isAnimationActive,
+  defaultIndex,
+  maxWidth = 500,
+}: TwoLevelPieChartProps) {
+  return (
+    <RechartsPieChart
+      style={{
+        width: "100%",
+        height: "100%",
+        maxWidth: `${maxWidth}px`,
+        maxHeight: "80vh",
+        aspectRatio: 1,
+      }}
+      responsive
+    >
+      <Pie
+        data={innerData}
+        dataKey="value"
+        cx="50%"
+        cy="50%"
+        outerRadius="50%"
+        fill="#8884d8"
+        isAnimationActive={isAnimationActive}
+      />
+      <Pie
+        data={outerData}
+        dataKey="value"
+        cx="50%"
+        cy="50%"
+        innerRadius="60%"
+        outerRadius="80%"
+        fill="#82ca9d"
+        label
+        isAnimationActive={isAnimationActive}
+      />
+      <Tooltip defaultIndex={defaultIndex} />
+      <RechartsDevtools />
+    </RechartsPieChart>
+  );
+}
