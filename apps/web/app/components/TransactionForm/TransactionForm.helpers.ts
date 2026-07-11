@@ -2,6 +2,16 @@ import dayjs from "dayjs";
 import type { Transaction } from "../../hooks/UserInfo.provider";
 import type { TransactionFormData } from "./TransactionForm.types";
 
+const resolveFormType = (
+  type: Transaction["type"] | TransactionFormData["type"] | undefined,
+): TransactionFormData["type"] => {
+  if (type === "expense") {
+    return "withdrawal";
+  }
+
+  return type ?? "deposit";
+};
+
 export const getTransactionFormDefaultValues = ({
   transaction,
   initialValues,
@@ -9,7 +19,7 @@ export const getTransactionFormDefaultValues = ({
   transaction?: Transaction;
   initialValues?: Partial<TransactionFormData>;
 }): TransactionFormData => ({
-  type: transaction?.type || initialValues?.type || "deposit",
+  type: resolveFormType(transaction?.type ?? initialValues?.type),
   amount: transaction?.amount || initialValues?.amount || 0,
   description: transaction?.description || initialValues?.description || "",
   category: transaction?.category || initialValues?.category || "",

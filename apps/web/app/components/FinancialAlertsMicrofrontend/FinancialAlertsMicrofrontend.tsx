@@ -26,7 +26,7 @@ declare global {
 const origin =
   process.env.NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN ?? "http://localhost:4201";
 const authOrigin =
-  process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3000";
+  process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
 const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "";
 
 function loadScript(source: string) {

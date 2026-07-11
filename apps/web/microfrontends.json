@@ -25,23 +25,6 @@
           ]
         }
       ]
-    },
-    "fiap-tech-challenge-auth": {
-      "packageName": "auth",
-      "assetPrefix": "auth-static",
-      "development": {
-        "local": 3002,
-        "fallback": "fiap-tech-challenge-auth.vercel.app"
-      },
-      "routing": [
-        {
-          "paths": [
-            "/auth",
-            "/auth/:path*",
-            "/auth-static/:path*"
-          ]
-        }
-      ]
     }
   }
 }
