@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { groupByMonth } from "./List.helper";
 import { Dayjs } from "dayjs";
 import { ListItem } from "./ListItem";
+import { useI18n } from "@repo/i18n/react";
 
 export type ListItemType = {
   id: string;
@@ -24,12 +25,13 @@ export const List = <T extends ListItemType>({
   onEditItem?: (item: T) => void;
   onDeleteItem?: (item: T) => void;
 }) => {
-  const groupedData = useMemo(() => groupByMonth(data), [data]);
+  const { locale, t } = useI18n();
+  const groupedData = useMemo(() => groupByMonth(data, locale), [data, locale]);
 
   if (groupedData.length === 0) {
     return (
       <div className="text-center text-muted p-8">
-        <Typography variant="span">Nenhum item encontrado</Typography>
+        <Typography variant="span">{t("common.noItems")}</Typography>
       </div>
     );
   }

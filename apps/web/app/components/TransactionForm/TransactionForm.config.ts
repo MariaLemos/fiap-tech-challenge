@@ -1,61 +1,63 @@
 import dayjs from "dayjs";
+import type { TranslationKey } from "@repo/i18n";
 
-export const transactionTypeOptions = [
-  { label: "Deposito", value: "deposit" },
-  { label: "Transferencia", value: "transfer" },
-  { label: "Retirada", value: "withdrawal" },
+type Translate = (key: TranslationKey) => string;
+
+export const getTransactionTypeOptions = (t: Translate) => [
+  { label: t("transactions.type.deposit"), value: "deposit" },
+  { label: t("transactions.type.transfer"), value: "transfer" },
+  { label: t("transactions.type.withdrawal"), value: "withdrawal" },
 ];
 
-export const validationRules = {
+export const getValidationRules = (t: Translate) => ({
   description: {
-    required: "A descricao e obrigatoria",
+    required: t("transactions.validation.descriptionRequired"),
     minLength: {
       value: 3,
-      message: "A descricao deve ter pelo menos 3 caracteres",
+      message: t("transactions.validation.descriptionMin"),
     },
     validate: (value: string) =>
       value.trim().length >= 3 ||
-      "Informe uma descricao com pelo menos 3 caracteres",
+      t("transactions.validation.descriptionMin"),
   },
   category: {
-    required: "A categoria e obrigatoria",
+    required: t("transactions.validation.categoryRequired"),
     minLength: {
       value: 3,
-      message: "A categoria deve ter pelo menos 3 caracteres",
+      message: t("transactions.validation.categoryMin"),
     },
     validate: (value: string) =>
       value.trim().length >= 3 ||
-      "Informe uma categoria com pelo menos 3 caracteres",
+      t("transactions.validation.categoryMin"),
   },
   amount: {
-    required: "O valor e obrigatorio",
+    required: t("transactions.validation.amountRequired"),
     validate: (value: number) => {
       const amount = Number(value);
 
-      if (!Number.isFinite(amount)) return "Digite um valor numerico valido";
-      if (amount <= 0) return "O valor deve ser maior que zero";
-      if (amount > 1000000) return "Valor maximo de R$ 1.000.000,00";
+      if (!Number.isFinite(amount)) return t("transactions.validation.amountInvalid");
+      if (amount <= 0) return t("transactions.validation.amountPositive");
+      if (amount > 1000000) return t("transactions.validation.amountMaximum");
       return true;
     },
   },
   type: {
-    required: "O tipo de transacao e obrigatorio",
+    required: t("transactions.validation.typeRequired"),
     validate: (value: string) =>
       ["deposit", "transfer", "withdrawal"].includes(value) ||
-      "Selecione um tipo de transacao valido",
+      t("transactions.validation.typeInvalid"),
   },
   date: {
-    required: "A data e obrigatoria",
+    required: t("transactions.validation.dateRequired"),
     validate: (value: string) => {
-      if (!value) return "A data e obrigatoria";
+      if (!value) return t("transactions.validation.dateRequired");
       const date = dayjs(value);
-      if (!date.isValid()) return "Data invalida";
-      if (date.isAfter(dayjs())) return "A data nao pode ser futura";
+      if (!date.isValid()) return t("transactions.validation.dateInvalid");
+      if (date.isAfter(dayjs())) return t("transactions.validation.dateFuture");
       if (date.isBefore(dayjs().subtract(1, "year")))
-        return "Data nao pode ser anterior a 1 ano";
+        return t("transactions.validation.dateOld");
       return true;
     },
   },
-};
-
+});
 

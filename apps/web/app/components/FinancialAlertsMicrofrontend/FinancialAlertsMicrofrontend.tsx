@@ -3,10 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { mountRootParcel, type LifeCycles, type Parcel } from "single-spa";
 import styles from "./FinancialAlertsMicrofrontend.module.css";
+import { useI18n } from "@repo/i18n/react";
+import type { Locale } from "@repo/i18n";
 
 type FinancialAlertsProps = {
   name: string;
   domElement: HTMLElement;
+  locale: Locale;
 };
 
 type FinancialAlertsModule = LifeCycles<FinancialAlertsProps>;
@@ -27,7 +30,14 @@ function loadScript(source: string) {
     );
     if (existing) {
       if (existing.dataset.loaded === "true") resolve();
-      else existing.addEventListener("load", () => resolve(), { once: true });
+      else {
+        existing.addEventListener("load", () => resolve(), { once: true });
+        existing.addEventListener(
+          "error",
+          () => reject(new Error(`Could not load ${source}`)),
+          { once: true },
+        );
+      }
       return;
     }
 
@@ -38,12 +48,16 @@ function loadScript(source: string) {
       script.dataset.loaded = "true";
       resolve();
     };
-    script.onerror = () => reject(new Error(`Could not load ${source}`));
+    script.onerror = () => {
+      script.remove();
+      reject(new Error(`Could not load ${source}`));
+    };
     document.head.appendChild(script);
   });
 }
 
 export function FinancialAlertsMicrofrontend() {
+  const { locale, t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "unavailable">(
     "loading",
@@ -69,9 +83,13 @@ export function FinancialAlertsMicrofrontend() {
 
     async function mountAngularParcel() {
       try {
-        parcel = mountRootParcel(loadAngular, {
+        const lifecycles = await loadAngular();
+        if (!active) return;
+
+        parcel = mountRootParcel(lifecycles, {
           name: "financial-alerts-angular",
           domElement: mountElement,
+          locale,
         });
         await parcel.mountPromise;
         if (active) setStatus("ready");
@@ -86,7 +104,7 @@ export function FinancialAlertsMicrofrontend() {
       active = false;
       if (parcel?.getStatus() === "MOUNTED") void parcel.unmount();
     };
-  }, []);
+  }, [locale]);
 
   return (
     <section
@@ -95,14 +113,13 @@ export function FinancialAlertsMicrofrontend() {
     >
       <header className={styles.header}>
         <div>
-          <h2 id="financial-alerts-heading">Centro de Alertas Financeiros</h2>
+          <h2 id="financial-alerts-heading">{t("alerts.heading")}</h2>
         </div>
-        {status === "loading" && <span role="status">Carregando alertas…</span>}
+        {status === "loading" && <span role="status">{t("alerts.loading")}</span>}
       </header>
       {status === "unavailable" && (
         <p className={styles.fallback} role="status">
-          Os alertas estão temporariamente indisponíveis. O restante do
-          dashboard continua funcionando.
+          {t("alerts.unavailable")}
         </p>
       )}
       <div

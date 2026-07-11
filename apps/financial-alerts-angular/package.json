@@ -9,6 +9,7 @@
     "check-types": "tsc -p tsconfig.app.json --noEmit"
   },
   "dependencies": {
+    "@repo/i18n": "*",
     "@angular/animations": "^18.2.0",
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",

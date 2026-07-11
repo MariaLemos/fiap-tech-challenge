@@ -9,10 +9,9 @@ export default async function DeleteTransactionModalPage({
   const { id } = await params;
 
   return (
-    <RouteModal title="Excluir Transacao">
+    <RouteModal titleKey="transactions.delete">
       <DeleteTransaction transactionId={id} />
     </RouteModal>
   );
 }
-
 

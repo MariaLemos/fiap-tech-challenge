@@ -4,6 +4,8 @@ import { ListItemType } from "./List";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { formatCurrency } from "@repo/i18n";
+import { useI18n } from "@repo/i18n/react";
 export const ListItem = <T extends ListItemType>({
   item,
   onEdit,
@@ -13,8 +15,15 @@ export const ListItem = <T extends ListItemType>({
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
 }) => {
-  const title = item.description || item.type;
-  const subtitle = item.category ? `${item.category} - ${item.type}` : item.type;
+  const { locale, t } = useI18n();
+  const typeLabels: Record<string, string> = {
+    deposit: t("transactions.type.deposit"),
+    transfer: t("transactions.type.transfer"),
+    withdrawal: t("transactions.type.withdrawal"),
+  };
+  const typeLabel = typeLabels[item.type] ?? item.type;
+  const title = item.description || typeLabel;
+  const subtitle = item.category ? `${item.category} - ${typeLabel}` : typeLabel;
 
   return (
     <div
@@ -34,6 +43,7 @@ export const ListItem = <T extends ListItemType>({
       <div className=" justify-self-end">
         {onEdit && (
           <Button
+            aria-label={t("common.edit")}
             type="button"
             variant="icon"
             className="border-none"
@@ -44,6 +54,7 @@ export const ListItem = <T extends ListItemType>({
         )}
         {onDelete && (
           <Button
+            aria-label={t("common.delete")}
             type="button"
             variant="icon"
             className="border-none"
@@ -57,14 +68,13 @@ export const ListItem = <T extends ListItemType>({
         variant="span"
         className=" text-primary rounded-md font-medium"
       >
-        {new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }).format(item.amount)}
+        {formatCurrency(item.amount, locale)}
       </Typography>
 
       <Typography variant="span" className="text-right text-sm text-muted">
-        {dayjs(item.date).format("DD/MM HH:mm")}
+        {new Intl.DateTimeFormat(locale, {
+          day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
+        }).format(dayjs(item.date).toDate())}
       </Typography>
     </div>
   );

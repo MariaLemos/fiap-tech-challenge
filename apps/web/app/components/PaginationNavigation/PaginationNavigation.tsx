@@ -1,4 +1,5 @@
 import { Button } from "@repo/design-system";
+import { useI18n } from "@repo/i18n/react";
 
 type PaginationNavigationProps = {
   currentPage: number;
@@ -14,9 +15,10 @@ export const PaginationNavigation = ({
   totalPages,
   onPreviousPage,
   onNextPage,
-  previousLabel = "Anterior",
-  nextLabel = "Proxima",
+  previousLabel,
+  nextLabel,
 }: PaginationNavigationProps) => {
+  const { t } = useI18n();
   if (totalPages <= 1) {
     return null;
   }
@@ -24,7 +26,7 @@ export const PaginationNavigation = ({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <span className="text-sm text-muted">
-        Pagina {currentPage} de {totalPages}
+        {t("transactions.pagination.page", { current: currentPage, total: totalPages })}
       </span>
       <div className="flex gap-2">
         <Button
@@ -33,7 +35,7 @@ export const PaginationNavigation = ({
           disabled={currentPage === 1}
           onClick={onPreviousPage}
         >
-          {previousLabel}
+          {previousLabel ?? t("transactions.pagination.previous")}
         </Button>
         <Button
           type="button"
@@ -41,11 +43,10 @@ export const PaginationNavigation = ({
           disabled={currentPage === totalPages}
           onClick={onNextPage}
         >
-          {nextLabel}
+          {nextLabel ?? t("transactions.pagination.next")}
         </Button>
       </div>
     </div>
   );
 };
-
 

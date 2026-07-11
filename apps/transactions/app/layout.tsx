@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import { Header, ThemeProvider } from "@repo/design-system";
+import { localeCookieName, resolveLocale } from "@repo/i18n";
+import { I18nProvider } from "@repo/i18n/react";
 import "./globals.css";
 import "./transactions/transactions.css";
 import { UserInfoProvider } from "./hooks/UserInfo.provider";
@@ -16,16 +18,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const initialTheme = await getInitialTheme();
+  const locale = resolveLocale((await cookies()).get(localeCookieName)?.value);
 
   return (
-    <html lang="pt-BR" data-theme={initialTheme} suppressHydrationWarning>
+    <html lang={locale} data-theme={initialTheme} suppressHydrationWarning>
       <body>
-        <ThemeProvider defaultTheme={initialTheme}>
-          <UserInfoProvider>
-            <Header userName="Maria Lemos" />
-            {children}
-          </UserInfoProvider>
-        </ThemeProvider>
+        <I18nProvider locale={locale}>
+          <ThemeProvider defaultTheme={initialTheme}>
+            <UserInfoProvider>
+              <Header userName="Maria Lemos" />
+              {children}
+            </UserInfoProvider>
+          </ThemeProvider>
+        </I18nProvider>
       </body>
     </html>
   );

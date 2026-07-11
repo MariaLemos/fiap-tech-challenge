@@ -136,7 +136,9 @@ interface UserInfoProviderProps {
 
 const TRANSACTIONS_STORAGE_KEY = "transactions";
 
-const parseStoredTransactions = (value: string | null): Transaction[] | null => {
+const parseStoredTransactions = (
+  value: string | null,
+): Transaction[] | null => {
   if (!value) {
     return null;
   }

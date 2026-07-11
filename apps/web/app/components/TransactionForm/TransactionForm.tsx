@@ -2,12 +2,13 @@ import { Button, InputWrapper } from "@repo/design-system";
 import type { Transaction } from "../../hooks/UserInfo.provider";
 import { FormProvider } from "react-hook-form";
 import {
-  transactionTypeOptions,
-  validationRules,
+  getTransactionTypeOptions,
+  getValidationRules,
 } from "./TransactionForm.config";
 import { TransactionAttachmentField } from "./TransactionAttachmentField";
 import { useTransactionForm } from "./hooks/useTransactionForm";
 import type { TransactionFormData } from "./TransactionForm.types";
+import { useI18n } from "@repo/i18n/react";
 
 export const TransactionForm = ({
   transaction,
@@ -18,6 +19,9 @@ export const TransactionForm = ({
   initialValues?: Partial<TransactionFormData>;
   onSubmitCallback?: () => void;
 }) => {
+  const { t } = useI18n();
+  const transactionTypeOptions = getTransactionTypeOptions(t);
+  const validationRules = getValidationRules(t);
   const {
     attachment,
     attachmentInputRef,
@@ -42,7 +46,7 @@ export const TransactionForm = ({
         noValidate
       >
         <InputWrapper
-          label="Data"
+          label={t("common.date")}
           name="date"
           type="date"
           className="w-full"
@@ -51,17 +55,17 @@ export const TransactionForm = ({
         />
 
         <InputWrapper
-          label="Descricao"
+          label={t("common.description")}
           name="description"
           type="text"
           className="w-full"
           required
           rules={validationRules.description}
-          placeholder="Ex: Salario"
+          placeholder={t("transactions.form.descriptionPlaceholder")}
         />
 
         <InputWrapper
-          label="Tipo"
+          label={t("common.type")}
           name="type"
           type="select"
           className="w-full"
@@ -71,24 +75,24 @@ export const TransactionForm = ({
         />
 
         <InputWrapper
-          label="Categoria"
+          label={t("common.category")}
           name="category"
           type="text"
           className="w-full"
           required
           rules={validationRules.category}
-          placeholder="Ex: Alimentacao"
+          placeholder={t("transactions.form.categoryPlaceholder")}
         />
 
         <InputWrapper
-          label="Valor"
+          label={t("common.value")}
           name="amount"
           type="number"
           mask="money"
           className="w-full"
           required
           rules={validationRules.amount}
-          placeholder="R$ 0,00"
+          placeholder={t("transactions.form.amountPlaceholder")}
         />
 
         <TransactionAttachmentField
@@ -111,5 +115,4 @@ export const TransactionForm = ({
     </FormProvider>
   );
 };
-
 

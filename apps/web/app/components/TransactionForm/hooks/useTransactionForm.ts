@@ -9,6 +9,7 @@ import {
 import type { TransactionFormData } from "../TransactionForm.types";
 import { useTransactionCategorySuggestion } from "./useTransactionCategorySuggestion";
 import { useTransactionFormSubmit } from "./useTransactionFormSubmit";
+import { useI18n } from "@repo/i18n/react";
 
 export const useTransactionForm = ({
   transaction,
@@ -19,6 +20,7 @@ export const useTransactionForm = ({
   initialValues?: Partial<TransactionFormData>;
   onSubmitCallback?: () => void;
 }) => {
+  const { t } = useI18n();
   const attachmentInputRef = useRef<HTMLInputElement | null>(null);
   const defaultValues = useMemo(
     () => getTransactionFormDefaultValues({ transaction, initialValues }),
@@ -85,11 +87,11 @@ export const useTransactionForm = ({
 
   const submitLabel = useMemo(() => {
     if (isSubmitting) {
-      return "Processando...";
+      return t("actions.processing");
     }
 
-    return transaction ? "Atualizar" : "Adicionar";
-  }, [isSubmitting, transaction]);
+    return transaction ? t("actions.update") : t("actions.add");
+  }, [isSubmitting, t, transaction]);
 
   const submitHandler = useMemo(
     () => handleSubmit(onSubmit),
@@ -108,5 +110,4 @@ export const useTransactionForm = ({
     submitLabel,
   };
 };
-
 

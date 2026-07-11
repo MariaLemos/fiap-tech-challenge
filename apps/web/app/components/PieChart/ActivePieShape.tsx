@@ -1,5 +1,7 @@
 import { Sector } from "recharts";
 import type { PieSectorDataItem } from "recharts";
+import { formatCurrency } from "@repo/i18n";
+import { useI18n } from "@repo/i18n/react";
 
 const RADIAN = Math.PI / 180;
 
@@ -16,6 +18,7 @@ export function ActivePieShape({
   percent,
   value,
 }: PieSectorDataItem) {
+  const { locale } = useI18n();
   const sin = Math.sin(-RADIAN * (midAngle ?? 0));
   const cos = Math.cos(-RADIAN * (midAngle ?? 0));
   const sx = (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
@@ -62,7 +65,7 @@ export function ActivePieShape({
         textAnchor={textAnchor}
         fill="#333"
       >
-        {`Valor ${value}`}
+        {formatCurrency(Number(value), locale)}
       </text>
       <text
         x={ex + labelOffset}

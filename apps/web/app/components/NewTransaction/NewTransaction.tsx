@@ -1,5 +1,6 @@
 import { SectionBox } from "@repo/design-system";
 import { TransactionForm } from "../TransactionForm/TransactionForm";
+import { useI18n } from "@repo/i18n/react";
 
 type TransactionType = "deposit" | "transfer" | "withdrawal";
 
@@ -13,9 +14,10 @@ export const NewTransaction = ({
   };
   onSubmitCallback?: () => void;
 }) => {
+  const { t } = useI18n();
   return (
     <SectionBox
-      title="Nova transacao"
+      title={t("transactions.new")}
       variant="bg"
       className="flex flex-col flex-wrap gap-4 bg-accent new-transaction"
     >
@@ -26,5 +28,4 @@ export const NewTransaction = ({
     </SectionBox>
   );
 };
-
 

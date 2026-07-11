@@ -4,6 +4,7 @@ import {
   hasActiveFilters,
 } from "./Filters.helpers";
 import type { FilterDefinition, FilterValues } from "./Filters.types";
+import { useI18n } from "@repo/i18n/react";
 
 type FiltersProps<TField extends string> = {
   definitions: FilterDefinition<TField>[];
@@ -16,8 +17,9 @@ export const Filters = <TField extends string>({
   definitions,
   values,
   onChangeFilters,
-  clearLabel = "Limpar",
+  clearLabel,
 }: FiltersProps<TField>) => {
+  const { t } = useI18n();
   const shouldShowClearButton = hasActiveFilters({ definitions, values });
 
   const changeFilter = (field: TField, value: string) => {
@@ -77,11 +79,10 @@ export const Filters = <TField extends string>({
           aria-hidden={!shouldShowClearButton}
           onClick={clearFilters}
         >
-          {clearLabel}
+          {clearLabel ?? t("transactions.filters.clear")}
         </Button>
       </div>
     </div>
   );
 };
-
 

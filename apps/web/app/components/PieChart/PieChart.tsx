@@ -1,5 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { formatCurrency } from "@repo/utils";
+import { formatCurrency } from "@repo/i18n";
+import { useI18n } from "@repo/i18n/react";
 import { ActivePieShape } from "./ActivePieShape";
 import {
   PIE_CHART_COLORS,
@@ -14,6 +15,7 @@ export default function PieChartComponent({
   isAnimationActive = true,
   defaultIndex = undefined,
 }: PieChartComponentProps) {
+  const { locale } = useI18n();
   return (
     <div className="h-[320px] w-full min-w-0">
       <ResponsiveContainer width="100%" height="100%">
@@ -38,7 +40,7 @@ export default function PieChartComponent({
           </Pie>
           <Tooltip
             defaultIndex={defaultIndex}
-            formatter={(value) => formatCurrency(Number(value))}
+            formatter={(value) => formatCurrency(Number(value), locale)}
           />
         </PieChart>
       </ResponsiveContainer>

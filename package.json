@@ -4,7 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "dev:web": "yarn workspace web dev",
+    "dev:web": "turbo run dev --filter=web --filter=financial-alerts-angular",
     "build:web": "yarn workspace web build",
     "dev:financial-alerts": "yarn workspace financial-alerts-angular dev",
     "build:financial-alerts": "yarn workspace financial-alerts-angular build",

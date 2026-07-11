@@ -13,6 +13,7 @@ import { RouteModal } from "../RouteModal/RouteModal";
 import { getStatementFilterDefinitions } from "./Statement.constants";
 import { useStatementTransactions } from "./hooks/useStatementTransactions";
 import type { StatementFilterField } from "./Statement.types";
+import { useI18n } from "@repo/i18n/react";
 
 type StatementModal =
   | { type: "edit"; transactionId: string }
@@ -24,6 +25,7 @@ export const Statement = ({
   showAddButton?: boolean;
 }) => {
   const router = useRouter();
+  const { t } = useI18n();
   const [modal, setModal] = useState<StatementModal | null>(null);
   const { transactions } = useUserInfo();
   const {
@@ -38,14 +40,14 @@ export const Statement = ({
     nextPage,
   } = useStatementTransactions(transactions);
   const filterDefinitions = useMemo(
-    () => getStatementFilterDefinitions(categories),
-    [categories],
+    () => getStatementFilterDefinitions(categories, t),
+    [categories, t],
   );
 
   return (
     <>
       <SectionBox
-        title="Transacoes"
+        title={t("transactions.title")}
         headerAction={
           showAddButton && (
             <Button
@@ -54,7 +56,7 @@ export const Statement = ({
               className=""
               onClick={() => router.push("/transactions/new")}
             >
-              Nova Transacao
+              {t("transactions.new")}
             </Button>
           )
         }
@@ -69,7 +71,7 @@ export const Statement = ({
 
         {filteredTransactions.length === 0 ? (
           <div className="rounded-lg border border-dashed border-primary p-8 text-center text-muted">
-            Nenhum resultado encontrado.
+            {t("transactions.noResults")}
           </div>
         ) : (
           <>
@@ -95,7 +97,7 @@ export const Statement = ({
       </SectionBox>
 
       {modal?.type === "edit" && (
-        <RouteModal title="Editar Transacao" onClose={() => setModal(null)}>
+        <RouteModal title={t("transactions.edit")} onClose={() => setModal(null)}>
           <EditTransaction
             transactionId={modal.transactionId}
             onSubmitCallback={() => setModal(null)}
@@ -104,7 +106,7 @@ export const Statement = ({
       )}
 
       {modal?.type === "delete" && (
-        <RouteModal title="Excluir Transacao" onClose={() => setModal(null)}>
+        <RouteModal title={t("transactions.delete")} onClose={() => setModal(null)}>
           <DeleteTransaction
             transactionId={modal.transactionId}
             onClose={() => setModal(null)}
@@ -114,5 +116,4 @@ export const Statement = ({
     </>
   );
 };
-
 

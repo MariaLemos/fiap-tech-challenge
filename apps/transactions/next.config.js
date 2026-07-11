@@ -6,7 +6,7 @@ const nextConfig = {
     process.env.TRANSACTIONS_ASSET_PREFIX === undefined
       ? "/transactions-static"
       : process.env.TRANSACTIONS_ASSET_PREFIX,
-  transpilePackages: ["@repo/contracts", "@repo/design-system", "@repo/utils"],
+  transpilePackages: ["@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
 };
 
 export default nextConfig;

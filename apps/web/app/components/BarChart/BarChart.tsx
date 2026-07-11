@@ -17,11 +17,13 @@ export type BarChartItem = {
 
 type SimpleBarChartProps = {
   data: BarChartItem;
+  labels?: Record<string, string>;
   maxWidthClassName?: string;
 };
 
 const SimpleBarChart = ({
   data,
+  labels = {},
   maxWidthClassName = "max-w-[700px]",
 }: SimpleBarChartProps) => {
   const bars = data ? Object.keys(data).filter((key) => key !== "name") : [];
@@ -38,11 +40,13 @@ const SimpleBarChart = ({
       <Legend />
       <Bar
         dataKey="expenses"
+        name={labels.expenses}
         fill={staticColors.red[500]}
         radius={[10, 10, 0, 0]}
       />
       <Bar
         dataKey="receipts"
+        name={labels.receipts}
         fill={staticColors.green[500]}
         radius={[10, 10, 0, 0]}
       />

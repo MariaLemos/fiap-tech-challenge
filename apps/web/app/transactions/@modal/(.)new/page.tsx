@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RouteModal } from "../../../components/RouteModal/RouteModal";
 import { TransactionForm } from "../../../components/TransactionForm/TransactionForm";
+import { useI18n } from "@repo/i18n/react";
 
 type TransactionType = "deposit" | "transfer" | "withdrawal";
 
@@ -32,6 +33,7 @@ const getInitialAmount = (amount: string | null): number | undefined => {
 
 function NewTransactionModalContent() {
   const router = useRouter();
+  const { t } = useI18n();
   const searchParams = useSearchParams();
 
   const initialValues = {
@@ -40,7 +42,7 @@ function NewTransactionModalContent() {
   };
 
   return (
-    <RouteModal title="Nova Transacao">
+    <RouteModal title={t("transactions.new")}>
       <TransactionForm
         initialValues={initialValues}
         onSubmitCallback={() => router.back()}
@@ -56,5 +58,4 @@ export default function NewTransactionModalPage() {
     </Suspense>
   );
 }
-
 

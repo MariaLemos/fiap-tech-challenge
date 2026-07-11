@@ -9,10 +9,9 @@ export default async function EditTransactionModalPage({
   const { id } = await params;
 
   return (
-    <RouteModal title="Editar Transacao">
+    <RouteModal titleKey="transactions.edit">
       <EditTransaction transactionId={id} />
     </RouteModal>
   );
 }
-
 

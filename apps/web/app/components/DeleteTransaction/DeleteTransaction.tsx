@@ -3,6 +3,7 @@
 import { DialogModal } from "@repo/design-system";
 import { useRouter } from "next/navigation";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
+import { useI18n } from "@repo/i18n/react";
 
 export const DeleteTransaction = ({
   onClose,
@@ -12,6 +13,7 @@ export const DeleteTransaction = ({
   transactionId: string;
 }) => {
   const router = useRouter();
+  const { t } = useI18n();
   const handleClose = onClose || (() => router.back());
   const { deleteTransaction, isReady, transactions } = useUserInfo();
   const transaction = transactions.find(({ id }) => id === transactionId);
@@ -23,7 +25,7 @@ export const DeleteTransaction = ({
   if (!transaction) {
     return (
       <div className="rounded-lg border border-dashed border-primary p-6 text-center text-muted">
-        Transacao não encontrada.
+        {t("transactions.notFound")}
       </div>
     );
   }
@@ -35,15 +37,14 @@ export const DeleteTransaction = ({
 
   return (
     <DialogModal
-      cancelLabel="Cancelar"
-      confirmLabel="Excluir"
+      cancelLabel={t("actions.cancel")}
+      confirmLabel={t("actions.delete")}
       onCancel={handleClose}
       onConfirm={confirmDelete}
-      text={`Tem certeza que deseja excluir a transacao ${
-        transaction.description || transaction.type
-      }?`}
+      text={t("transactions.deleteConfirmation", {
+        description: transaction.description || transaction.type,
+      })}
     />
   );
 };
-
 

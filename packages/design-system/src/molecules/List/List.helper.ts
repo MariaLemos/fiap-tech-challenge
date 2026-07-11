@@ -2,15 +2,16 @@
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { ListItemType } from "./List";
+import type { Locale } from "@repo/i18n";
 
-export const groupByMonth = <T extends ListItemType>(items: T[]) => {
+export const groupByMonth = <T extends ListItemType>(items: T[], locale: Locale) => {
   const groups = new Map<
     string,
     { monthName: string; items: T[]; date: dayjs.Dayjs }
   >();
   
   items.forEach(item => {
-    const date = dayjs(item.date).locale("pt-br");
+    const date = dayjs(item.date).locale(locale === "pt-BR" ? "pt-br" : "en");
     const monthKey = date.format("YYYY-MM");
     
     if (!groups.has(monthKey)) {

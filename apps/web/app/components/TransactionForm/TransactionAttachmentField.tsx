@@ -1,6 +1,7 @@
 import { Button } from "@repo/design-system";
 import type { ChangeEvent, RefObject } from "react";
 import type { TransactionAttachment } from "./TransactionForm.types";
+import { useI18n } from "@repo/i18n/react";
 
 export const TransactionAttachmentField = ({
   attachment,
@@ -15,10 +16,11 @@ export const TransactionAttachmentField = ({
   onAttachmentChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onAttachmentRemove: () => void;
 }) => {
+  const { t } = useI18n();
   return (
     <div className="col-span-2 flex flex-col gap-2">
       <label className="flex flex-col gap-1">
-        <span className="text-sm font-semibold">Anexo</span>
+        <span className="text-sm font-semibold">{t("common.attachment")}</span>
         <input
           ref={attachmentInputRef}
           type="file"
@@ -43,12 +45,11 @@ export const TransactionAttachmentField = ({
             className="shrink-0"
             onClick={onAttachmentRemove}
           >
-            Remover
+            {t("actions.remove")}
           </Button>
         </div>
       )}
     </div>
   );
 };
-
 
