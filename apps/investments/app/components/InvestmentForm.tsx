@@ -4,7 +4,15 @@ import { Button, InputWrapper, SectionBox } from "@repo/design-system";
 import { useI18n } from "@repo/i18n/react";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
-import { useInvestments } from "../hooks/Investments.provider";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  investmentAdded,
+  investmentUpdated,
+} from "../store/investments/investmentsSlice";
+import {
+  selectGoals,
+  selectInvestmentById,
+} from "../store/investments/investmentsSelectors";
 
 type InvestmentFormData = {
   goalId: string;
@@ -21,10 +29,13 @@ export function InvestmentForm({
   investmentId?: string;
   defaultGoalId?: string;
 }) {
-  const { goals, investments, saveInvestment } = useInvestments();
+  const dispatch = useAppDispatch();
+  const goals = useAppSelector(selectGoals);
   const { t } = useI18n();
   const router = useRouter();
-  const investment = investments.find((item) => item.id === investmentId);
+  const investment = useAppSelector((state) =>
+    investmentId ? selectInvestmentById(state, investmentId) : undefined,
+  );
   const form = useForm<InvestmentFormData>({
     mode: "onChange",
     defaultValues: {
@@ -40,16 +51,18 @@ export function InvestmentForm({
   } = form;
   const submit = form.handleSubmit(async (data) => {
     const goalId = data.goalId || null;
-    saveInvestment(
-      {
-        goalId,
-        name: data.name,
-        assetClass: data.assetClass,
-        initialAmount: Number(data.initialAmount),
-        returnRate: Number(data.returnRate),
-      },
-      investmentId,
-    );
+    const payload = {
+      goalId,
+      name: data.name,
+      assetClass: data.assetClass,
+      initialAmount: Number(data.initialAmount),
+      returnRate: Number(data.returnRate),
+    };
+    if (investmentId) {
+      dispatch(investmentUpdated({ id: investmentId, input: payload }));
+    } else {
+      dispatch(investmentAdded(payload));
+    }
     router.push(goalId ? `/investments/goals/${goalId}` : "/investments");
   });
   const textRules = {

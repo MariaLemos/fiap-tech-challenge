@@ -4,7 +4,7 @@ import { localeCookieName, resolveLocale } from "@repo/i18n";
 import { I18nProvider } from "@repo/i18n/react";
 import "./globals.css";
 import "./investments/investments.css";
-import { InvestmentsProvider } from "./hooks/Investments.provider";
+import { StoreProvider } from "./store/StoreProvider";
 
 const getInitialTheme = async () => {
   const theme = (await cookies()).get("theme")?.value;
@@ -25,10 +25,10 @@ export default async function RootLayout({
       <body>
         <I18nProvider locale={locale}>
           <ThemeProvider defaultTheme={initialTheme}>
-            <InvestmentsProvider>
+            <StoreProvider>
               <Header userName="Maria Lemos" />
               {children}
-            </InvestmentsProvider>
+            </StoreProvider>
           </ThemeProvider>
         </I18nProvider>
       </body>

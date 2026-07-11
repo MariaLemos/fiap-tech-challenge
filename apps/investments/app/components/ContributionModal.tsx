@@ -3,7 +3,8 @@
 import { Button, InputWrapper, SectionBox } from "@repo/design-system";
 import { useI18n } from "@repo/i18n/react";
 import { FormProvider, useForm } from "react-hook-form";
-import { useInvestments } from "../hooks/Investments.provider";
+import { useAppDispatch } from "../store/hooks";
+import { contributionAdded } from "../store/investments/investmentsSlice";
 
 type ContributionFormData = { amount: string | number; date: string };
 
@@ -14,7 +15,7 @@ export function ContributionModal({
   investmentId: string;
   onClose: () => void;
 }) {
-  const { addContribution } = useInvestments();
+  const dispatch = useAppDispatch();
   const { t } = useI18n();
   const form = useForm<ContributionFormData>({
     mode: "onChange",
@@ -25,7 +26,13 @@ export function ContributionModal({
     handleSubmit,
   } = form;
   const submit = handleSubmit(async (data) => {
-    addContribution(investmentId, Number(data.amount), data.date);
+    dispatch(
+      contributionAdded({
+        investmentId,
+        amount: Number(data.amount),
+        date: data.date,
+      }),
+    );
     onClose();
   });
   return (
