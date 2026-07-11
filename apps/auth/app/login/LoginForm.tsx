@@ -8,8 +8,10 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useI18n } from "@repo/i18n/react";
 import {
   getDefaultReturnTo,
+  logClientDebug,
   logRuntimeEnvHealth,
   normalizeReturnTo,
+  readPersistedDebugLogs,
   resolveRedirectDestination,
 } from "./loginRedirect";
 
@@ -38,6 +40,40 @@ export function LoginForm() {
 
   useEffect(() => {
     logRuntimeEnvHealth();
+
+    const persistedLogs = readPersistedDebugLogs();
+    if (persistedLogs.length > 0) {
+      console.info("[auth-login-debug] persisted.logs", {
+        count: persistedLogs.length,
+        latest: persistedLogs[persistedLogs.length - 1],
+      });
+    }
+
+    const onError = (event: ErrorEvent) => {
+      logClientDebug("window.error", {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+      });
+    };
+
+    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+      logClientDebug("window.unhandledrejection", {
+        reason:
+          typeof event.reason === "string"
+            ? event.reason
+            : JSON.stringify(event.reason ?? null),
+      });
+    };
+
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onUnhandledRejection);
+
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onUnhandledRejection);
+    };
   }, []);
 
   async function onSubmit(values: { email: string; password: string }) {
@@ -46,7 +82,7 @@ export function LoginForm() {
       setError(null);
       setSuccessMessage(null);
 
-      console.info("[auth-login-debug] onSubmit.start", {
+      logClientDebug("onSubmit.start", {
         email: values.email,
         returnTo,
       });
@@ -58,7 +94,7 @@ export function LoginForm() {
         redirect: false,
       });
 
-      console.info("[auth-login-debug] onSubmit.signInResponse", {
+      logClientDebug("onSubmit.signInResponse", {
         ok: response?.ok,
         error: response?.error,
         status: response?.status,
@@ -67,7 +103,7 @@ export function LoginForm() {
 
       if (!response || !response.ok || response.error) {
         setError(t("auth.login.error.invalidCredentials"));
-        console.info("[auth-login-debug] onSubmit.invalidCredentials", {
+        logClientDebug("onSubmit.invalidCredentials", {
           ok: response?.ok,
           error: response?.error,
         });
@@ -75,13 +111,13 @@ export function LoginForm() {
       }
 
       const destination = resolveRedirectDestination(returnTo, response.url);
-      console.info("[auth-login-debug] onSubmit.redirectDestination", {
+      logClientDebug("onSubmit.redirectDestination", {
         destination,
         currentUrl: window.location.href,
       });
       setSuccessMessage(t("auth.login.success.redirecting"));
       setTimeout(() => {
-        console.info("[auth-login-debug] onSubmit.windowAssign", {
+        logClientDebug("onSubmit.windowAssign", {
           destination,
         });
         window.location.assign(destination);
@@ -90,7 +126,7 @@ export function LoginForm() {
       setTimeout(() => {
         if (window.location.pathname.startsWith("/login")) {
           const fallback = getDefaultReturnTo();
-          console.info("[auth-login-debug] onSubmit.windowReplaceFallback", {
+          logClientDebug("onSubmit.windowReplaceFallback", {
             fallback,
             pathname: window.location.pathname,
           });
@@ -99,7 +135,7 @@ export function LoginForm() {
       }, 1800);
     } catch {
       setError(t("auth.login.error.unexpected"));
-      console.info("[auth-login-debug] onSubmit.exception");
+      logClientDebug("onSubmit.exception");
     } finally {
       setLoading(false);
     }

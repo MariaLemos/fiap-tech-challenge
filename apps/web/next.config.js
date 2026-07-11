@@ -7,8 +7,17 @@ const nextConfig = {
   async rewrites() {
     const investmentsOrigin =
       process.env.INVESTMENTS_ORIGIN ?? "http://localhost:3001";
+    const authOrigin = process.env.AUTH_ORIGIN ?? "http://localhost:3002";
 
     return [
+      {
+        source: "/auth",
+        destination: `${authOrigin}/`,
+      },
+      {
+        source: "/auth/:path*",
+        destination: `${authOrigin}/:path*`,
+      },
       {
         source: "/investments-static/:path*",
         destination: `${investmentsOrigin}/investments-static/:path*`,

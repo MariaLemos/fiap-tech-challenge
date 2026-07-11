@@ -34,7 +34,12 @@ function buildLoginRedirect(request: NextRequest) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/login" || pathname === "/logout") {
+  if (
+    pathname === "/login" ||
+    pathname === "/logout" ||
+    pathname === "/auth" ||
+    pathname.startsWith("/auth/")
+  ) {
     return NextResponse.next();
   }
 
