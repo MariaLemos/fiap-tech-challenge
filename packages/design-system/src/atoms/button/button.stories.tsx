@@ -22,6 +22,9 @@ const meta: Meta<typeof Button> = {
     disabled: {
       control: { type: "boolean" },
     },
+    loading: {
+      control: { type: "boolean" },
+    },
   },
 };
 
@@ -54,6 +57,14 @@ export const PrimaryDisabled: Story = {
     children: "Botão Primário Disabled",
     variant: "primary",
     disabled: true,
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    children: "Confirmar",
+    variant: "primary",
+    loading: true,
   },
 };
 

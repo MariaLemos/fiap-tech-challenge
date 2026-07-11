@@ -6,7 +6,7 @@
     "nav alerts alerts"
     "nav barchart piechart";
   grid-template-columns:20% 1fr 30%;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr auto;
   justify-items: center;
   font-synthesis: none;
 }
@@ -46,4 +46,9 @@
 .new-transaction{
   grid-area: new-transaction;
 
+}
+.financial-alerts-microfrontend {
+  grid-area: alerts;
+  width: min(100%, 960px);
+  padding: 0 1rem 1rem;
 }

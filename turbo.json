@@ -1,6 +1,21 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
-  "globalEnv": ["TRANSACTIONS_ZONE_ORIGIN", "TRANSACTIONS_ASSET_PREFIX"],
+  "globalEnv": [
+    "NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN",
+    "NEXT_PUBLIC_AUTH_ORIGIN",
+    "INVESTMENTS_ORIGIN",
+    "INVESTMENTS_ASSET_PREFIX",
+    "AUTH_SECRET",
+    "AUTH_COOKIE_DOMAIN",
+    "AUTH_COOKIE_NAME",
+    "AUTH_ALLOWED_ORIGINS",
+    "AUTH_RATE_LIMIT_WINDOW_MINUTES",
+    "AUTH_RATE_LIMIT_MAX_ATTEMPTS",
+    "AUTH_MOCK_USERS_JSON",
+    "AUTH_MOCK_USER_EMAIL",
+    "AUTH_MOCK_USER_NAME",
+    "AUTH_MOCK_USER_PASSWORD_HASH"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

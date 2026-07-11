@@ -1,0 +1,5 @@
+@import "@repo/design-system/global.css";
+
+body {
+  min-height: 100vh;
+}

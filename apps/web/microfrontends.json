@@ -9,17 +9,19 @@
         "fallback": "fiap-tech-challenge-web.vercel.app"
       }
     },
-    "fiap-tech-challenge-transactions": {
-      "packageName": "transactions",
+    "fiap-tech-challenge-investments": {
+      "packageName": "investments",
+      "assetPrefix": "investments-static",
       "development": {
-        "local": 3001
+        "local": 3001,
+        "fallback": "fiap-tech-challenge-investments.vercel.app"
       },
       "routing": [
         {
           "paths": [
-            "/transactions",
-            "/transactions/:path*",
-            "/transactions-static/:path*"
+            "/investments",
+            "/investments/:path*",
+            "/investments-static/:path*"
           ]
         }
       ]

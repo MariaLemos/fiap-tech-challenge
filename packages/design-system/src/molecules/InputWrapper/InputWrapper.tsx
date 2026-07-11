@@ -7,7 +7,7 @@ interface InputWrapperProps {
   className?: string;
   label: string;
   name: string;
-  type?: "select" | "text" | "number" | "email" | "date";
+  type?: "select" | "text" | "password" | "number" | "email" | "date";
   options?: { label: string; value: string }[];
   mask?: string;
   required?: boolean;

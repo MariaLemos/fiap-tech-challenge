@@ -1,11 +1,12 @@
 "use client";
 
-import { SectionBox } from "@repo/design-system";
+import { PieChartComponent, SectionBox } from "@repo/design-system";
 import { groupTransactionsByCategory } from "@repo/utils";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
-import PieChartComponent from "../PieChart/PieChart";
+import { useI18n } from "@repo/i18n/react";
 export const TransactionsPieChart = () => {
   const { transactions } = useUserInfo();
+  const { t } = useI18n();
   const expenses = transactions.filter(
     (transaction) => transaction.type === "withdrawal",
   );
@@ -17,7 +18,7 @@ export const TransactionsPieChart = () => {
 
   return (
     <SectionBox
-      title="Categorias de despesas"
+      title={t("charts.expenseCategories")}
       className="piechart h-[calc(100vh-6rem)] overflow-y-scroll gap-4"
       variant="colored"
     >

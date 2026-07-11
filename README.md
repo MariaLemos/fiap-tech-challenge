@@ -4,6 +4,35 @@ Monorepo Turborepo com uma aplicação financeira em Next.js, organizada para ev
 
 O projeto ainda usa dados mockados e estado local. A separação atual prioriza a estrutura: uma app principal para dashboard e uma app separada para a área de transações.
 
+## Autenticacao unificada (SSO)
+
+O monorepo agora possui uma autoridade central de autenticacao em `apps/auth`, com **Auth.js / NextAuth.js** e login por credenciais.
+
+### Apps protegidos
+
+- `apps/web`
+- `apps/investments`
+- `apps/financial-alerts-angular` (protecao no host e verificacao no proprio microfrontend)
+
+### Fluxo
+
+- usuario sem sessao e redirecionado para `apps/auth/login`
+- autentica por credenciais
+- recebe sessao JWT (cookie compartilhavel entre apps)
+- logout global via `apps/auth/logout`
+
+### Configuracao de ambiente
+
+Copie `.env.example` para `.env` e ajuste os valores.
+
+Para a senha mock, informe apenas hash bcrypt em `AUTH_MOCK_USER_PASSWORD_HASH`.
+
+Exemplo para gerar hash localmente:
+
+```sh
+node -e "console.log(require('bcryptjs').hashSync('290596', 10))"
+```
+
 ## Tech Challenge
 
 Este projeto foi desenvolvido como parte do **Tech Challenge da Fase 01** da Pós-graduação da **FIAP**.
@@ -102,10 +131,7 @@ Os workspaces são definidos no `package.json` da raiz:
 
 ```json
 {
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  "workspaces": ["apps/*", "packages/*"]
 }
 ```
 

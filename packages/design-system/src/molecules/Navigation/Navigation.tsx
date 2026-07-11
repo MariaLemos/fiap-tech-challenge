@@ -6,17 +6,31 @@ import { ThemeToggle } from "../../atoms";
 import { SectionBox } from "../SectionBox/SectionBox";
 import Link from "next/link";
 import "./Navigation.css";
+import { useI18n } from "@repo/i18n/react";
+import { LanguageSelector } from "../LanguageSelector/LanguageSelector";
 
 const pagesList = [
-  { name: "Home", path: "/" },
-  { name: "Transações", path: "/transactions", zone: "transactions" },
-  { name: "Investimentos", path: "/investments" },
-  { name: "Outros serviços", path: "/services" },
-];
+  { label: "navigation.home", path: "/" },
+  {
+    label: "navigation.transactions",
+    path: "/transactions",
+    zone: "transactions",
+  },
+  {
+    label: "navigation.investments",
+    path: "/investments",
+    zone: "investments",
+  },
+  { label: "navigation.services", path: "/services" },
+] as const;
 
 const getZoneFromPath = (path: string) => {
   if (path.startsWith("/transactions")) {
     return "transactions";
+  }
+
+  if (path.startsWith("/investments")) {
+    return "investments";
   }
 
   return "shell";
@@ -30,6 +44,7 @@ export const Navigation = ({
   children?: React.ReactNode;
 }) => {
   const pathname = usePathname();
+  const { t } = useI18n();
 
   return (
     <SectionBox
@@ -56,10 +71,10 @@ export const Navigation = ({
               <a
                 className={className}
                 href={page.path}
-                key={page.name}
+                key={page.label}
                 data-active={isActive}
               >
-                {page.name}
+                {t(page.label)}
               </a>
             );
           }
@@ -68,14 +83,15 @@ export const Navigation = ({
             <Link
               className={className}
               href={page.path}
-              key={page.name}
+              key={page.label}
               data-active={isActive}
             >
-              {page.name}
+              {t(page.label)}
             </Link>
           );
         })}
       </nav>
+      <LanguageSelector />
       <ThemeToggle />
     </SectionBox>
   );

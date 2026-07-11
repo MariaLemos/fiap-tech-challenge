@@ -11,22 +11,25 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@repo/auth": "*",
     "@recharts/devtools": "^0.0.14",
     "@repo/contracts": "*",
     "@repo/design-system": "*",
+    "@repo/i18n": "*",
     "@repo/utils": "*",
+    "@vercel/microfrontends": "2.3.6",
     "dayjs": "^1.11.20",
     "next": "16.2.0",
+    "next-auth": "^5.0.0-beta.30",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.74.0",
-    "recharts": "^3.9.2",
+    "single-spa": "^6.0.3",
     "use-mask-input": "^3.10.0"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
-    "@types/next": "^9.0.0",
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",

@@ -1,11 +1,12 @@
 "use client";
 
-import { SectionBox, List } from "@repo/design-system";
+import { SectionBox, SimpleBarChart } from "@repo/design-system";
 import { Transaction, useUserInfo } from "../../hooks/UserInfo.provider";
-import SimpleBarChart from "../BarChart/BarChart";
+import { useI18n } from "@repo/i18n/react";
 
 export const TransactionsBarChart = () => {
   const { transactions } = useUserInfo();
+  const { t } = useI18n();
   const expenses = transactions
     .filter((transaction: Transaction) => transaction.type === "withdrawal")
     .reduce((acc, transaction) => acc + transaction.amount, 0);
@@ -16,11 +17,17 @@ export const TransactionsBarChart = () => {
 
   return (
     <SectionBox
-      title="Despesas x receitas"
+      title={t("charts.expensesVsIncome")}
       className="barchart h-[calc(100vh-6rem)] overflow-y-scroll gap-4"
       variant="colored"
     >
-      <SimpleBarChart data={{ expenses, receipts }} />
+      <SimpleBarChart
+        data={{ expenses, receipts }}
+        labels={{
+          expenses: t("charts.expenses"),
+          receipts: t("charts.income"),
+        }}
+      />
     </SectionBox>
   );
 };

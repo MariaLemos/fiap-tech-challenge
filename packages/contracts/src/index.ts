@@ -49,3 +49,41 @@ export const transactionCategories = [
   "Lazer",
   "Servicos",
 ];
+
+export interface InvestmentGoal {
+  id: string;
+  name: string;
+  category: string;
+  targetAmount: number;
+  targetDate: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Investment {
+  id: string;
+  goalId: string | null;
+  name: string;
+  assetClass: string;
+  initialAmount: number;
+  returnRate: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Contribution {
+  id: string;
+  investmentId: string;
+  amount: number;
+  date: string;
+}
+
+export const investmentCategories = [
+  "Renda fixa",
+  "Acoes",
+  "Fundos imobiliarios",
+  "ETFs",
+  "Previdencia",
+  "Criptoativos",
+];

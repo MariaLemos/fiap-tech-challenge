@@ -2,6 +2,7 @@
 
 import { Button, InputWrapper, SectionBox } from "@repo/design-system";
 import { FormProvider, useForm } from "react-hook-form";
+import { useI18n } from "@repo/i18n/react";
 
 type TransactionType = "deposit" | "transfer" | "withdrawal";
 
@@ -10,13 +11,13 @@ type QuickTransactionStartForm = {
   amount: string;
 };
 
-const transactionTypes = [
-  { label: "Deposito", value: "deposit" },
-  { label: "Transferencia", value: "transfer" },
-  { label: "Retirada", value: "withdrawal" },
-] satisfies { label: string; value: TransactionType }[];
-
 export const QuickTransactionStart = () => {
+  const { t } = useI18n();
+  const transactionTypes = [
+    { label: t("transactions.type.deposit"), value: "deposit" },
+    { label: t("transactions.type.transfer"), value: "transfer" },
+    { label: t("transactions.type.withdrawal"), value: "withdrawal" },
+  ] satisfies { label: string; value: TransactionType }[];
   const formMethods = useForm<QuickTransactionStartForm>({
     defaultValues: {
       type: "deposit",
@@ -36,7 +37,7 @@ export const QuickTransactionStart = () => {
 
   return (
     <SectionBox
-      title="Nova transacao"
+      title={t("transactions.new")}
       variant="bg"
       className="flex flex-col flex-wrap gap-4 bg-accent new-transaction"
     >
@@ -46,7 +47,7 @@ export const QuickTransactionStart = () => {
           onSubmit={formMethods.handleSubmit(handleSubmit)}
         >
           <InputWrapper
-            label="Tipo"
+            label={t("common.type")}
             name="type"
             type="select"
             options={transactionTypes}
@@ -54,12 +55,12 @@ export const QuickTransactionStart = () => {
           />
 
           <InputWrapper
-            label="Valor"
+            label={t("common.value")}
             name="amount"
             type="number"
             mask="money"
             className="w-full"
-            placeholder="R$ 0,00"
+            placeholder={t("transactions.form.amountPlaceholder")}
           />
 
           <Button
@@ -67,7 +68,7 @@ export const QuickTransactionStart = () => {
             variant="primary"
             className="w-full sm:col-span-2"
           >
-            Continuar
+            {t("actions.continue")}
           </Button>
         </form>
       </FormProvider>
