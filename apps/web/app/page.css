@@ -2,7 +2,9 @@
   display: grid;
   grid-template-areas: 
     "nav welcome statement"
-    "nav new-transaction statement";
+    "nav new-transaction statement"
+    "nav alerts alerts"
+    "nav barchart piechart";
   grid-template-columns:20% 1fr 30%;
   grid-template-rows: 1fr 1fr;
   justify-items: center;
@@ -14,7 +16,9 @@
     "nav"
     "welcome"
     "new-transaction"
-    "statement";
+    "statement"
+    "piechart"
+    "alerts";
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
@@ -25,10 +29,16 @@
  
 }
 .statement{
-  grid-area: statement;
- 
+  grid-area: statement;}
 
+.barchart{
+  grid-area: barchart;
 }
+ 
+.piechart{
+  grid-area: piechart;
+}
+
 .navigation{
   grid-area: nav;
 

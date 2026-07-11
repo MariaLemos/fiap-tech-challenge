@@ -1,6 +1,7 @@
 "use client";
 
 import dayjs, { Dayjs } from "dayjs";
+import type { Transaction as SharedTransaction } from "@repo/contracts";
 import React, {
   createContext,
   useContext,
@@ -11,18 +12,7 @@ import React, {
   useState,
 } from "react";
 
-import type { TransactionAttachment } from "../components/TransactionForm/TransactionForm.types";
-
-// Tipos
-export interface Transaction {
-  id: string;
-  amount: number;
-  type: "deposit" | "transfer" | "withdrawal";
-  description?: string;
-  category?: string;
-  date: Dayjs;
-  attachment?: TransactionAttachment | null;
-}
+export type Transaction = SharedTransaction<Dayjs>;
 
 interface UserInfoState {
   userName: string;

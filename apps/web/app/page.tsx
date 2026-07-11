@@ -5,6 +5,8 @@ import "./page.css";
 import { Wellcome } from "./components/Welcome/welcome";
 import { Statement } from "./components/Statement/Statement";
 import { QuickTransactionStart } from "./components/QuickTransactionStart/QuickTransactionStart";
+import { TransactionsBarChart } from "./components/TransactionsBarChart/TransactionsBarChart";
+import { TransactionsPieChart } from "./components/TransactionsCategoryPieChart/TransactionsCategoryPieChart";
 
 export default function Home() {
   const isMobile = useIsMobile();
@@ -15,6 +17,8 @@ export default function Home() {
       <Wellcome />
       <QuickTransactionStart />
       <Statement />
+      <TransactionsBarChart />
+      <TransactionsPieChart />
     </main>
   );
 }

@@ -2,18 +2,24 @@ export type TransactionType = "deposit" | "transfer" | "withdrawal";
 
 export type TransactionStatus = "completed" | "pending" | "failed";
 
-export interface Transaction {
+export interface TransactionAttachment {
+  name: string;
+  size: number;
+  type: string;
+}
+
+export interface Transaction<TDate = string> {
   id: string;
   amount: number;
   type: TransactionType;
-  category: string;
-  description: string;
-  date: string;
-  status: TransactionStatus;
-  attachmentName?: string;
+  category?: string;
+  description?: string;
+  date: TDate;
+  status?: TransactionStatus;
+  attachment?: TransactionAttachment | null;
 }
 
-export type TransactionInput = Omit<Transaction, "id">;
+export type TransactionInput<TDate = string> = Omit<Transaction<TDate>, "id">;
 
 export interface TransactionFilters {
   search: string;
