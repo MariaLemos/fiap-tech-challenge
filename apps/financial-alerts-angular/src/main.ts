@@ -1,6 +1,6 @@
 import { NgZone } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
-import { Router } from "@angular/router";
+import { NavigationStart, Router } from "@angular/router";
 import { singleSpaAngular, getSingleSpaExtraProviders } from "single-spa-angular";
 import { AppModule } from "./app/app.module";
 
@@ -9,7 +9,7 @@ const lifecycles = singleSpaAngular({
     platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule),
   template: "<financial-alerts-root />",
   Router,
-  NavigationStart: undefined,
+  NavigationStart,
   NgZone,
 });
 
