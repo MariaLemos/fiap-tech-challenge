@@ -1,12 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Button, Input, InputWrapper, Typography } from "@repo/design-system";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useI18n } from "@repo/i18n/react";
-import { normalizeReturnTo, resolveRedirectDestination } from "./loginRedirect";
+import {
+  getDefaultReturnTo,
+  logRuntimeEnvHealth,
+  normalizeReturnTo,
+  resolveRedirectDestination,
+} from "./loginRedirect";
 
 export function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -31,11 +36,20 @@ export function LoginForm() {
     [searchParams],
   );
 
+  useEffect(() => {
+    logRuntimeEnvHealth();
+  }, []);
+
   async function onSubmit(values: { email: string; password: string }) {
     try {
       setLoading(true);
       setError(null);
       setSuccessMessage(null);
+
+      console.info("[auth-login-debug] onSubmit.start", {
+        email: values.email,
+        returnTo,
+      });
 
       const response = await signIn("credentials", {
         email: values.email,
@@ -44,18 +58,48 @@ export function LoginForm() {
         redirect: false,
       });
 
+      console.info("[auth-login-debug] onSubmit.signInResponse", {
+        ok: response?.ok,
+        error: response?.error,
+        status: response?.status,
+        url: response?.url,
+      });
+
       if (!response || !response.ok || response.error) {
         setError(t("auth.login.error.invalidCredentials"));
+        console.info("[auth-login-debug] onSubmit.invalidCredentials", {
+          ok: response?.ok,
+          error: response?.error,
+        });
         return;
       }
 
       const destination = resolveRedirectDestination(returnTo, response.url);
+      console.info("[auth-login-debug] onSubmit.redirectDestination", {
+        destination,
+        currentUrl: window.location.href,
+      });
       setSuccessMessage(t("auth.login.success.redirecting"));
       setTimeout(() => {
+        console.info("[auth-login-debug] onSubmit.windowAssign", {
+          destination,
+        });
         window.location.assign(destination);
       }, 600);
+
+      setTimeout(() => {
+        if (window.location.pathname.startsWith("/login")) {
+          const fallback = getDefaultReturnTo();
+          console.info("[auth-login-debug] onSubmit.windowReplaceFallback", {
+            fallback,
+            pathname: window.location.pathname,
+          });
+          window.location.replace(fallback);
+        }
+      }, 1800);
     } catch {
       setError(t("auth.login.error.unexpected"));
+      console.info("[auth-login-debug] onSubmit.exception");
     } finally {
       setLoading(false);
     }
