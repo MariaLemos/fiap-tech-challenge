@@ -9,7 +9,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { RechartsDevtools } from "@recharts/devtools";
 import { staticColors } from "@repo/design-system";
 
 export type BarChartItem = {
@@ -47,8 +46,6 @@ const SimpleBarChart = ({
         fill={staticColors.green[500]}
         radius={[10, 10, 0, 0]}
       />
-
-      <RechartsDevtools />
     </RechartsBarChart>
   );
 };
