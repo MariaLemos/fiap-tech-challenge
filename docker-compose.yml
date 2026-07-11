@@ -5,10 +5,19 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN: ${FINANCIAL_ALERTS_PUBLIC_ORIGIN:-http://localhost:4201}
+        INVESTMENTS_ORIGIN: http://investments:3001
     ports:
       - "3000:3000"
     depends_on:
       - financial-alerts-angular
+      - investments
+
+  investments:
+    build:
+      context: .
+      dockerfile: apps/investments/Dockerfile
+    ports:
+      - "3001:3001"
 
   financial-alerts-angular:
     build:

@@ -9,6 +9,7 @@ COPY apps/financial-alerts-angular/package.json apps/financial-alerts-angular/pa
 COPY packages/contracts/package.json packages/contracts/package.json
 COPY packages/design-system/package.json packages/design-system/package.json
 COPY packages/eslint-config/package.json packages/eslint-config/package.json
+COPY packages/i18n/package.json packages/i18n/package.json
 COPY packages/typescript-config/package.json packages/typescript-config/package.json
 COPY packages/utils/package.json packages/utils/package.json
 

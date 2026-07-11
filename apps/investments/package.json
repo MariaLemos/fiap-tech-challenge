@@ -16,6 +16,7 @@
     "@repo/design-system": "*",
     "@repo/i18n": "*",
     "@repo/utils": "*",
+    "@vercel/microfrontends": "2.3.6",
     "dayjs": "^1.11.20",
     "next": "16.2.0",
     "react": "^19.2.0",

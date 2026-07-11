@@ -1,3 +1,4 @@
+import { withMicrofrontends } from "@vercel/microfrontends/next/config";
 import process from "node:process";
 
 /** @type {import('next').NextConfig} */
@@ -9,4 +10,4 @@ const nextConfig = {
   transpilePackages: ["@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
 };
 
-export default nextConfig;
+export default withMicrofrontends(nextConfig);
