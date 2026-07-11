@@ -6,14 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Button, Input, InputWrapper, Typography } from "@repo/design-system";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useI18n } from "@repo/i18n/react";
-
-const defaultReturnTo =
-  process.env.NEXT_PUBLIC_APP_ORIGIN ?? "http://localhost:3000/";
-
-function normalizeReturnTo(value: string | null) {
-  if (!value) return defaultReturnTo;
-  return value;
-}
+import { normalizeReturnTo, resolveRedirectDestination } from "./loginRedirect";
 
 export function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -56,7 +49,7 @@ export function LoginForm() {
         return;
       }
 
-      const destination = response.url ?? returnTo;
+      const destination = resolveRedirectDestination(returnTo, response.url);
       setSuccessMessage(t("auth.login.success.redirecting"));
       setTimeout(() => {
         window.location.assign(destination);
