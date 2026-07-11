@@ -1,8 +1,6 @@
-export interface TransactionAttachment {
-  name: string;
-  size: number;
-  type: string;
-}
+import type { TransactionAttachment } from "@repo/contracts";
+
+export type { TransactionAttachment } from "@repo/contracts";
 
 export interface TransactionFormData {
   amount: number;

@@ -1,6 +1,7 @@
 "use client";
 
 import dayjs, { Dayjs } from "dayjs";
+import type { Transaction as SharedTransaction } from "@repo/contracts";
 import React, {
   createContext,
   useContext,
@@ -9,13 +10,7 @@ import React, {
   useMemo,
 } from "react";
 
-// Tipos
-export interface Transaction {
-  id: string;
-  amount: number;
-  type: "deposit" | "transfer" | "withdrawal";
-  date: Dayjs;
-}
+export type Transaction = SharedTransaction<Dayjs>;
 
 interface UserInfoState {
   userName: string;
@@ -130,19 +125,31 @@ const mockTransactions: Transaction[] = [
     id: "1",
     amount: 1500.0,
     type: "deposit",
+    category: "Salario",
+    description: "Pagamento mensal",
     date: dayjs().subtract(2, "days"),
+    status: "completed",
+    attachment: null,
   },
   {
     id: "2",
     amount: 250.5,
     type: "withdrawal",
+    category: "Alimentacao",
+    description: "Supermercado",
     date: dayjs().subtract(1, "day"),
+    status: "completed",
+    attachment: null,
   },
   {
     id: "3",
     amount: 800.0,
     type: "transfer",
+    category: "Servicos",
+    description: "Transferencia para conta conjunta",
     date: dayjs().subtract(3, "hours"),
+    status: "pending",
+    attachment: null,
   },
 ];
 

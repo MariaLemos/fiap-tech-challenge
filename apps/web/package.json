@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@recharts/devtools": "^0.0.14",
+    "@repo/contracts": "*",
     "@repo/design-system": "*",
+    "@repo/utils": "*",
     "dayjs": "^1.11.20",
     "next": "16.2.0",
     "react": "^19.2.0",

@@ -1,83 +1,47 @@
-"use client";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { formatCurrency } from "@repo/utils";
+import { ActivePieShape } from "./ActivePieShape";
+import {
+  PIE_CHART_COLORS,
+  PIE_CHART_MARGIN,
+  PIE_INNER_RADIUS,
+  PIE_OUTER_RADIUS,
+} from "./PieChart.constants";
+import type { PieChartComponentProps } from "./PieChart.types";
 
-import { Pie, PieChart as RechartsPieChart, Tooltip } from "recharts";
-import type { TooltipIndex } from "recharts/types/state/tooltipSlice";
-import { RechartsDevtools } from "@recharts/devtools";
-
-export type PieChartItem = {
-  name: string;
-  value: number;
-};
-
-type TwoLevelPieChartProps = {
-  innerData?: PieChartItem[];
-  outerData?: PieChartItem[];
-  isAnimationActive?: boolean;
-  defaultIndex?: TooltipIndex;
-  maxWidth?: number;
-};
-
-const innerSampleData: PieChartItem[] = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
-
-const outerSampleData: PieChartItem[] = [
-  { name: "A1", value: 100 },
-  { name: "A2", value: 300 },
-  { name: "B1", value: 100 },
-  { name: "B2", value: 80 },
-  { name: "B3", value: 40 },
-  { name: "B4", value: 30 },
-  { name: "B5", value: 50 },
-  { name: "C1", value: 100 },
-  { name: "C2", value: 200 },
-  { name: "D1", value: 150 },
-  { name: "D2", value: 50 },
-];
-
-export default function TwoLevelPieChart({
-  innerData = innerSampleData,
-  outerData = outerSampleData,
-  isAnimationActive,
-  defaultIndex,
-  maxWidth = 500,
-}: TwoLevelPieChartProps) {
+export default function PieChartComponent({
+  data,
+  isAnimationActive = true,
+  defaultIndex = undefined,
+}: PieChartComponentProps) {
   return (
-    <RechartsPieChart
-      style={{
-        width: "100%",
-        height: "100%",
-        maxWidth: `${maxWidth}px`,
-        maxHeight: "80vh",
-        aspectRatio: 1,
-      }}
-      responsive
-    >
-      <Pie
-        data={innerData}
-        dataKey="value"
-        cx="50%"
-        cy="50%"
-        outerRadius="50%"
-        fill="#8884d8"
-        isAnimationActive={isAnimationActive}
-      />
-      <Pie
-        data={outerData}
-        dataKey="value"
-        cx="50%"
-        cy="50%"
-        innerRadius="60%"
-        outerRadius="80%"
-        fill="#82ca9d"
-        label
-        isAnimationActive={isAnimationActive}
-      />
-      <Tooltip defaultIndex={defaultIndex} />
-      <RechartsDevtools />
-    </RechartsPieChart>
+    <div className="h-[320px] w-full min-w-0">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart margin={PIE_CHART_MARGIN}>
+          <Pie
+            activeShape={ActivePieShape}
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={PIE_INNER_RADIUS}
+            outerRadius={PIE_OUTER_RADIUS}
+            dataKey="value"
+            nameKey="name"
+            isAnimationActive={isAnimationActive}
+          >
+            {data.map((item, index) => (
+              <Cell
+                key={item.name}
+                fill={PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Tooltip
+            defaultIndex={defaultIndex}
+            formatter={(value) => formatCurrency(Number(value))}
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

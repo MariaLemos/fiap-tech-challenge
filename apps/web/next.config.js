@@ -5,7 +5,7 @@ const transactionsZoneOrigin =
   process.env.TRANSACTIONS_ZONE_ORIGIN || "http://localhost:3001";
 
 const nextConfig = {
-  transpilePackages: ["@repo/design-system"],
+  transpilePackages: ["@repo/contracts", "@repo/design-system"],
   async rewrites() {
     return {
       beforeFiles: [
