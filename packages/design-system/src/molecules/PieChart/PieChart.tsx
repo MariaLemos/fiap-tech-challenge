@@ -1,3 +1,5 @@
+"use client";
+
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { formatCurrency } from "@repo/i18n";
 import { useI18n } from "@repo/i18n/react";
@@ -10,7 +12,7 @@ import {
 } from "./PieChart.constants";
 import type { PieChartComponentProps } from "./PieChart.types";
 
-export default function PieChartComponent({
+export function PieChartComponent({
   data,
   isAnimationActive = true,
   defaultIndex = undefined,

@@ -6,27 +6,25 @@ import {
   CartesianGrid,
   Legend,
   Tooltip,
-  XAxis,
   YAxis,
 } from "recharts";
-import { staticColors } from "@repo/design-system";
+import { staticColors } from "../../atoms/tokens/colors";
 
 export type BarChartItem = {
   [key: string]: number | string;
 };
 
-type SimpleBarChartProps = {
+export type SimpleBarChartProps = {
   data: BarChartItem;
   labels?: Record<string, string>;
   maxWidthClassName?: string;
 };
 
-const SimpleBarChart = ({
+export const SimpleBarChart = ({
   data,
   labels = {},
   maxWidthClassName = "max-w-[700px]",
 }: SimpleBarChartProps) => {
-  const bars = data ? Object.keys(data).filter((key) => key !== "name") : [];
   return (
     <RechartsBarChart
       className={`aspect-[1.618] max-h-[70vh] w-full ${maxWidthClassName}`}
@@ -53,5 +51,3 @@ const SimpleBarChart = ({
     </RechartsBarChart>
   );
 };
-
-export default SimpleBarChart;

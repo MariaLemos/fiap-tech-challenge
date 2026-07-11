@@ -6,3 +6,6 @@ export * from "./Navigation/Navigation";
 export * from "./LanguageSelector/LanguageSelector";
 export * from "./InputWrapper/InputWrapper";
 export * from "./DialogModal/DialogModal";
+export * from "./BarChart/BarChart";
+export * from "./PieChart/PieChart";
+export * from "./PieChart/PieChart.types";

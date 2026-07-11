@@ -1,8 +1,7 @@
 "use client";
 
-import { SectionBox, List } from "@repo/design-system";
+import { SectionBox, SimpleBarChart } from "@repo/design-system";
 import { Transaction, useUserInfo } from "../../hooks/UserInfo.provider";
-import SimpleBarChart from "../BarChart/BarChart";
 import { useI18n } from "@repo/i18n/react";
 
 export const TransactionsBarChart = () => {
@@ -24,7 +23,10 @@ export const TransactionsBarChart = () => {
     >
       <SimpleBarChart
         data={{ expenses, receipts }}
-        labels={{ expenses: t("charts.expenses"), receipts: t("charts.income") }}
+        labels={{
+          expenses: t("charts.expenses"),
+          receipts: t("charts.income"),
+        }}
       />
     </SectionBox>
   );

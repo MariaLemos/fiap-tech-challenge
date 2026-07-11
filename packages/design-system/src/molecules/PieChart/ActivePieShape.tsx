@@ -59,12 +59,7 @@ export function ActivePieShape({
         fill="none"
       />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text
-        x={ex + labelOffset}
-        y={ey}
-        textAnchor={textAnchor}
-        fill="#333"
-      >
+      <text x={ex + labelOffset} y={ey} textAnchor={textAnchor} fill="#333">
         {formatCurrency(Number(value), locale)}
       </text>
       <text
