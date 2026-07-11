@@ -4,10 +4,12 @@ import { groupByMonth } from "./List.helper";
 import { Dayjs } from "dayjs";
 import { ListItem } from "./ListItem";
 import { useI18n } from "@repo/i18n/react";
+import type { TranslationKey } from "@repo/i18n";
 
 export type ListItemType = {
   id: string;
   type: string;
+  typeLabelKey?: TranslationKey;
   description?: string;
   category?: string;
   amount: number;

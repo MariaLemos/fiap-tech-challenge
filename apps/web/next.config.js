@@ -3,7 +3,7 @@ import process from "node:process";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
+  transpilePackages: ["@repo/auth", "@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
   async rewrites() {
     const investmentsOrigin =
       process.env.INVESTMENTS_ORIGIN ?? "http://localhost:3001";

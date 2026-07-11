@@ -10,6 +10,8 @@ type FinancialAlertsProps = {
   name: string;
   domElement: HTMLElement;
   locale: Locale;
+  authOrigin: string;
+  returnTo: string;
 };
 
 type FinancialAlertsModule = LifeCycles<FinancialAlertsProps>;
@@ -22,6 +24,8 @@ declare global {
 
 const origin =
   process.env.NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN ?? "http://localhost:4201";
+const authOrigin =
+  process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
 
 function loadScript(source: string) {
   return new Promise<void>((resolve, reject) => {
@@ -90,6 +94,8 @@ export function FinancialAlertsMicrofrontend() {
           name: "financial-alerts-angular",
           domElement: mountElement,
           locale,
+          authOrigin,
+          returnTo: window.location.href,
         });
         await parcel.mountPromise;
         if (active) setStatus("ready");
@@ -115,7 +121,9 @@ export function FinancialAlertsMicrofrontend() {
         <div>
           <h2 id="financial-alerts-heading">{t("alerts.heading")}</h2>
         </div>
-        {status === "loading" && <span role="status">{t("alerts.loading")}</span>}
+        {status === "loading" && (
+          <span role="status">{t("alerts.loading")}</span>
+        )}
       </header>
       {status === "unavailable" && (
         <p className={styles.fallback} role="status">

@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "./transactions/transactions.css";
 import { Header, ThemeProvider } from "@repo/design-system";
+import { buildCookieHeader, fetchCentralSession } from "@repo/auth";
 import { localeCookieName, resolveLocale, translate } from "@repo/i18n";
 import { I18nProvider } from "@repo/i18n/react";
 import { UserInfoProvider } from "./hooks/UserInfo.provider";
@@ -37,7 +38,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const initialTheme = await getInitialTheme();
-  const locale = resolveLocale((await cookies()).get(localeCookieName)?.value);
+  const cookieStore = await cookies();
+  const locale = resolveLocale(cookieStore.get(localeCookieName)?.value);
+  const authOrigin =
+    process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
+  const returnTo =
+    process.env.NEXT_PUBLIC_APP_ORIGIN ?? "http://localhost:3000/";
+  const logoutTarget = new URL("/logout", authOrigin);
+  logoutTarget.searchParams.set("returnTo", returnTo);
+  const session = await fetchCentralSession({
+    authOrigin,
+    cookieHeader: buildCookieHeader(cookieStore),
+  });
+  const userName = session.user?.name ?? "Usuário";
 
   return (
     <html lang={locale} data-theme={initialTheme} suppressHydrationWarning>
@@ -45,7 +58,11 @@ export default async function RootLayout({
         <I18nProvider locale={locale}>
           <ThemeProvider defaultTheme={initialTheme}>
             <UserInfoProvider>
-              <Header userName="Maria Lemos" />
+              <Header
+                userName={userName}
+                logoutHref={logoutTarget.toString()}
+                logoutLabel={translate(locale, "auth.logout")}
+              />
               {children}
             </UserInfoProvider>
           </ThemeProvider>

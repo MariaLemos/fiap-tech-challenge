@@ -1,4 +1,11 @@
 services:
+  auth:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+    ports:
+      - "3002:3002"
+
   web:
     build:
       context: .
@@ -6,9 +13,11 @@ services:
       args:
         NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN: ${FINANCIAL_ALERTS_PUBLIC_ORIGIN:-http://localhost:4201}
         INVESTMENTS_ORIGIN: http://investments:3001
+        NEXT_PUBLIC_AUTH_ORIGIN: ${AUTH_PUBLIC_ORIGIN:-http://localhost:3002}
     ports:
       - "3000:3000"
     depends_on:
+      - auth
       - financial-alerts-angular
       - investments
 
@@ -16,8 +25,12 @@ services:
     build:
       context: .
       dockerfile: apps/investments/Dockerfile
+      args:
+        NEXT_PUBLIC_AUTH_ORIGIN: ${AUTH_PUBLIC_ORIGIN:-http://localhost:3002}
     ports:
       - "3001:3001"
+    depends_on:
+      - auth
 
   financial-alerts-angular:
     build:

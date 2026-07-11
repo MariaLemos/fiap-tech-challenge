@@ -21,12 +21,16 @@ export const ListItem = <T extends ListItemType>({
     transfer: t("transactions.type.transfer"),
     withdrawal: t("transactions.type.withdrawal"),
     contribution: t("investments.type.contribution"),
-    income: t("investments.type.income"),
+    income: t("transactions.type.income"),
     redemption: t("investments.type.redemption"),
   };
-  const typeLabel = typeLabels[item.type] ?? item.type;
+  const typeLabel = item.typeLabelKey
+    ? t(item.typeLabelKey)
+    : (typeLabels[item.type] ?? item.type);
   const title = item.description || typeLabel;
-  const subtitle = item.category ? `${item.category} - ${typeLabel}` : typeLabel;
+  const subtitle = item.category
+    ? `${item.category} - ${typeLabel}`
+    : typeLabel;
 
   return (
     <div
@@ -38,7 +42,10 @@ export const ListItem = <T extends ListItemType>({
           {title}
         </Typography>
         {subtitle !== title && (
-          <Typography variant="span" className="block truncate text-sm text-muted">
+          <Typography
+            variant="span"
+            className="block truncate text-sm text-muted"
+          >
             {subtitle}
           </Typography>
         )}
@@ -76,7 +83,10 @@ export const ListItem = <T extends ListItemType>({
 
       <Typography variant="span" className="text-right text-sm text-muted">
         {new Intl.DateTimeFormat(locale, {
-          day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
         }).format(dayjs(item.date).toDate())}
       </Typography>
     </div>

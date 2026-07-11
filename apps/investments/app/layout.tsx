@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { Header, ThemeProvider } from "@repo/design-system";
+import { buildCookieHeader, fetchCentralSession } from "@repo/auth";
 import { localeCookieName, resolveLocale } from "@repo/i18n";
 import { I18nProvider } from "@repo/i18n/react";
 import "./globals.css";
@@ -18,7 +19,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const initialTheme = await getInitialTheme();
-  const locale = resolveLocale((await cookies()).get(localeCookieName)?.value);
+  const cookieStore = await cookies();
+  const locale = resolveLocale(cookieStore.get(localeCookieName)?.value);
+  const authOrigin =
+    process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
+  const session = await fetchCentralSession({
+    authOrigin,
+    cookieHeader: buildCookieHeader(cookieStore),
+  });
+  const userName = session.user?.name ?? "Usuário";
 
   return (
     <html lang={locale} data-theme={initialTheme} suppressHydrationWarning>
@@ -26,7 +35,7 @@ export default async function RootLayout({
         <I18nProvider locale={locale}>
           <ThemeProvider defaultTheme={initialTheme}>
             <StoreProvider>
-              <Header userName="Maria Lemos" />
+              <Header userName={userName} />
               {children}
             </StoreProvider>
           </ThemeProvider>

@@ -7,7 +7,7 @@ const nextConfig = {
     process.env.INVESTMENTS_ASSET_PREFIX === undefined
       ? "/investments-static"
       : process.env.INVESTMENTS_ASSET_PREFIX,
-  transpilePackages: ["@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
+  transpilePackages: ["@repo/auth", "@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
 };
 
 export default withMicrofrontends(nextConfig);

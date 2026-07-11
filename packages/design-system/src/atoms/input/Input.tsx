@@ -14,7 +14,7 @@ export const Input = ({
   className?: string;
   mask?: string;
 
-  field?: ControllerRenderProps<FieldValues, string>;
+  field?: ControllerRenderProps<any, string>;
 }) => {
   if (mask === "money") {
     return (

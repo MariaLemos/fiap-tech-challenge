@@ -1,18 +1,27 @@
-<div class="filters" role="group" [attr.aria-label]="t('alerts.filters.label')">
-  <button type="button" [class.active]="filter === 'all'" (click)="setFilter('all')">{{ t('alerts.filters.all') }}</button>
-  <button type="button" [class.active]="filter === 'unread'" (click)="setFilter('unread')">{{ t('alerts.filters.unread') }}</button>
-  <button type="button" [class.active]="filter === 'read'" (click)="setFilter('read')">{{ t('alerts.filters.read') }}</button>
-</div>
-<ul class="alerts" aria-live="polite">
-  @for (alert of visibleAlerts; track alert.id) {
-    <li [class]="'alert ' + alert.severity + (alert.read ? ' read' : '')">
-      <span class="severity">{{ t(alert.severity === 'warning' ? 'alerts.severity.warning' : alert.severity === 'success' ? 'alerts.severity.success' : 'alerts.severity.info') }}</span>
-      <h3>{{ t(alert.title) }}</h3><p>{{ t(alert.description) }}</p>
-      <div class="actions">
-        @if (alert.action) { <a href="/transactions">{{ t(alert.action) }}</a> }
-        @if (!alert.read) { <button type="button" (click)="markAsRead(alert)">{{ t('alerts.markAsRead') }}</button> }
-        @else { <span class="read-label">{{ t('alerts.read') }}</span> }
-      </div>
-    </li>
-  } @empty { <li class="empty">{{ t('alerts.empty') }}</li> }
-</ul>
+@if (ready) {
+  <div class="filters" role="group" [attr.aria-label]="t('alerts.filters.label')">
+    <button type="button" [class.active]="filter === 'all'" (click)="setFilter('all')">{{ t('alerts.filters.all') }}</button>
+    <button type="button" [class.active]="filter === 'unread'" (click)="setFilter('unread')">{{ t('alerts.filters.unread') }}</button>
+    <button type="button" [class.active]="filter === 'read'" (click)="setFilter('read')">{{ t('alerts.filters.read') }}</button>
+  </div>
+  <ul class="alerts" aria-live="polite">
+    @for (alert of visibleAlerts; track alert.id) {
+      <li [class]="'alert ' + alert.severity + (alert.read ? ' read' : '')">
+        <span class="severity">{{ t(alert.severity === 'warning' ? 'alerts.severity.warning' : alert.severity === 'success' ? 'alerts.severity.success' : 'alerts.severity.info') }}</span>
+        <h3>{{ t(alert.title) }}</h3><p>{{ t(alert.description) }}</p>
+        <div class="actions">
+          @if (alert.action) { <a href="/transactions">{{ t(alert.action) }}</a> }
+          @if (!alert.read) { <button type="button" (click)="markAsRead(alert)">{{ t('alerts.markAsRead') }}</button> }
+          @else { <span class="read-label">{{ t('alerts.read') }}</span> }
+        </div>
+      </li>
+    } @empty { <li class="empty">{{ t('alerts.empty') }}</li> }
+  </ul>
+} @else {
+  @if (authError && loginUrl) {
+    <p aria-live="polite">Nao foi possivel validar autenticacao.</p>
+    <p><a [href]="loginUrl">Ir para login</a></p>
+  } @else {
+    <p aria-live="polite">Carregando autenticacao...</p>
+  }
+}
