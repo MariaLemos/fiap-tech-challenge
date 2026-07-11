@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
-  "globalEnv": ["TRANSACTIONS_ZONE_ORIGIN", "TRANSACTIONS_ASSET_PREFIX", "NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN"],
+  "globalEnv": ["NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

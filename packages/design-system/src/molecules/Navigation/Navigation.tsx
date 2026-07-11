@@ -76,6 +76,7 @@ export const Navigation = ({
           );
         })}
       </nav>
+
       <ThemeToggle />
     </SectionBox>
   );

@@ -4,8 +4,6 @@ WORKDIR /app
 
 COPY package.json yarn.lock turbo.json ./
 COPY apps/web/package.json apps/web/package.json
-COPY apps/transactions/package.json apps/transactions/package.json
-COPY apps/financial-alerts-angular/package.json apps/financial-alerts-angular/package.json
 COPY packages/contracts/package.json packages/contracts/package.json
 COPY packages/design-system/package.json packages/design-system/package.json
 COPY packages/eslint-config/package.json packages/eslint-config/package.json
@@ -18,9 +16,7 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-ARG TRANSACTIONS_ZONE_ORIGIN=http://transactions:3001
 ARG NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN=http://localhost:4201
-ENV TRANSACTIONS_ZONE_ORIGIN=$TRANSACTIONS_ZONE_ORIGIN
 ENV NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN=$NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN
 
 COPY --from=deps /app/node_modules ./node_modules

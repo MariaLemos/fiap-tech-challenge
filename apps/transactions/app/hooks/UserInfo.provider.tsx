@@ -172,7 +172,7 @@ const mockTransactions: Transaction[] = [
     type: "deposit",
     description: "Salario",
     category: "Trabalho",
-    date: dayjs().subtract(2, "days"),
+    date: dayjs("2026-07-09T12:00:00.000Z"),
     attachment: {
       name: "holerite-julho.pdf",
       size: 238112,
@@ -185,7 +185,7 @@ const mockTransactions: Transaction[] = [
     type: "withdrawal",
     description: "Mercado",
     category: "Alimentacao",
-    date: dayjs().subtract(1, "day"),
+    date: dayjs("2026-07-10T12:00:00.000Z"),
   },
   {
     id: "3",
@@ -193,7 +193,7 @@ const mockTransactions: Transaction[] = [
     type: "transfer",
     description: "Reserva mensal",
     category: "Investimentos",
-    date: dayjs().subtract(3, "hours"),
+    date: dayjs("2026-07-11T08:57:00.000Z"),
   },
 ];
 

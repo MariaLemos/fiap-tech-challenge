@@ -8,21 +8,6 @@
         "local": 3000,
         "fallback": "fiap-tech-challenge-web.vercel.app"
       }
-    },
-    "fiap-tech-challenge-transactions": {
-      "packageName": "transactions",
-      "development": {
-        "local": 3001
-      },
-      "routing": [
-        {
-          "paths": [
-            "/transactions",
-            "/transactions/:path*",
-            "/transactions-static/:path*"
-          ]
-        }
-      ]
     }
   }
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./transactions/transactions.css";
 import { Header, ThemeProvider } from "@repo/design-system";
 import { UserInfoProvider } from "./hooks/UserInfo.provider";
 
