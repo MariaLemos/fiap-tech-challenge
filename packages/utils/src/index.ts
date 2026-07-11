@@ -15,7 +15,7 @@ export function formatDate(value: string | Date) {
   }).format(new Date(value));
 }
 
-export function calculateBalance(transactions: Transaction[]) {
+export function calculateBalance<TDate>(transactions: Transaction<TDate>[]) {
   return transactions.reduce((total, transaction) => {
     if (transaction.status === "failed") return total;
     return transaction.type === "deposit"
@@ -24,14 +24,17 @@ export function calculateBalance(transactions: Transaction[]) {
   }, 0);
 }
 
-export function groupTransactionsByCategory(transactions: Transaction[]) {
+export function groupTransactionsByCategory<TDate>(
+  transactions: Transaction<TDate>[],
+) {
   return transactions.reduce<Record<string, number>>((groups, transaction) => {
     if (transaction.status === "failed") return groups;
 
+    const category = transaction.category || "Sem categoria";
+
     return {
       ...groups,
-      [transaction.category]:
-        (groups[transaction.category] || 0) + transaction.amount,
+      [category]: (groups[category] || 0) + transaction.amount,
     };
   }, {});
 }
