@@ -11,6 +11,7 @@ type FinancialAlertsProps = {
   domElement: HTMLElement;
   locale: Locale;
   authOrigin: string;
+  authPathPrefix?: string;
   returnTo: string;
 };
 
@@ -25,7 +26,8 @@ declare global {
 const origin =
   process.env.NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN ?? "http://localhost:4201";
 const authOrigin =
-  process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
+  process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3000";
+const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "";
 
 function loadScript(source: string) {
   return new Promise<void>((resolve, reject) => {
@@ -95,6 +97,7 @@ export function FinancialAlertsMicrofrontend() {
           domElement: mountElement,
           locale,
           authOrigin,
+          authPathPrefix,
           returnTo: window.location.href,
         });
         await parcel.mountPromise;

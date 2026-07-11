@@ -14,8 +14,7 @@ function resolveJwtSecret() {
 }
 
 function buildLoginRedirect(request: NextRequest) {
-  const authOrigin = process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
-  const loginUrl = new URL("/login", authOrigin);
+  const loginUrl = new URL("/auth/login", request.nextUrl.origin);
   loginUrl.searchParams.set("returnTo", request.url);
   return NextResponse.redirect(loginUrl);
 }
@@ -23,7 +22,7 @@ function buildLoginRedirect(request: NextRequest) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/login" || pathname === "/logout") {
+  if (pathname === "/login" || pathname === "/logout" || pathname.startsWith("/auth")) {
     return NextResponse.next();
   }
 

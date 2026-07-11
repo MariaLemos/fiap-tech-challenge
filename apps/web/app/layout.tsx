@@ -40,14 +40,15 @@ export default async function RootLayout({
   const initialTheme = await getInitialTheme();
   const cookieStore = await cookies();
   const locale = resolveLocale(cookieStore.get(localeCookieName)?.value);
-  const authOrigin =
-    process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
+  const authGatewayOrigin =
+    process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3000";
+  const authBackendOrigin = process.env.AUTH_ORIGIN ?? "http://localhost:3002";
   const returnTo =
     process.env.NEXT_PUBLIC_APP_ORIGIN ?? "http://localhost:3000/";
-  const logoutTarget = new URL("/logout", authOrigin);
+  const logoutTarget = new URL("/auth/logout", authGatewayOrigin);
   logoutTarget.searchParams.set("returnTo", returnTo);
   const session = await fetchCentralSession({
-    authOrigin,
+    authOrigin: authBackendOrigin,
     cookieHeader: buildCookieHeader(cookieStore),
   });
   const userName = session.user?.name ?? "Usuário";

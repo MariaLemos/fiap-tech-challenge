@@ -5,10 +5,19 @@ import process from "node:process";
 const nextConfig = {
   transpilePackages: ["@repo/auth", "@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
   async rewrites() {
+    const authOrigin = process.env.AUTH_ORIGIN ?? "http://localhost:3002";
     const investmentsOrigin =
       process.env.INVESTMENTS_ORIGIN ?? "http://localhost:3001";
 
     return [
+      {
+        source: "/auth-static/:path*",
+        destination: `${authOrigin}/auth-static/:path*`,
+      },
+      {
+        source: "/auth/:path*",
+        destination: `${authOrigin}/:path*`,
+      },
       {
         source: "/investments-static/:path*",
         destination: `${investmentsOrigin}/investments-static/:path*`,

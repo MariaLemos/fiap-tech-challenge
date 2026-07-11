@@ -39,9 +39,10 @@ export class AppComponent implements OnInit {
   setFilter(filter: Filter) { this.filter = filter; }
   markAsRead(alert: FinancialAlert) { alert.read = true; }
 
-  private createLoginUrl(authOrigin: string, returnTo: string) {
+  private createLoginUrl(authOrigin: string, authPathPrefix: string, returnTo: string) {
     try {
-      const loginUrl = new URL("/login", authOrigin);
+      const loginPath = `${authPathPrefix}/login`;
+      const loginUrl = new URL(loginPath, authOrigin);
       loginUrl.searchParams.set("returnTo", returnTo);
       return loginUrl.toString();
     } catch {
@@ -59,11 +60,12 @@ export class AppComponent implements OnInit {
 
   async ngOnInit() {
     const authOrigin = window.__AUTH_ORIGIN__ ?? "http://localhost:3002";
+    const authPathPrefix = window.__AUTH_PATH_PREFIX__ ?? "";
     const returnTo = window.__AUTH_RETURN_TO__ ?? window.location.href;
-    this.loginUrl = this.createLoginUrl(authOrigin, returnTo);
+    this.loginUrl = this.createLoginUrl(authOrigin, authPathPrefix, returnTo);
 
     try {
-      const response = await fetch(`${authOrigin}/api/session`, {
+      const response = await fetch(`${authOrigin}${authPathPrefix}/api/session`, {
         method: "GET",
         credentials: "include",
       });

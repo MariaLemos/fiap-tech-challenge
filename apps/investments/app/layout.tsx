@@ -21,10 +21,9 @@ export default async function RootLayout({
   const initialTheme = await getInitialTheme();
   const cookieStore = await cookies();
   const locale = resolveLocale(cookieStore.get(localeCookieName)?.value);
-  const authOrigin =
-    process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
+  const authBackendOrigin = process.env.AUTH_ORIGIN ?? "http://localhost:3002";
   const session = await fetchCentralSession({
-    authOrigin,
+    authOrigin: authBackendOrigin,
     cookieHeader: buildCookieHeader(cookieStore),
   });
   const userName = session.user?.name ?? "Usuário";
