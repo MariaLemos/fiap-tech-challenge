@@ -1,0 +1,18 @@
+<div class="filters" role="group" aria-label="Filtrar alertas por status">
+  <button type="button" [class.active]="filter === 'all'" (click)="setFilter('all')">Todos</button>
+  <button type="button" [class.active]="filter === 'unread'" (click)="setFilter('unread')">Não lidos</button>
+  <button type="button" [class.active]="filter === 'read'" (click)="setFilter('read')">Lidos</button>
+</div>
+<ul class="alerts" aria-live="polite">
+  @for (alert of visibleAlerts; track alert.id) {
+    <li [class]="'alert ' + alert.severity + (alert.read ? ' read' : '')">
+      <span class="severity">{{ alert.severity === 'warning' ? 'Atenção' : alert.severity === 'success' ? 'Positivo' : 'Informação' }}</span>
+      <h3>{{ alert.title }}</h3><p>{{ alert.description }}</p>
+      <div class="actions">
+        @if (alert.action) { <a href="/transactions">{{ alert.action }}</a> }
+        @if (!alert.read) { <button type="button" (click)="markAsRead(alert)">Marcar como lido</button> }
+        @else { <span class="read-label">Lido</span> }
+      </div>
+    </li>
+  } @empty { <li class="empty">Nenhum alerta neste filtro.</li> }
+</ul>

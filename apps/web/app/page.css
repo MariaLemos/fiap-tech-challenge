@@ -2,9 +2,10 @@
   display: grid;
   grid-template-areas: 
     "nav welcome statement"
-    "nav new-transaction statement";
+    "nav new-transaction statement"
+    "nav alerts alerts";
   grid-template-columns:20% 1fr 30%;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr auto;
   justify-items: center;
   font-synthesis: none;
 }
@@ -14,7 +15,8 @@
     "nav"
     "welcome"
     "new-transaction"
-    "statement";
+    "statement"
+    "alerts";
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
@@ -36,4 +38,9 @@
 .new-transaction{
   grid-area: new-transaction;
 
+}
+.financial-alerts-microfrontend {
+  grid-area: alerts;
+  width: min(100%, 960px);
+  padding: 0 1rem 1rem;
 }
