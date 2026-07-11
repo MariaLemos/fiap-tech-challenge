@@ -25,9 +25,14 @@ declare global {
 
 const origin =
   process.env.NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN ?? "http://localhost:4201";
-const authOrigin =
-  process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
 const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "";
+
+function resolveAuthOrigin() {
+  if (process.env.NEXT_PUBLIC_AUTH_ORIGIN)
+    return process.env.NEXT_PUBLIC_AUTH_ORIGIN;
+  if (typeof window !== "undefined") return window.location.origin;
+  return "http://localhost:3002";
+}
 
 function loadScript(source: string) {
   return new Promise<void>((resolve, reject) => {
@@ -96,7 +101,7 @@ export function FinancialAlertsMicrofrontend() {
           name: "financial-alerts-angular",
           domElement: mountElement,
           locale,
-          authOrigin,
+          authOrigin: resolveAuthOrigin(),
           authPathPrefix,
           returnTo: window.location.href,
         });

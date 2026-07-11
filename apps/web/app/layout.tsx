@@ -40,11 +40,18 @@ export default async function RootLayout({
   const initialTheme = await getInitialTheme();
   const cookieStore = await cookies();
   const locale = resolveLocale(cookieStore.get(localeCookieName)?.value);
+  const deployedOrigin = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : undefined;
   const authOrigin =
-    process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
-  const authBackendOrigin = process.env.AUTH_ORIGIN ?? "http://localhost:3002";
+    process.env.NEXT_PUBLIC_AUTH_ORIGIN ??
+    process.env.AUTH_ORIGIN ??
+    deployedOrigin ??
+    "http://localhost:3002";
+  const authBackendOrigin = process.env.AUTH_ORIGIN ?? authOrigin;
   const returnTo =
-    process.env.NEXT_PUBLIC_APP_ORIGIN ?? "http://localhost:3000/";
+    process.env.NEXT_PUBLIC_APP_ORIGIN ??
+    (deployedOrigin ? `${deployedOrigin}/` : "http://localhost:3000/");
   const logoutTarget = new URL("/logout", authOrigin);
   logoutTarget.searchParams.set("returnTo", returnTo);
   const session = await fetchCentralSession({

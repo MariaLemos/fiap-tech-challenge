@@ -18,6 +18,7 @@ function normalizeReturnTo(value: string | null) {
 export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const searchParams = useSearchParams();
   const { t } = useI18n();
@@ -41,6 +42,7 @@ export function LoginForm() {
     try {
       setLoading(true);
       setError(null);
+      setSuccessMessage(null);
 
       const response = await signIn("credentials", {
         email: values.email,
@@ -54,9 +56,13 @@ export function LoginForm() {
         return;
       }
 
-      window.location.assign(response.url ?? returnTo);
+      const destination = response.url ?? returnTo;
+      setSuccessMessage(t("auth.login.success.redirecting"));
+      setTimeout(() => {
+        window.location.assign(destination);
+      }, 600);
     } catch {
-      setError(t("auth.login.error.invalidCredentials"));
+      setError(t("auth.login.error.unexpected"));
     } finally {
       setLoading(false);
     }
@@ -133,6 +139,14 @@ export function LoginForm() {
           <p role="alert">
             <Typography variant="span" className="text-red-600">
               {error}
+            </Typography>
+          </p>
+        ) : null}
+
+        {successMessage ? (
+          <p role="status" aria-live="polite">
+            <Typography variant="span" className="text-green-700">
+              {successMessage}
             </Typography>
           </p>
         ) : null}
