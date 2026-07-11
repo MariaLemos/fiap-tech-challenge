@@ -20,6 +20,9 @@ export const ListItem = <T extends ListItemType>({
     deposit: t("transactions.type.deposit"),
     transfer: t("transactions.type.transfer"),
     withdrawal: t("transactions.type.withdrawal"),
+    contribution: t("investments.type.contribution"),
+    income: t("investments.type.income"),
+    redemption: t("investments.type.redemption"),
   };
   const typeLabel = typeLabels[item.type] ?? item.type;
   const title = item.description || typeLabel;

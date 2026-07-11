@@ -16,13 +16,21 @@ const pagesList = [
     path: "/transactions",
     zone: "transactions",
   },
-  { label: "navigation.investments", path: "/investments" },
+  {
+    label: "navigation.investments",
+    path: "/investments",
+    zone: "investments",
+  },
   { label: "navigation.services", path: "/services" },
 ] as const;
 
 const getZoneFromPath = (path: string) => {
   if (path.startsWith("/transactions")) {
     return "transactions";
+  }
+
+  if (path.startsWith("/investments")) {
+    return "investments";
   }
 
   return "shell";

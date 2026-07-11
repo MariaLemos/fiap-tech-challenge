@@ -1,15 +1,23 @@
+"use client";
+
+import { useI18n } from "@repo/i18n/react";
 import React from "react";
 
 export const Button = ({
   children,
   className = "",
+  loading = false,
   variant = "primary",
+  disabled,
   ...props
 }: {
   children: React.ReactNode;
   className?: string;
+  disabled?: boolean;
+  loading?: boolean;
   variant?: "primary" | "secondary" | "icon";
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const { t } = useI18n();
   const getClassForVariant = (variant: string) => {
     switch (variant) {
       case "icon":
@@ -26,13 +34,25 @@ export const Button = ({
 
   return (
     <button
+      aria-busy={loading || undefined}
       className={` px-2 py-2  
         border border-primary border-solid border-2 ${getClassForVariant(variant)} rounded-full transition-all duration-200 
         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 leading-none
         disabled:border-gray-400 h-10 ${className}`}
       {...props}
+      disabled={disabled || loading}
     >
-      {children}
+      {loading ? (
+        <span className="flex items-center justify-center gap-2">
+          <span
+            aria-hidden="true"
+            className="h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent"
+          />
+          {t("actions.processing")}
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 };

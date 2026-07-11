@@ -9,3 +9,4 @@ export * from "./DialogModal/DialogModal";
 export * from "./BarChart/BarChart";
 export * from "./PieChart/PieChart";
 export * from "./PieChart/PieChart.types";
+export * from "./ProgressBar/ProgressBar";
