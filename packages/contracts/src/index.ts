@@ -1,4 +1,4 @@
-export type TransactionType = "deposit" | "transfer" | "withdrawal";
+export type TransactionType = "deposit" | "transfer" | "withdrawal" | "expense";
 
 export type TransactionStatus = "completed" | "pending" | "failed";
 
@@ -32,6 +32,7 @@ export const transactionTypeLabels: Record<TransactionType, string> = {
   deposit: "Deposito",
   transfer: "Transferencia",
   withdrawal: "Retirada",
+  expense: "Despesa",
 };
 
 export const transactionStatusLabels: Record<TransactionStatus, string> = {
