@@ -45,6 +45,7 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({
     req: request,
     secret: resolveJwtSecret(),
+    cookieName: process.env.AUTH_COOKIE_NAME ?? "authjs.session-token",
   });
 
   if (!token) {
@@ -55,5 +56,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|api/auth(?:/|$)|api/session(?:/|$)).*)",
+  ],
 };
