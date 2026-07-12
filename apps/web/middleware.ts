@@ -14,8 +14,6 @@ function resolveJwtSecret() {
 }
 
 function buildLoginRedirect(request: NextRequest) {
-  const authOrigin =
-    process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002";
   const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "";
   const normalizedAuthPathPrefix =
     authPathPrefix === "/"
@@ -23,6 +21,9 @@ function buildLoginRedirect(request: NextRequest) {
       : authPathPrefix.endsWith("/")
         ? authPathPrefix.slice(0, -1)
         : authPathPrefix;
+  const authOrigin = normalizedAuthPathPrefix
+    ? request.nextUrl.origin
+    : (process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002");
   const loginUrl = new URL(
     `${normalizedAuthPathPrefix}/login`,
     authOrigin,
