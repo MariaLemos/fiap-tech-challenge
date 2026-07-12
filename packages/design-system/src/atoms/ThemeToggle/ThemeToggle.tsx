@@ -11,14 +11,16 @@ export const ThemeToggle = ({ className = "" }: { className?: string }) => {
   const { t } = useI18n();
 
   return (
-    <div
+    <button
+      type="button"
       className={`theme-toggle ${theme} ${className}`}
       onClick={toggleTheme}
       aria-label={t(theme === "light" ? "theme.switchToDark" : "theme.switchToLight")}
+      aria-pressed={theme === "dark"}
     >
       <div className="icon rounded">
         <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />
       </div>
-    </div>
+    </button>
   );
 };

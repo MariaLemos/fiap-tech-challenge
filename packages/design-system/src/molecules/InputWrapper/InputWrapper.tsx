@@ -2,6 +2,7 @@
 import { Select, Input } from "../../atoms";
 import { Typography } from "../../atoms/typography/typography";
 import { Controller, useFormContext, RegisterOptions } from "react-hook-form";
+import { useId } from "react";
 
 interface InputWrapperProps {
   className?: string;
@@ -31,16 +32,16 @@ export const InputWrapper = ({
   } = useFormContext();
 
   const fieldError = errors[name]?.message as string;
+  const generatedId = useId();
+  const inputId = `${name}-${generatedId.replace(/:/g, "")}`;
+  const errorId = `${inputId}-error`;
   return (
-    <label className={`flex flex-col gap-1 ${className}`}>
+    <div className={`flex flex-col gap-1 ${className}`}>
       <div className="flex items-center gap-1">
-        <Typography
-          variant="strong"
-          className={`text-sm ${fieldError ? "text-red-600" : ""}`}
-        >
+        <label htmlFor={inputId} className={`text-sm font-semibold ${fieldError ? "text-red-700" : ""}`}>
           {label}
-        </Typography>
-        {required && <span>*</span>}
+          {required && <span aria-hidden="true"> *</span>}
+        </label>
       </div>
 
       <Controller
@@ -55,6 +56,10 @@ export const InputWrapper = ({
               return (
                 <Select
                   field={field}
+                  id={inputId}
+                  aria-invalid={Boolean(fieldError)}
+                  aria-describedby={fieldError ? errorId : undefined}
+                  required={required}
                   className={inputClassName}
                   {...additionalInputProps}
                 />
@@ -64,6 +69,10 @@ export const InputWrapper = ({
                 <Input
                   type={type || "text"}
                   field={field}
+                  id={inputId}
+                  aria-invalid={Boolean(fieldError)}
+                  aria-describedby={fieldError ? errorId : undefined}
+                  required={required}
                   className={inputClassName}
                   {...additionalInputProps}
                 />
@@ -73,12 +82,12 @@ export const InputWrapper = ({
       />
 
       {fieldError && (
-        <div className="flex items-center gap-1 mt-1">
-          <Typography variant="span" className="text-red-600 text-xs">
+        <div id={errorId} role="alert" className="flex items-center gap-1 mt-1">
+          <Typography variant="span" className="text-red-700 text-sm">
             {fieldError}
           </Typography>
         </div>
       )}
-    </label>
+    </div>
   );
 };

@@ -19,12 +19,12 @@ export const DeleteTransaction = ({
   const transaction = transactions.find(({ id }) => id === transactionId);
 
   if (!isReady) {
-    return null;
+    return <p role="status" aria-live="polite">{t("common.loading")}</p>;
   }
 
   if (!transaction) {
     return (
-      <div className="rounded-lg border border-dashed border-primary p-6 text-center text-muted">
+      <div role="status" className="rounded-lg border border-dashed border-primary p-6 text-center text-muted">
         {t("transactions.notFound")}
       </div>
     );

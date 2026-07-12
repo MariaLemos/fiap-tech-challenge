@@ -51,9 +51,9 @@ export function GoalDetails({ goalId }: { goalId: string }) {
   const investments = useAppSelector(selectInvestments);
   const investmentValues = useAppSelector(selectInvestmentValuesMap);
 
-  if (!hydrated) return null;
+  if (!hydrated) return <main><p role="status" aria-live="polite">{t("common.loading")}</p></main>;
   if (!goal)
-    return <main className="p-4">{t("investments.goals.notFound")}</main>;
+    return <main className="p-4"><p role="status">{t("investments.goals.notFound")}</p></main>;
 
   return (
     <main className="investments-page">

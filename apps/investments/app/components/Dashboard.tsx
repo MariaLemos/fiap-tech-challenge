@@ -32,7 +32,7 @@ export function Dashboard() {
   const investmentValues = useAppSelector(selectInvestmentValuesMap);
   const hydrated = useAppSelector(selectHydrated);
 
-  if (!hydrated) return null;
+  if (!hydrated) return <main><p role="status" aria-live="polite">{t("common.loading")}</p></main>;
 
   const totalPlanned = goals.reduce(
     (total, goal) => total + goal.targetAmount,

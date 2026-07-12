@@ -53,7 +53,7 @@ function NewTransactionModalContent() {
 
 export default function NewTransactionModalPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<p role="status" aria-live="polite">Carregando formulário de transação...</p>}>
       <NewTransactionModalContent />
     </Suspense>
   );

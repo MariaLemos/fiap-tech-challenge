@@ -70,7 +70,7 @@ export const Statement = ({
         />
 
         {filteredTransactions.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-primary p-8 text-center text-muted">
+          <div role="status" className="rounded-lg border border-dashed border-primary p-8 text-center text-muted">
             {t("transactions.noResults")}
           </div>
         ) : (

@@ -11,3 +11,4 @@ button, a { border-radius: 999px; cursor: pointer; font: inherit; font-weight: 7
 .actions { align-items: center; display: flex; gap: .75rem; margin-top: .75rem; }
 .actions button, .actions a { background: transparent; border: 1px solid var(--color-accent, #39766a); color: var(--color-accent, #245d51); padding: .4rem .7rem; text-decoration: none; }
 .read-label { color: var(--color-muted, #536762); font-size: .85rem; font-weight: 700; } .empty { color: var(--color-muted, #536762); padding: 1rem; }
+button:focus-visible, a:focus-visible { outline: 3px solid #005fcc; outline-offset: 3px; }

@@ -19,9 +19,10 @@ export const TransactionAttachmentField = ({
   const { t } = useI18n();
   return (
     <div className="col-span-2 flex flex-col gap-2">
-      <label className="flex flex-col gap-1">
+      <label htmlFor="transaction-attachment" className="flex flex-col gap-1">
         <span className="text-sm font-semibold">{t("common.attachment")}</span>
         <input
+          id="transaction-attachment"
           ref={attachmentInputRef}
           type="file"
           accept="image/*,application/pdf"
@@ -44,6 +45,7 @@ export const TransactionAttachmentField = ({
             variant="secondary"
             className="shrink-0"
             onClick={onAttachmentRemove}
+            aria-label={`${t("actions.remove")}: ${attachment.name}`}
           >
             {t("actions.remove")}
           </Button>

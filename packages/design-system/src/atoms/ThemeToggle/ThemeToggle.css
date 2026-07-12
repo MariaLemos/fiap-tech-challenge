@@ -1,4 +1,5 @@
 .theme-toggle{
+    padding: 0;
     cursor: pointer;
     display: grid;
     align-items: center;

@@ -162,10 +162,11 @@ export function LoginForm() {
           }}
         />
 
-        <label className="flex flex-col gap-1">
-          <Typography variant="strong" className="text-sm">
+        <div className="flex flex-col gap-1">
+          <label htmlFor="login-password" className="text-sm font-semibold">
             {t("auth.login.fields.password")}
-          </Typography>
+            <span aria-hidden="true"> *</span>
+          </label>
           <div className="flex gap-2 items-center">
             <Controller
               name="password"
@@ -179,9 +180,13 @@ export function LoginForm() {
               }}
               render={({ field }) => (
                 <Input
+                  id="login-password"
                   field={field}
                   type={showPassword ? "text" : "password"}
                   className="border-primary focus:border-primary/80 transition-colors flex-1"
+                  required
+                  aria-invalid={Boolean(form.formState.errors.password)}
+                  aria-describedby={form.formState.errors.password ? "login-password-error" : undefined}
                 />
               )}
             />
@@ -198,11 +203,13 @@ export function LoginForm() {
             </Button>
           </div>
           {form.formState.errors.password?.message ? (
-            <Typography variant="span" className="text-red-600 text-xs">
-              {String(form.formState.errors.password.message)}
-            </Typography>
+            <span id="login-password-error" role="alert">
+              <Typography variant="span" className="text-red-700 text-sm">
+                {String(form.formState.errors.password.message)}
+              </Typography>
+            </span>
           ) : null}
-        </label>
+        </div>
 
         <Button type="submit" loading={loading} className="mt-1">
           {t("auth.login.actions.submit")}
