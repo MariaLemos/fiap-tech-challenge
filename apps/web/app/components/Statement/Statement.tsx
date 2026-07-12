@@ -14,7 +14,11 @@ export const Statement = () => {
       className="statement h-[calc(100vh-6rem)] overflow-y-scroll gap-4"
       variant="colored"
     >
-      <List<Transaction> className="w-full" data={transactions} />
+      {transactions.length ? (
+        <List<Transaction> className="w-full" data={transactions} />
+      ) : (
+        <p role="status">{t("transactions.noResults")}</p>
+      )}
     </SectionBox>
   );
 };

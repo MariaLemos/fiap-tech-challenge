@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RouteModal } from "../../../components/RouteModal/RouteModal";
 import { TransactionForm } from "../../../components/TransactionForm/TransactionForm";
+import { TransactionFormLoadingStatus } from "../../../components/TransactionForm/TransactionFormLoadingStatus";
 import { useI18n } from "@repo/i18n/react";
 
 type TransactionType = "deposit" | "transfer" | "withdrawal";
@@ -53,7 +54,7 @@ function NewTransactionModalContent() {
 
 export default function NewTransactionModalPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<TransactionFormLoadingStatus />}>
       <NewTransactionModalContent />
     </Suspense>
   );

@@ -1,8 +1,8 @@
 @if (ready) {
   <div class="filters" role="group" [attr.aria-label]="t('alerts.filters.label')">
-    <button type="button" [class.active]="filter === 'all'" (click)="setFilter('all')">{{ t('alerts.filters.all') }}</button>
-    <button type="button" [class.active]="filter === 'unread'" (click)="setFilter('unread')">{{ t('alerts.filters.unread') }}</button>
-    <button type="button" [class.active]="filter === 'read'" (click)="setFilter('read')">{{ t('alerts.filters.read') }}</button>
+    <button type="button" [class.active]="filter === 'all'" [attr.aria-pressed]="filter === 'all'" (click)="setFilter('all')">{{ t('alerts.filters.all') }}</button>
+    <button type="button" [class.active]="filter === 'unread'" [attr.aria-pressed]="filter === 'unread'" (click)="setFilter('unread')">{{ t('alerts.filters.unread') }}</button>
+    <button type="button" [class.active]="filter === 'read'" [attr.aria-pressed]="filter === 'read'" (click)="setFilter('read')">{{ t('alerts.filters.read') }}</button>
   </div>
   <ul class="alerts" aria-live="polite">
     @for (alert of visibleAlerts; track alert.id) {
@@ -19,9 +19,9 @@
   </ul>
 } @else {
   @if (authError && loginUrl) {
-    <p aria-live="polite">Nao foi possivel validar autenticacao.</p>
+    <p role="alert">Não foi possível validar a autenticação.</p>
     <p><a [href]="loginUrl">Ir para login</a></p>
   } @else {
-    <p aria-live="polite">Carregando autenticacao...</p>
+    <p role="status" aria-live="polite">Carregando autenticação...</p>
   }
 }
