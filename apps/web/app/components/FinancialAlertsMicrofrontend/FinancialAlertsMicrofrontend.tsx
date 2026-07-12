@@ -28,6 +28,9 @@ const origin =
 const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "";
 
 function resolveAuthOrigin() {
+  if (authPathPrefix && typeof window !== "undefined") {
+    return window.location.origin;
+  }
   if (process.env.NEXT_PUBLIC_AUTH_ORIGIN)
     return process.env.NEXT_PUBLIC_AUTH_ORIGIN;
   if (typeof window !== "undefined") return window.location.origin;

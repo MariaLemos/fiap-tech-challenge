@@ -14,16 +14,14 @@ function resolveJwtSecret() {
 }
 
 function buildLoginRedirect(request: NextRequest) {
-  const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "";
+  const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "/auth";
   const normalizedAuthPathPrefix =
     authPathPrefix === "/"
       ? ""
       : authPathPrefix.endsWith("/")
         ? authPathPrefix.slice(0, -1)
         : authPathPrefix;
-  const authOrigin = normalizedAuthPathPrefix
-    ? request.nextUrl.origin
-    : (process.env.NEXT_PUBLIC_AUTH_ORIGIN ?? "http://localhost:3002");
+  const authOrigin = request.nextUrl.origin;
   const loginUrl = new URL(
     `${normalizedAuthPathPrefix}/login`,
     authOrigin,

@@ -5,7 +5,7 @@ export default function LogoutRedirectPage() {
     ? `https://${process.env.VERCEL_URL}`
     : undefined;
   const appOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN ?? deployedOrigin;
-  const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "";
+  const authPathPrefix = process.env.NEXT_PUBLIC_AUTH_PATH_PREFIX ?? "/auth";
   const normalizedAuthPathPrefix =
     authPathPrefix === "/"
       ? ""
