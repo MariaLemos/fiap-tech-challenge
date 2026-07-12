@@ -4,6 +4,16 @@ import { useUserInfo } from "../../../hooks/UserInfo.provider";
 import type { Transaction } from "../../../hooks/UserInfo.provider";
 import type { TransactionFormData } from "../TransactionForm.types";
 
+const mergeDateWithTime = (dateValue: string, timeSource: dayjs.Dayjs) => {
+  const date = dayjs(dateValue);
+
+  return date
+    .hour(timeSource.hour())
+    .minute(timeSource.minute())
+    .second(timeSource.second())
+    .millisecond(timeSource.millisecond());
+};
+
 export const useTransactionFormSubmit = ({
   formMethods,
   onSubmitCallback,
@@ -17,10 +27,17 @@ export const useTransactionFormSubmit = ({
 
   return async (data: TransactionFormData) => {
     try {
+      const parsedInputDate = dayjs(data.date);
+      const transactionDate = transaction
+        ? parsedInputDate.isSame(transaction.date, "day")
+          ? dayjs(transaction.date)
+          : mergeDateWithTime(data.date, dayjs(transaction.date))
+        : mergeDateWithTime(data.date, dayjs());
+
       const transactionData: Omit<Transaction, "id"> = {
         ...data,
         amount: Number(data.amount),
-        date: dayjs(data.date),
+        date: transactionDate,
         attachment: data.attachment ?? null,
       };
 
