@@ -2,7 +2,9 @@
 const nextConfig = {
   assetPrefix:
     process.env.AUTH_ASSET_PREFIX === undefined
-      ? ""
+      ? process.env.NODE_ENV === "production"
+        ? "/auth"
+        : ""
       : process.env.AUTH_ASSET_PREFIX,
   transpilePackages: ["@repo/auth", "@repo/design-system", "@repo/i18n"],
 };
