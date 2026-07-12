@@ -106,7 +106,7 @@ flowchart LR
     F --> P
 ```
 
-O shell público fica em `http://localhost:3000`. A navegação para `/investments` cruza a fronteira entre as apps Next.js e faz carregamento completo da nova zone. Os alertas Angular são carregados dinamicamente no dashboard e montados como um parcel do Single SPA.
+Em desenvolvimento, o proxy do Vercel Microfrontends oferece a experiência integrada em `http://localhost:3024`; a app `web`, em `http://localhost:3000`, redireciona para esse proxy. A navegação para `/investments` cruza a fronteira entre as apps Next.js e faz o carregamento completo da nova zone. Os alertas Angular são carregados dinamicamente no dashboard e montados como um parcel do Single SPA. A autenticação é encaminhada por `/auth`, enquanto seus assets usam o prefixo exclusivo `/auth-static` para não colidir com os bundles do shell.
 
 ### Estrutura do monorepo
 
@@ -168,7 +168,7 @@ Uma app não deve importar código diretamente de outra app. Recursos comuns dev
 
 ### Pré-requisitos
 
-- Node.js 18 ou superior; Node.js 22 é a versão usada nas imagens Docker;
+- Node.js 20.9.0 ou superior, conforme exigido pelo Next.js 16; Node.js 22 é a versão usada nas imagens Docker;
 - Yarn Classic 1.22;
 - Git;
 - Docker e Docker Compose, somente para a execução conteinerizada.
@@ -213,19 +213,25 @@ Use o resultado em `AUTH_MOCK_USER_PASSWORD_HASH` e preencha `AUTH_MOCK_USER_EMA
 
 Variáveis principais:
 
-| Variável                                                                      | Finalidade                                                  |
-| ----------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `AUTH_SECRET`                                                                 | Assinatura da sessão JWT; obrigatória em produção.          |
-| `AUTH_MOCK_USERS_JSON`                                                        | Lista opcional de usuários mock com hashes bcrypt.          |
-| `AUTH_MOCK_USER_EMAIL`, `AUTH_MOCK_USER_NAME`, `AUTH_MOCK_USER_PASSWORD_HASH` | Alternativa para configurar um único usuário mock.          |
-| `AUTH_COOKIE_DOMAIN`, `AUTH_COOKIE_NAME`                                      | Compartilhamento e nome do cookie de sessão.                |
-| `AUTH_ALLOWED_ORIGINS`                                                        | Origens autorizadas para redirects e integração entre apps. |
-| `AUTH_RATE_LIMIT_WINDOW_MINUTES`, `AUTH_RATE_LIMIT_MAX_ATTEMPTS`              | Janela e limite de tentativas de login.                     |
-| `NEXT_PUBLIC_APP_ORIGIN`                                                      | Origem pública do shell.                                    |
-| `NEXT_PUBLIC_AUTH_ORIGIN`                                                     | Origem pública da autoridade de autenticação.               |
-| `NEXT_PUBLIC_INVESTMENTS_ORIGIN`, `INVESTMENTS_ORIGIN`                        | Origens pública e interna da app de investimentos.          |
-| `NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN`                                         | Origem dos bundles do microfrontend Angular.                |
-| `INVESTMENTS_ASSET_PREFIX`                                                    | Prefixo dos assets da zone de investimentos.                |
+| Variável                                                                      | Finalidade                                                      |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `AUTH_SECRET`                                                                 | Assinatura da sessão JWT; obrigatória em produção.              |
+| `NEXTAUTH_SECRET`                                                             | Alias opcional de compatibilidade para `AUTH_SECRET`.           |
+| `AUTH_MOCK_USERS_JSON`                                                        | Lista opcional de usuários mock com hashes bcrypt.              |
+| `AUTH_MOCK_USER_EMAIL`, `AUTH_MOCK_USER_NAME`, `AUTH_MOCK_USER_PASSWORD_HASH` | Alternativa para configurar um único usuário mock.              |
+| `AUTH_COOKIE_DOMAIN`, `AUTH_COOKIE_NAME`                                      | Compartilhamento e nome do cookie de sessão.                    |
+| `AUTH_ALLOWED_ORIGINS`                                                        | Origens autorizadas para redirects após login/logout.           |
+| `AUTH_RATE_LIMIT_WINDOW_MINUTES`, `AUTH_RATE_LIMIT_MAX_ATTEMPTS`              | Janela e limite de tentativas de login.                         |
+| `AUTH_ORIGIN`                                                                 | Origem interna usada pelos servidores para consultar `auth`.    |
+| `AUTH_ASSET_PREFIX`                                                           | Prefixo exclusivo dos assets da aplicação de autenticação.      |
+| `NEXT_PUBLIC_APP_ORIGIN`                                                      | Origem pública do shell.                                        |
+| `NEXT_PUBLIC_AUTH_ORIGIN`                                                     | Origem pública da autoridade de autenticação.                   |
+| `NEXT_PUBLIC_AUTH_PATH_PREFIX`                                                | Prefixo opcional quando a autenticação é publicada sob o shell. |
+| `NEXT_PUBLIC_INVESTMENTS_ORIGIN`, `INVESTMENTS_ORIGIN`                        | Origens pública e interna da app de investimentos.              |
+| `NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN`                                         | Origem dos bundles do microfrontend Angular.                    |
+| `INVESTMENTS_ASSET_PREFIX`                                                    | Prefixo dos assets da zone de investimentos.                    |
+
+O CORS do endpoint `/api/session` aceita as origens locais conhecidas e as origens públicas configuradas por `NEXT_PUBLIC_APP_ORIGIN`, `NEXT_PUBLIC_INVESTMENTS_ORIGIN` e `NEXT_PUBLIC_AUTH_ORIGIN`.
 
 ### 3. Iniciar todas as aplicações
 
@@ -233,11 +239,12 @@ Variáveis principais:
 yarn dev:web
 ```
 
-O Turborepo inicia `auth`, `web`, `investments` e `financial-alerts-angular` em paralelo. Depois, acesse:
+O Turborepo inicia `auth`, `web`, `investments`, `financial-alerts-angular` e o proxy local do Vercel Microfrontends em paralelo. Depois, acesse:
 
-- Home: [http://localhost:3000](http://localhost:3000)
-- Transações: [http://localhost:3000/transactions](http://localhost:3000/transactions)
-- Investimentos pelo shell: [http://localhost:3000/investments](http://localhost:3000/investments)
+- Experiência integrada: [http://localhost:3024](http://localhost:3024)
+- Home pela app `web` (redireciona ao proxy): [http://localhost:3000](http://localhost:3000)
+- Transações: [http://localhost:3024/transactions](http://localhost:3024/transactions)
+- Investimentos pelo shell: [http://localhost:3024/investments](http://localhost:3024/investments)
 - App de investimentos direta: [http://localhost:3001/investments](http://localhost:3001/investments)
 - Login central: [http://localhost:3002/login](http://localhost:3002/login)
 - Microfrontend Angular: [http://localhost:4201](http://localhost:4201)
@@ -261,11 +268,29 @@ Para iniciar somente o shell, use `yarn workspace web dev`. Alguns recursos fica
 
 ## Docker e orquestração
 
-Cada aplicação possui build multi-stage. A imagem Angular usa Nginx para servir os bundles e configurar os headers necessários ao carregamento pelo shell.
+Cada aplicação possui build multi-stage. A imagem Angular usa Nginx para servir os bundles e configurar os headers necessários ao carregamento pelo shell. O Compose injeta as origens internas, o segredo compartilhado e a configuração do usuário mock nos serviços que precisam validar o JWT.
 
-> **Atenção:** o Compose já descreve a orquestração exigida pelo desafio, mas a configuração atual não encaminha `AUTH_SECRET` e os usuários mock para o build/runtime dos serviços Next.js. Antes de uma execução conteinerizada completa, configure essa injeção por secrets/variáveis da plataforma ou por um override local não versionado.
+Para o Compose, crie também o arquivo `.env` na raiz:
 
-Depois de disponibilizar as variáveis aos serviços, inicie a stack:
+macOS/Linux:
+
+```sh
+cp .env.example .env
+```
+
+PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Substitua `AUTH_SECRET` e gere `AUTH_MOCK_USER_PASSWORD_HASH` conforme o passo de configuração anterior. Como hashes bcrypt contêm `$`, coloque o valor entre aspas simples no `.env` para impedir interpolação pelo Compose:
+
+```dotenv
+AUTH_MOCK_USER_PASSWORD_HASH='$2b$10$...'
+```
+
+O `.dockerignore` exclui arquivos `.env` reais do contexto de build. Em seguida, inicie a stack:
 
 ```sh
 docker compose up --build
@@ -280,7 +305,7 @@ Serviços do Compose:
 | `auth`                     | Next.js   |     3002      |
 | `financial-alerts-angular` | Nginx     |     4201      |
 
-Em produção, injete `AUTH_SECRET` e os usuários mock no serviço `auth`; use o mesmo segredo e nome de cookie nos serviços Next.js que validam o JWT. O segredo também precisa estar disponível durante o build atual, pois o Next.js avalia a configuração de autenticação ao coletar as rotas. Ajuste as origens públicas para os domínios reais. O arquivo `.env` usado pelo Compose para interpolação não substitui a configuração segura de secrets da plataforma de deploy.
+Os builds Docker usam somente um valor descartável para permitir a coleta das rotas Next.js. O segredo real é injetado apenas nos containers em execução. Em produção, use o gerenciador de secrets da plataforma, mantenha o mesmo segredo e nome de cookie nos serviços Next.js e ajuste as origens públicas para os domínios reais.
 
 Para encerrar:
 
@@ -329,13 +354,13 @@ Acesse [http://localhost:6006](http://localhost:6006).
 
 O design system inclui, entre outros:
 
-- atoms: `Button`, `Input`, `Select`, `Switch`, `Typography` e `ThemeToggle`;
-- molecules: `BarChart`, `PieChart`, `ProgressBar`, `DialogModal`, `InputWrapper`, `List`, `SectionBox`, `Navigation`, `MobileNavigation`, `LanguageSelector`, `UserMenu` e `SensitiveDataBox`;
+- atoms públicos: `Button`, `Input`, `Select`, `Typography` e `ThemeToggle`;
+- molecules públicas: `BarChart`, `PieChart`, `ProgressBar`, `DialogModal`, `InputWrapper`, `List`, `SectionBox`, `Navigation`, `LanguageSelector`, `UserMenu` e `SensitiveDataBox`;
 - organism: `Header`;
-- hooks/providers: tema, modal e detecção de viewport;
+- hooks/providers: tema e detecção de viewport;
 - tokens de cores e temas claro/escuro.
 
-Componentes compartilhados devem ser documentados com stories que cubram variações, estados de erro, vazio, carregamento e responsividade.
+O `Header` usa internamente a navegação mobile. A cobertura atual do Storybook inclui a introdução, tokens e atoms; molecules e organisms ainda devem receber stories que cubram variações, estados de erro, vazio, carregamento e responsividade.
 
 ## UX, acessibilidade e internacionalização
 

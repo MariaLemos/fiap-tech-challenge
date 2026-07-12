@@ -21,7 +21,6 @@ const pagesList = [
     path: "/investments",
     zone: "investments",
   },
-  { label: "navigation.services", path: "/services" },
 ] as const;
 
 const getZoneFromPath = (path: string) => {

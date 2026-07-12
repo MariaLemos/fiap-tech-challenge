@@ -148,6 +148,7 @@ function getAllowedRedirectOrigins() {
     "http://localhost:3000",
     "http://localhost:3001",
     "http://localhost:3002",
+    "http://localhost:3024",
     "http://localhost:4201",
     process.env.NEXT_PUBLIC_APP_ORIGIN,
     process.env.NEXT_PUBLIC_INVESTMENTS_ORIGIN,
