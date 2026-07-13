@@ -1,6 +1,5 @@
 "use client";
 
-import { Navigation, useIsMobile } from "@repo/design-system";
 import { useSearchParams } from "next/navigation";
 import { NewTransaction } from "../../components/NewTransaction/NewTransaction";
 
@@ -30,7 +29,6 @@ const getInitialAmount = (amount: string | null): number | undefined => {
 };
 
 export const NewTransactionPageClient = () => {
-  const isMobile = useIsMobile();
   const searchParams = useSearchParams();
 
   const initialValues = {
@@ -40,7 +38,6 @@ export const NewTransactionPageClient = () => {
 
   return (
     <main className="transactions-page gap-4 py-4 h-[calc(100vh-4rem)]">
-      {!isMobile && <Navigation />}
       <NewTransaction initialValues={initialValues} />
     </main>
   );

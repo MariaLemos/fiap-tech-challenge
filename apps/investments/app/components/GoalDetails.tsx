@@ -2,11 +2,9 @@
 
 import {
   Button,
-  Navigation,
   ProgressBar,
   SectionBox,
   Typography,
-  useIsMobile,
 } from "@repo/design-system";
 import { formatCurrency } from "@repo/i18n";
 import { useI18n } from "@repo/i18n/react";
@@ -33,7 +31,6 @@ const linkClass =
   "inline-flex h-10 items-center rounded-full border-2 border-primary px-3 font-semibold text-primary";
 
 export function GoalDetails({ goalId }: { goalId: string }) {
-  const isMobile = useIsMobile();
   const { locale, t } = useI18n();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -57,7 +54,6 @@ export function GoalDetails({ goalId }: { goalId: string }) {
 
   return (
     <main className="investments-page">
-      {!isMobile && <Navigation />}
       <div className="dashboard-content">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Navigation, ProgressBar, useIsMobile } from "@repo/design-system";
+import { ProgressBar } from "@repo/design-system";
 import { AllocationSection } from "./dashboard/AllocationSection";
 import { DashboardHeader } from "./dashboard/DashboardHeader";
 import { DashboardMetrics } from "./dashboard/DashboardMetrics";
@@ -22,7 +22,6 @@ const linkClass =
   "inline-flex h-10 items-center rounded-full border-2 border-primary bg-primary px-3 font-semibold text-white";
 
 export function Dashboard() {
-  const isMobile = useIsMobile();
   const { locale, t } = useI18n();
   const goals = useAppSelector(selectGoals);
   const totalCurrent = useAppSelector(selectPortfolioTotal);
@@ -50,7 +49,6 @@ export function Dashboard() {
 
   return (
     <main className="investments-page">
-      {!isMobile && <Navigation />}
       <div className="dashboard-content">
         <DashboardHeader
           title={t("investments.dashboard.title")}
