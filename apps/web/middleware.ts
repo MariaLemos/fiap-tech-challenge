@@ -22,10 +22,7 @@ function buildLoginRedirect(request: NextRequest) {
         ? authPathPrefix.slice(0, -1)
         : authPathPrefix;
   const authOrigin = request.nextUrl.origin;
-  const loginUrl = new URL(
-    `${normalizedAuthPathPrefix}/login`,
-    authOrigin,
-  );
+  const loginUrl = new URL(`${normalizedAuthPathPrefix}/login`, authOrigin);
   loginUrl.searchParams.set("returnTo", request.url);
   return NextResponse.redirect(loginUrl);
 }
@@ -37,7 +34,8 @@ export async function middleware(request: NextRequest) {
     pathname === "/login" ||
     pathname === "/logout" ||
     pathname === "/auth" ||
-    pathname.startsWith("/auth/")
+    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/auth-static/")
   ) {
     return NextResponse.next();
   }

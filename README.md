@@ -1,133 +1,411 @@
-﻿# Sistema de gerenciamento financeiro
+# Sistema de Gerenciamento Financeiro
 
-Monorepo Turborepo com uma aplicação financeira em Next.js, organizada para evoluir para uma arquitetura de microfrontends usando **Next Multi-Zones**.
+Aplicação de gerenciamento financeiro desenvolvida para o **Tech Challenge - Fase 2** da Pós-graduação FIAP. O projeto evolui a solução criada na Fase 1 para um monorepo com microfrontends em **Next.js/React** e **Angular**, autenticação centralizada, dashboards financeiros, gestão de transações e investimentos, conteinerização e preparação para deploy na Vercel.
 
-O projeto ainda usa dados mockados e estado local. A separação atual prioriza a estrutura: uma app principal para dashboard e uma app separada para a área de transações.
+- Repositório: [github.com/MariaLemos/fiap-tech-challenge](https://github.com/MariaLemos/fiap-tech-challenge)
+- Protótipo: [Figma - Projeto Financeiro](https://www.figma.com/design/ns5TC3X5Xr8V7I3LYKg9KA/Projeto-Financeiro?node-id=503-4264&t=gZy56WDAUfXtS23Y-1)
+- Vídeo demonstrativo: **link ainda não informado no repositório**
+- Aplicação em cloud: **URL pública ainda não informada no repositório**
 
-## Autenticacao unificada (SSO)
+## Requisitos do Tech Challenge - Fase 2
 
-O monorepo agora possui uma autoridade central de autenticacao em `apps/auth`, com **Auth.js / NextAuth.js** e login por credenciais.
+Legenda: ✅ implementado; ⚠️ parcialmente implementado ou preparado; ⬜ não evidenciado.
 
-### Apps protegidos
+| Requisito                       | Evidência no projeto                                                                                     | Status |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------- | :----: |
+| Gráficos e análises na Home     | Receitas x despesas, categorias, saldo, carteira e metas.                                                |   ✅   |
+| Personalização por widgets      | Metas e alertas existem, mas os widgets não são configuráveis. **Plus opcional, não conta para a nota.** |   ⚠️   |
+| Filtros e pesquisa              | Busca por descrição e filtros por tipo e categoria.                                                      |   ✅   |
+| Paginação ou scroll infinito    | Paginação em grupos de cinco transações.                                                                 |   ✅   |
+| Validação avançada              | Validação contínua de descrição, categoria, valor, tipo e data.                                          |   ✅   |
+| Sugestão de categorias          | Sugestões pelo tipo e por palavras-chave da descrição.                                                   |   ✅   |
+| Anexos em transações            | Aceita imagens/PDFs, mas persiste somente os metadados.                                                  |   ⚠️   |
+| Containerização                 | As quatro aplicações possuem Dockerfile.                                                                 |   ✅   |
+| Orquestração                    | Docker Compose integra as quatro aplicações.                                                             |   ✅   |
+| Deploy em cloud                 | Configuração Vercel presente; URL pública ainda não informada.                                           |   ⚠️   |
+| Autenticação e autorização      | Auth centralizado, JWT, cookies protegidos e rotas autenticadas; sem RBAC.                               |   ✅   |
+| Microfrontends independentes    | Shell/transações, investimentos e alertas são apps separadas.                                            |   ✅   |
+| Single SPA ou Module Federation | Angular é montado no shell como parcel do Single SPA.                                                    |   ✅   |
+| Roteamento e comunicação        | Rewrites, props e packages compartilhados integram as apps.                                              |   ✅   |
+| Gestão de estado                | Redux Toolkit em investimentos e Context/`useReducer` em transações.                                     |   ✅   |
+| TypeScript                      | Apps e packages de código possuem typecheck.                                                             |   ✅   |
+| SSR ou SSG                      | Server Components renderizam sessão, cookies, tema e idioma no servidor.                                 |   ✅   |
+| UX e acessibilidade             | Responsividade, teclado, ARIA, temas, i18n e controle de foco.                                           |   ✅   |
+| README de desenvolvimento       | Instalação, configuração, comandos, URLs e limitações documentados.                                      |   ✅   |
+| Vídeo demonstrativo             | Link ainda não informado no repositório.                                                                 |   ⬜   |
 
-- `apps/web`
-- `apps/investments`
-- `apps/financial-alerts-angular` (protecao no host e verificacao no proprio microfrontend)
+## Funcionalidades
 
-### Fluxo
+### Dashboard financeiro
 
-- usuario sem sessao e redirecionado para `apps/auth/login`
-- autentica por credenciais
-- recebe sessao JWT (cookie compartilhavel entre apps)
-- logout global via `apps/auth/logout`
+- boas-vindas e saldo calculado a partir das transações;
+- extrato das transações mais recentes;
+- atalho para iniciar uma nova transação;
+- gráfico comparativo de receitas e despesas;
+- gráfico de despesas agrupadas por categoria;
+- alertas financeiros fornecidos pelo microfrontend Angular;
+- tema claro/escuro e interface em português ou inglês.
 
-### Configuracao de ambiente
+### Transações
 
-Copie `.env.example` para `.env` e ajuste os valores.
+- criação, edição e exclusão com confirmação;
+- depósito, transferência e retirada;
+- descrição, categoria, valor e data;
+- validação em tempo real;
+- sugestão automática de categoria;
+- seleção de anexo em imagem ou PDF;
+- busca por descrição e filtros por tipo/categoria;
+- paginação da lista;
+- rotas dedicadas e modais interceptados pelo App Router.
 
-Para a senha mock, informe apenas hash bcrypt em `AUTH_MOCK_USER_PASSWORD_HASH`.
+### Investimentos e metas
 
-Exemplo para gerar hash localmente:
+- dashboard com valor planejado, valor atual e progresso geral;
+- cadastro, edição e exclusão de metas;
+- cadastro e edição de investimentos;
+- associação de investimentos a metas;
+- registro de aportes;
+- alocação por classe de ativo e investimentos não associados;
+- estado global com Redux Toolkit e persistência local.
 
-```sh
-node -e "console.log(require('bcryptjs').hashSync('290596', 10))"
-```
+### Alertas financeiros
 
-## Tech Challenge
+- microfrontend desenvolvido em Angular;
+- montagem e desmontagem pelo ciclo de vida do Single SPA;
+- filtros de alertas lidos e não lidos;
+- marcação de alerta como lido;
+- validação da sessão central antes da exibição;
+- fallback no shell caso os bundles remotos estejam indisponíveis.
 
-Este projeto foi desenvolvido como parte do **Tech Challenge da Fase 01** da Pós-graduação da **FIAP**.
+### Autenticação centralizada
 
-O desafio consiste em desenvolver o front-end de uma aplicação financeira com foco em:
-
-- visualizar saldo da conta corrente;
-- exibir extrato das últimas transações;
-- adicionar novas transações, como depósito, transferência e retirada;
-- editar transações existentes;
-- excluir transações com confirmação;
-- visualizar e gerenciar o histórico de transações;
-- usar dados mockados/estado local para simular o backend;
-- organizar uma base escalável com TypeScript, Next.js, Turborepo e design system.
-
-Nesta evolução do projeto, a aplicação também foi preparada para uma arquitetura de microfrontends usando **Next Multi-Zones**, mantendo o dashboard em `apps/web` e a área de transações em `apps/transactions`.
-
-## Funcionalidades implementadas
-
-### Home/dashboard
-
-- Página inicial com boas-vindas aos usuários.
-- Exibição do saldo da conta corrente.
-- Extrato das últimas transações.
-- Seção para iniciar uma nova transação.
-- Navegação para a área completa de transações em `/transactions`.
-
-### Adicionar nova transação
-
-- Formulário para adicionar transações.
-- Campos para tipo, valor e data.
-- Validação com React Hook Form.
-- Atualização do estado local após o envio.
-
-### Sistema de modal
-
-- `ModalProvider` para gerenciamento de modals.
-- `useModal` para abrir componentes em modal.
-- `useDialogModal` para modals de confirmação.
-- Suporte a ações como editar e excluir transações.
-
-### Gerenciamento de transações
-
-- Listagem de transações com o componente `List`.
-- Edição de transações via modal.
-- Exclusão de transações com confirmação.
-- Cálculo automático do saldo com base nas transações.
+- autoridade central em `apps/auth` com Auth.js/NextAuth.js;
+- login por credenciais e sessão JWT;
+- cookie de sessão compartilhável entre as aplicações;
+- logout central e retorno para a origem solicitante;
+- rotas de `web` e `investments` protegidas por middleware;
+- verificação da sessão pelo microfrontend Angular;
+- senhas comparadas com hash bcrypt;
+- cookie `httpOnly`, `sameSite=lax` e `secure` em produção;
+- rate limit de login por IP e e-mail;
+- allowlist de origens para redirects e CORS.
 
 ## Arquitetura
 
-```txt
-apps/
-  web/
-    app principal em Next.js
-    home/dashboard
-    shell de navegação
-    rewrites para a zone de transactions
-
-  transactions/
-    app Next.js separada
-    rota /transactions
-    componentes relacionados a transações
-
-packages/
-  design-system/
-    componentes genéricos, tokens, tema, hooks e Storybook
-
-  contracts/
-    tipos e contratos compartilhados entre apps
-
-  utils/
-    funções utilitárias compartilhadas
-
-  eslint-config/
-    configuração compartilhada de ESLint
-
-  typescript-config/
-    configuração compartilhada de TypeScript
+```mermaid
+flowchart LR
+    U["Usuário"] --> W["web :3000<br/>Shell, dashboard e transações"]
+    W -->|"/auth e /api/session"| A["auth :3002<br/>Auth.js e JWT"]
+    W -->|"/investments"| I["investments :3001<br/>Next.js e Redux Toolkit"]
+    I --> A
+    W -->|"Single SPA + props"| F["financial-alerts-angular :4201<br/>Angular"]
+    F -->|"validação de sessão"| A
+    W --> P["packages compartilhados"]
+    I --> P
+    A --> P
+    F --> P
 ```
 
-## Monorepo
+Em desenvolvimento, o proxy do Vercel Microfrontends oferece a experiência integrada em `http://localhost:3024`; a app `web`, em `http://localhost:3000`, redireciona para esse proxy. A navegação para `/investments` cruza a fronteira entre as apps Next.js e faz o carregamento completo da nova zone. Os alertas Angular são carregados dinamicamente no dashboard e montados como um parcel do Single SPA. A autenticação é encaminhada por `/auth`, enquanto seus assets usam o prefixo exclusivo `/auth-static` para não colidir com os bundles do shell.
 
-Este repositório usa **Yarn Workspaces** e **Turborepo**.
+### Estrutura do monorepo
 
-O objetivo do monorepo é manter apps e pacotes compartilhados no mesmo repositório, permitindo:
+```text
+apps/
+  auth/                       # autoridade central de autenticação (Next.js)
+  web/                        # shell, Home e transações (Next.js)
+  investments/                # microfrontend de investimentos (Next.js + Redux)
+  financial-alerts-angular/   # microfrontend de alertas (Angular + Single SPA)
 
-- evoluir microfrontends de forma independente;
-- compartilhar design-system, contratos, configs e utilitários;
-- padronizar lint, typecheck e build;
-- evitar duplicação de componentes e regras comuns;
-- rodar tarefas por app/pacote ou no repo inteiro.
+packages/
+  auth/                       # configuração e utilitários compartilhados de autenticação
+  contracts/                  # contratos de transações, metas, investimentos e aportes
+  design-system/              # UI, tema, gráficos, hooks e Storybook
+  i18n/                       # catálogos e providers pt-BR/en-US
+  utils/                      # moeda, datas, saldo e agrupamentos
+  eslint-config/              # configurações compartilhadas do ESLint
+  typescript-config/          # configurações compartilhadas do TypeScript
+```
 
-### Workspaces
+### Apps e responsabilidades
 
-Os workspaces são definidos no `package.json` da raiz:
+| Workspace                  | Responsabilidade                                                                           | Porta local |
+| -------------------------- | ------------------------------------------------------------------------------------------ | :---------: |
+| `web`                      | Shell principal, dashboard, CRUD e listagem de transações, gráficos e montagem do Angular. |    3000     |
+| `investments`              | Metas, carteira, aportes, métricas e estado Redux.                                         |    3001     |
+| `auth`                     | Login, logout, emissão/validação de sessão e endpoint central `/api/session`.              |    3002     |
+| `financial-alerts-angular` | Alertas financeiros integrados ao shell pelo Single SPA.                                   |    4201     |
+
+### Packages compartilhados
+
+- `@repo/design-system`: atoms, molecules e organisms reutilizáveis, gráficos Recharts, tokens, temas, navegação, modais e hooks;
+- `@repo/contracts`: tipos e contratos que evitam acoplamento direto entre apps;
+- `@repo/auth`: configuração de credenciais/JWT e clientes para consultar a sessão central;
+- `@repo/i18n`: traduções e troca de locale compartilhadas entre React e Angular;
+- `@repo/utils`: funções puras para moeda, datas, saldo e agrupamento de transações;
+- `@repo/eslint-config` e `@repo/typescript-config`: padronização de qualidade e compilação.
+
+Uma app não deve importar código diretamente de outra app. Recursos comuns devem ser movidos para `packages/*` ou expostos por um contrato bem definido.
+
+## Tecnologias
+
+- Next.js 16 e React 19;
+- Angular 18;
+- TypeScript;
+- Single SPA e `single-spa-angular`;
+- Vercel Microfrontends;
+- Redux Toolkit e React Redux;
+- Auth.js/NextAuth.js e bcrypt;
+- React Hook Form;
+- Recharts;
+- Tailwind CSS;
+- Turborepo e Yarn Workspaces;
+- Storybook;
+- Docker, Docker Compose e Nginx;
+- ESLint e Prettier.
+
+## Como executar em desenvolvimento
+
+### Pré-requisitos
+
+- Node.js 20.11.1 na linha 20 LTS ou Node.js 22 ou superior; Node.js 22 é a versão usada nas imagens Docker;
+- Yarn Classic 1.22;
+- Git;
+- Docker e Docker Compose, somente para a execução conteinerizada.
+
+### 1. Clonar e instalar
+
+```sh
+git clone https://github.com/MariaLemos/fiap-tech-challenge.git
+cd fiap-tech-challenge
+yarn install --frozen-lockfile
+```
+
+O gerenciador definido pelo projeto é o Yarn e o `yarn.lock` deve ser tratado como lockfile principal.
+
+### 2. Configurar o ambiente
+
+As apps Next.js carregam arquivos de ambiente a partir do próprio workspace. Copie o exemplo para `auth`, `web` e `investments`:
+
+macOS/Linux:
+
+```sh
+cp .env.example apps/auth/.env.local
+cp .env.example apps/web/.env.local
+cp .env.example apps/investments/.env.local
+```
+
+PowerShell:
+
+```powershell
+Copy-Item .env.example apps/auth/.env.local
+Copy-Item .env.example apps/web/.env.local
+Copy-Item .env.example apps/investments/.env.local
+```
+
+Defina pelo menos um segredo longo em `AUTH_SECRET`. Para configurar o usuário mock fora do fallback de desenvolvimento, gere um hash bcrypt - nunca armazene a senha em texto puro:
+
+```sh
+node -e "console.log(require('bcryptjs').hashSync('sua-senha', 10))"
+```
+
+Use o resultado em `AUTH_MOCK_USER_PASSWORD_HASH` e preencha `AUTH_MOCK_USER_EMAIL` e `AUTH_MOCK_USER_NAME`.
+
+Variáveis principais:
+
+| Variável                                                                      | Finalidade                                                      |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `AUTH_SECRET`                                                                 | Assinatura da sessão JWT; obrigatória em produção.              |
+| `NEXTAUTH_SECRET`                                                             | Alias opcional de compatibilidade para `AUTH_SECRET`.           |
+| `AUTH_MOCK_USERS_JSON`                                                        | Lista opcional de usuários mock com hashes bcrypt.              |
+| `AUTH_MOCK_USER_EMAIL`, `AUTH_MOCK_USER_NAME`, `AUTH_MOCK_USER_PASSWORD_HASH` | Alternativa para configurar um único usuário mock.              |
+| `AUTH_COOKIE_DOMAIN`, `AUTH_COOKIE_NAME`                                      | Compartilhamento e nome do cookie de sessão.                    |
+| `AUTH_ALLOWED_ORIGINS`                                                        | Origens autorizadas para redirects após login/logout.           |
+| `AUTH_RATE_LIMIT_WINDOW_MINUTES`, `AUTH_RATE_LIMIT_MAX_ATTEMPTS`              | Janela e limite de tentativas de login.                         |
+| `AUTH_ORIGIN`                                                                 | Origem interna usada pelos servidores para consultar `auth`.    |
+| `AUTH_ASSET_PREFIX`                                                           | Prefixo exclusivo dos assets da aplicação de autenticação.      |
+| `NEXT_PUBLIC_APP_ORIGIN`                                                      | Origem pública do shell.                                        |
+| `NEXT_PUBLIC_AUTH_ORIGIN`                                                     | Origem pública da autoridade de autenticação.                   |
+| `NEXT_PUBLIC_AUTH_PATH_PREFIX`                                                | Prefixo opcional quando a autenticação é publicada sob o shell. |
+| `NEXT_PUBLIC_INVESTMENTS_ORIGIN`, `INVESTMENTS_ORIGIN`                        | Origens pública e interna da app de investimentos.              |
+| `NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN`                                         | Origem dos bundles do microfrontend Angular.                    |
+| `INVESTMENTS_ASSET_PREFIX`                                                    | Prefixo dos assets da zone de investimentos.                    |
+
+O CORS do endpoint `/api/session` aceita as origens locais conhecidas e as origens públicas configuradas por `NEXT_PUBLIC_APP_ORIGIN`, `NEXT_PUBLIC_INVESTMENTS_ORIGIN` e `NEXT_PUBLIC_AUTH_ORIGIN`.
+
+### 3. Iniciar todas as aplicações
+
+```sh
+yarn dev:web
+```
+
+O Turborepo inicia `auth`, `web`, `investments`, `financial-alerts-angular` e o proxy local do Vercel Microfrontends em paralelo. Depois, acesse:
+
+- Experiência integrada: [http://localhost:3024](http://localhost:3024)
+- Home pela app `web` (redireciona ao proxy): [http://localhost:3000](http://localhost:3000)
+- Transações: [http://localhost:3024/transactions](http://localhost:3024/transactions)
+- Investimentos pelo shell: [http://localhost:3024/investments](http://localhost:3024/investments)
+- App de investimentos direta: [http://localhost:3001/investments](http://localhost:3001/investments)
+- Login central: [http://localhost:3002/login](http://localhost:3002/login)
+- Microfrontend Angular: [http://localhost:4201](http://localhost:4201)
+
+Quando nenhuma credencial foi configurada e `NODE_ENV` não é `production`, existem dois usuários exclusivamente para desenvolvimento:
+
+| E-mail                   | Senha      |
+| ------------------------ | ---------- |
+| `mariaj.lemos@yahoo.com` | `290596`   |
+| `fiap@teste.com`         | `fiap 123` |
+
+### Execução individual
+
+```sh
+yarn dev:auth
+yarn dev:investments
+yarn dev:financial-alerts
+```
+
+Para iniciar somente o shell, use `yarn workspace web dev`. Alguns recursos ficarão indisponíveis se autenticação, investimentos ou alertas não estiverem ativos.
+
+## Docker e orquestração
+
+Cada aplicação possui build multi-stage. A imagem Angular usa Nginx para servir os bundles e configurar os headers necessários ao carregamento pelo shell. O Compose injeta as origens internas, o segredo compartilhado e a configuração do usuário mock nos serviços que precisam validar o JWT.
+
+Para o Compose, crie também o arquivo `.env` na raiz:
+
+macOS/Linux:
+
+```sh
+cp .env.example .env
+```
+
+PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Substitua `AUTH_SECRET` (ou use `NEXTAUTH_SECRET`) e configure uma das estratégias de usuários: `AUTH_MOCK_USERS_JSON` ou o trio `AUTH_MOCK_USER_EMAIL`, `AUTH_MOCK_USER_NAME` e `AUTH_MOCK_USER_PASSWORD_HASH`. Como hashes bcrypt contêm `$`, coloque o hash - ou o JSON completo - entre aspas simples no `.env` para impedir interpolação pelo Compose:
+
+```dotenv
+AUTH_MOCK_USER_PASSWORD_HASH='$2b$10$...'
+# ou
+AUTH_MOCK_USERS_JSON='[{"id":"1","name":"Maria","email":"maria@example.com","passwordHash":"$2b$10$..."}]'
+```
+
+O `.dockerignore` exclui arquivos `.env` reais do contexto de build. Em seguida, inicie a stack:
+
+```sh
+docker compose up --build
+```
+
+Serviços do Compose:
+
+| Serviço                    | Container | Porta exposta |
+| -------------------------- | --------- | :-----------: |
+| `web`                      | Next.js   |     3000      |
+| `investments`              | Next.js   |     3001      |
+| `auth`                     | Next.js   |     3002      |
+| `financial-alerts-angular` | Nginx     |     4201      |
+
+Os builds Docker usam somente um valor descartável para permitir a coleta das rotas Next.js. O segredo real é injetado apenas nos containers em execução. Em produção, use o gerenciador de secrets da plataforma, mantenha o mesmo segredo e nome de cookie nos serviços Next.js e ajuste as origens públicas para os domínios reais.
+
+Para encerrar:
+
+```sh
+docker compose down
+```
+
+## Comandos úteis
+
+```sh
+# Desenvolvimento de todos os workspaces que possuem tarefa dev
+yarn dev
+
+# Build completo
+yarn build
+
+# Build por aplicação
+yarn build:web
+yarn build:auth
+yarn build:investments
+yarn build:financial-alerts
+
+# Qualidade
+yarn lint
+yarn check-types
+yarn format
+```
+
+Tarefas também podem ser filtradas diretamente pelo Turborepo:
+
+```sh
+yarn turbo build --filter=web
+yarn turbo build --filter=investments
+yarn turbo lint --filter=@repo/design-system
+```
+
+## Storybook e design system
+
+O Storybook documenta componentes reutilizáveis fora das aplicações:
+
+```sh
+yarn workspace @repo/design-system storybook
+```
+
+Acesse [http://localhost:6006](http://localhost:6006).
+
+O design system inclui, entre outros:
+
+- atoms públicos: `Button`, `Input`, `Select`, `Typography` e `ThemeToggle`;
+- molecules públicas: `BarChart`, `PieChart`, `ProgressBar`, `DialogModal`, `InputWrapper`, `List`, `SectionBox`, `Navigation`, `LanguageSelector`, `UserMenu` e `SensitiveDataBox`;
+- organism: `Header`;
+- hooks/providers: tema e detecção de viewport;
+- tokens de cores e temas claro/escuro.
+
+O `Header` usa internamente a navegação mobile. A cobertura atual do Storybook inclui a introdução, tokens e atoms; molecules e organisms ainda devem receber stories que cubram variações, estados de erro, vazio, carregamento e responsividade.
+
+## UX, acessibilidade e internacionalização
+
+- navegação responsiva para desktop e mobile;
+- foco inicial, restauração de foco, focus trap e fechamento com `Escape` nos modais;
+- labels associados aos campos e mensagens com `role="alert"`/`role="status"`;
+- estados ARIA em botões, filtros, barras de progresso e áreas carregadas dinamicamente;
+- ações de ícone com nomes acessíveis;
+- temas com tokens de contraste e alternância persistida;
+- catálogos em português e inglês compartilhados por React e Angular;
+- navegação por teclado usando controles HTML nativos e links.
+
+## Dados, persistência e limitações atuais
+
+O enunciado informa que o backend seria disponibilizado separadamente. Neste repositório, a interface continua independente de uma API real:
+
+- transações começam com dados mockados e são persistidas no `localStorage`;
+- metas, investimentos e aportes usam Redux Toolkit com persistência no `localStorage`;
+- alertas usam dados em memória no microfrontend Angular;
+- usuários são mockados por variáveis de ambiente;
+- anexos persistem somente metadados, não o arquivo;
+- ao limpar os dados do navegador, o estado volta aos mocks iniciais;
+- o rate limit atual fica em memória e deve ser substituído por uma solução distribuída em produção;
+- não há autorização baseada em papéis;
+- não há suíte de testes automatizados configurada no momento.
+
+## Evolução desde a Fase 1
+
+A primeira fase entregou a base da experiência financeira:
+
+- saldo da conta corrente;
+- extrato e histórico de transações;
+- criação, edição e exclusão com confirmação;
+- dados mockados e estado local;
+- TypeScript, Next.js, Turborepo e design system;
+- sistema de tema e modais reutilizáveis;
+- Storybook para componentes compartilhados.
+
+Na Fase 2, a base foi ampliada com gráficos, busca/filtros, paginação, validação e anexos, autenticação central, investimentos com Redux, integração React/Angular por microfrontends, internacionalização, acessibilidade, Docker Compose e configuração para cloud.
+
+## Monorepo e Turborepo
+
+Os workspaces são definidos na raiz:
 
 ```json
 {
@@ -135,398 +413,32 @@ Os workspaces são definidos no `package.json` da raiz:
 }
 ```
 
-Isso permite que apps consumam pacotes internos com aliases como:
+O `turbo.json` padroniza e ordena `build`, `dev`, `lint`, `check-types`, `storybook` e `build-storybook`. O cache local evita repetir tarefas quando entradas e dependências não mudaram.
 
-```ts
-import { Header } from "@repo/design-system";
-import type { Transaction } from "@repo/contracts";
-import { formatCurrency } from "@repo/utils";
-```
-
-### Turborepo
-
-O `turbo.json` define as tarefas compartilhadas:
-
-- `build`
-- `dev`
-- `lint`
-- `check-types`
-- `storybook`
-- `build-storybook`
-
-As tarefas podem ser executadas para tudo:
-
-```sh
-yarn build
-yarn lint
-yarn check-types
-```
-
-Ou filtradas por workspace:
-
-```sh
-yarn turbo build --filter=web
-yarn turbo build --filter=transactions
-yarn turbo lint --filter=@repo/design-system
-```
-
-### Apps vs. packages
-
-Use `apps/*` para produtos executáveis:
-
-- apps Next.js
-- microfrontends
-- shells
-- surfaces independentes
-
-Use `packages/*` para código compartilhado:
-
-- componentes genéricos;
-- contratos;
-- helpers;
-- configurações;
-- tokens;
-- hooks reutilizáveis.
-
-Regra prática: uma app não deve importar código diretamente de outra app. Se algo precisa ser compartilhado entre `web` e `transactions`, mova para `packages/*` ou exponha por API/contrato.
-
-## Multi-Zones
-
-A app `web` roda como shell principal em `http://localhost:3000`.
-
-A app `transactions` roda separadamente em `http://localhost:3001`.
-
-O acesso público a transações continua sendo:
-
-```txt
-http://localhost:3000/transactions
-```
-
-Isso funciona porque `apps/web/next.config.js` faz rewrites para a zone `transactions`:
-
-```txt
-/transactions -> http://localhost:3001/transactions
-/transactions/:path+ -> http://localhost:3001/transactions/:path+
-/transactions-static/:path+ -> http://localhost:3001/transactions-static/:path+
-```
-
-Na app `transactions`, o `assetPrefix` aponta para `/transactions-static`, como recomendado para Next Multi-Zones.
-
-## Apps
-
-### `apps/web`
-
-App principal e shell da experiência.
-
-Responsabilidades atuais:
-
-- Renderizar a Home/dashboard.
-- Exibir saldo, formulário de nova transação e extrato na tela inicial.
-- Carregar `Header`, `Navigation`, tema e modals pelo design system.
-- Encaminhar `/transactions` para a zone `transactions`.
-
-Observação: por enquanto, alguns componentes de transação ainda existem em `web` para preservar o dashboard atual funcionando.
-
-### `apps/transactions`
-
-Zone separada para a área de transações.
-
-Responsabilidades atuais:
-
-- Renderizar a rota `/transactions`.
-- Concentrar componentes relacionados a transações para evolução futura.
-- Usar o mesmo `design-system`, tema, modals e estilos globais da app `web`.
-
-Componentes relacionados:
-
-- `TransactionForm`
-- `NewTransaction`
-- `Statement`
-- `Balance`
-- `Welcome`
-- `UserInfoProvider`
-
-## Packages
-
-### `packages/design-system`
-
-Biblioteca compartilhada de UI.
-
-Inclui:
-
-- Atoms: `Button`, `Input`, `Select`, `Typography`, `ThemeToggle`
-- Molecules: `DialogModal`, `InputWrapper`, `List`, `SectionBox`, `Navigation`, `UserMenu`
-- Organisms: `Header`
-- Hooks: `useModal`, `useDialogModal`, `useTheme`, `useIsMobile`
-- Estilos globais e tokens de tema
-- Storybook
-
-As apps devem importar `@repo/design-system/global.css` em seus estilos globais e configurar o Tailwind para escanear `packages/design-system/src`.
-
-### Componentes disponíveis
-
-#### Atoms
-
-- `Button`: botões com variantes `primary`, `secondary` e `icon`.
-- `Input`: campos de entrada com suporte a máscaras.
-- `Select`: listas de seleção.
-- `Typography`: sistema de tipografia (`h1` a `h6`, `p`, `span`, `strong`).
-- `ThemeToggle`: alternador de tema claro/escuro.
-
-#### Molecules
-
-- `DialogModal`: modal de confirmação e ações.
-- `InputWrapper`: input com label, integração com React Hook Form e mensagens de validação.
-- `List`: lista de transações com ações de edição e exclusão.
-- `SectionBox`: container com título e variantes visuais.
-- `Navigation`: navegação principal entre áreas.
-- `UserMenu`: menu do usuário.
-- `SensitiveDataBox`: exibição de dados sensíveis com ação de mostrar/ocultar.
-
-#### Organisms
-
-- `Header`: cabeçalho da aplicação.
-
-#### Hooks
-
-- `useModal`: gerenciamento de modals.
-- `useDialogModal`: modals pré-definidos para confirmação.
-- `useTheme`: gerenciamento de tema.
-- `useIsMobile`: detecção de viewport móvel.
-
-## Storybook
-
-O `packages/design-system` possui Storybook para documentar e testar os componentes compartilhados fora das apps.
-
-Rodar o Storybook:
-
-```sh
-yarn workspace @repo/design-system storybook
-```
-
-Acessar:
-
-```txt
-http://localhost:6006
-```
-
-O Storybook é o lugar recomendado para evoluir componentes genéricos antes de usá-los em `apps/web` ou `apps/transactions`.
-
-Conteúdos esperados no Storybook:
-
-- Introdução ao projeto e ao Tech Challenge
-- Atoms: `Button`, `Input`, `Select`, `Typography`, `ThemeToggle`
-- Molecules: `DialogModal`, `InputWrapper`, `List`, `SectionBox`, `Navigation`
-- Organisms: `Header`
-- Hooks e providers: tema, modals e hooks compartilhados
-- Tokens de design: cores, temas e estados visuais
-
-O Storybook também deve ser usado para:
-
-- documentar variações visuais dos componentes;
-- testar props com controles interativos;
-- demonstrar estados de erro, vazio e carregamento;
-- validar responsividade dos componentes reutilizáveis;
-- manter exemplos de implementação para consulta.
-
-Quando criar um componente que será reutilizado por mais de uma app, ele deve preferencialmente nascer ou ser documentado no `packages/design-system` e ganhar uma story correspondente.
-
-### `packages/contracts`
-
-Pacote para tipos e contratos compartilhados.
-
-Atualmente inclui:
-
-- `Transaction`
-- `TransactionInput`
-- `TransactionType`
-- `TransactionStatus`
-- `TransactionFilters`
-- labels de tipos/status
-- categorias de transação
-
-### `packages/utils`
-
-Pacote para funções puras compartilhadas.
-
-Atualmente inclui:
-
-- `formatCurrency`
-- `formatDate`
-- `calculateBalance`
-- `groupTransactionsByCategory`
-
-## Comandos
-
-Instalar dependências:
-
-```sh
-yarn install
-```
-
-Rodar as duas zones em desenvolvimento:
-
-```sh
-yarn dev:zones
-```
-
-Rodar apenas a app principal:
-
-```sh
-yarn dev:web
-```
-
-Rodar apenas a zone de transações:
-
-```sh
-yarn dev:transactions
-```
-
-Build completo:
-
-```sh
-yarn build
-```
-
-Lint:
-
-```sh
-yarn lint
-```
-
-Typecheck:
-
-```sh
-yarn check-types
-```
-
-Formatação:
-
-```sh
-yarn format
-```
-
-## URLs
-
-Com `yarn dev:zones`:
-
-```txt
-http://localhost:3000
-http://localhost:3000/transactions
-http://localhost:3001/transactions
-```
-
-Storybook do design system:
-
-```sh
-yarn workspace @repo/design-system storybook
-```
-
-```txt
-http://localhost:6006
-```
-
-## Estado atual
-
-- `web` preserva o dashboard existente.
-- `transactions` já existe como app separada e renderiza a área de transações.
-- O design system é compartilhado entre as apps.
-- `contracts` e `utils` existem para suportar a evolução da separação entre microfrontends.
-- Ainda não há backend; os dados seguem em estado local/mock.
-
-## Dados e backend
-
-Este projeto utiliza **dados mockados** para simular o backend, conforme os requisitos do Tech Challenge.
-
-Atualmente, os dados de transações são gerenciados com:
-
-- estado local em React;
-- `useReducer` para operações de transação;
-- dados fictícios iniciais para demonstração;
-- cálculo de saldo derivado das transações.
-
-Não há persistência real em banco de dados. Ao recarregar a aplicação, o estado volta ao mock inicial.
-
-## Referências do design
-
-- **Figma**: [Projeto Financeiro](https://www.figma.com/design/ns5TC3X5Xr8V7I3LYKg9KA/Projeto-Financeiro?node-id=503-4264&t=gZy56WDAUfXtS23Y-1)
-- O layout do Figma é uma referência para consistência visual, usabilidade e acessibilidade.
-
-## Cache remoto
-
-O Turborepo pode usar cache remoto para compartilhar artefatos de build entre máquinas e acelerar pipelines.
-
-Para habilitar:
+Para habilitar cache remoto do Turborepo:
 
 ```sh
 turbo login
 turbo link
 ```
 
-Mais detalhes: [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
+## Referências
 
-## Tech Challenge - FIAP
-
-Este projeto atende aos requisitos do Tech Challenge Fase 01, incluindo:
-
-- interface de gerenciamento financeiro;
-- dashboard com saldo e extrato;
-- cadastro de transações;
-- edição de transações;
-- exclusão com confirmação;
-- dados mockados;
-- design system com Storybook;
-- componentes reutilizáveis;
-- sistema de tema;
-- sistema de modal;
-- estrutura escalável com Turborepo;
-- tipagem com TypeScript.
-
-Melhorias já presentes no projeto:
-
-- documentação interativa no Storybook;
-- suporte a tema claro/escuro;
-- modal system com hooks especializados;
-- estrutura preparada para Next Multi-Zones;
-- pacotes compartilhados para contratos e utilitários.
-
-## Tecnologias
-
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- Turborepo
-- Storybook
-- React Hook Form
-- ESLint
-- Prettier
-
-## Links úteis
-
-Documentações oficiais das principais tecnologias usadas no projeto:
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Next.js Multi-Zones](https://nextjs.org/docs/app/guides/multi-zones)
-- [React Documentation](https://react.dev/)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [Turborepo Documentation](https://turborepo.com/docs)
+- [Next.js](https://nextjs.org/docs)
+- [Vercel Microfrontends](https://vercel.com/docs/microfrontends)
+- [Single SPA](https://single-spa.js.org/)
+- [Angular](https://angular.dev/)
+- [React](https://react.dev/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Auth.js](https://authjs.dev/)
+- [TypeScript](https://www.typescriptlang.org/docs/)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [Turborepo](https://turborepo.com/docs)
 - [Yarn Workspaces](https://classic.yarnpkg.com/lang/en/docs/workspaces/)
-- [Storybook Documentation](https://storybook.js.org/docs)
-- [React Hook Form Documentation](https://react-hook-form.com/get-started)
-- [ESLint Documentation](https://eslint.org/docs/latest/)
-- [Prettier Documentation](https://prettier.io/docs/)
-
-Referências úteis do Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- [Storybook](https://storybook.js.org/docs)
+- [React Hook Form](https://react-hook-form.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/)
 
 ---
 
-**Desenvolvido como parte do Tech Challenge da Pós-graduação FIAP**
+Desenvolvido como parte do Tech Challenge da Pós-graduação FIAP.

@@ -3,7 +3,13 @@ import process from "node:process";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@repo/auth", "@repo/contracts", "@repo/design-system", "@repo/i18n", "@repo/utils"],
+  transpilePackages: [
+    "@repo/auth",
+    "@repo/contracts",
+    "@repo/design-system",
+    "@repo/i18n",
+    "@repo/utils",
+  ],
   async rewrites() {
     const investmentsOrigin =
       process.env.INVESTMENTS_ORIGIN ?? "http://localhost:3001";
@@ -25,6 +31,10 @@ const nextConfig = {
       {
         source: "/auth/:path*",
         destination: `${authOrigin}/:path*`,
+      },
+      {
+        source: "/auth-static/:path*",
+        destination: `${authOrigin}/auth-static/:path*`,
       },
       {
         source: "/investments-static/:path*",

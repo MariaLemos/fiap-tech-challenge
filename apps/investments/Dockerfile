@@ -25,7 +25,7 @@ ENV NEXT_PUBLIC_AUTH_ORIGIN=$NEXT_PUBLIC_AUTH_ORIGIN
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn workspace investments build
+RUN AUTH_SECRET=build-only-secret-not-used-at-runtime yarn workspace investments build
 
 FROM node:22-alpine AS runner
 

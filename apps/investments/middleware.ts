@@ -23,10 +23,7 @@ function buildLoginRedirect(request: NextRequest) {
       : authPathPrefix.endsWith("/")
         ? authPathPrefix.slice(0, -1)
         : authPathPrefix;
-  const loginUrl = new URL(
-    `${normalizedAuthPathPrefix}/login`,
-    authOrigin,
-  );
+  const loginUrl = new URL(`${normalizedAuthPathPrefix}/login`, authOrigin);
   loginUrl.searchParams.set("returnTo", request.url);
   return NextResponse.redirect(loginUrl);
 }
@@ -41,6 +38,7 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({
     req: request,
     secret: resolveJwtSecret(),
+    cookieName: process.env.AUTH_COOKIE_NAME ?? "authjs.session-token",
   });
 
   if (!token) {

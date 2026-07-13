@@ -2,6 +2,7 @@ import type { Preview } from "@storybook/react";
 import "../src/styles/global.css";
 import "../src/styles/tailwind.css";
 import "../src/styles/themes.css";
+import { I18nProvider } from "@repo/i18n/react";
 import { ThemeProvider } from "../src/hooks/useTheme";
 
 const preview: Preview = {
@@ -43,11 +44,13 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <ThemeProvider>
-        <div className="min-h-screen bg-background text-foreground p-6">
-          <Story />
-        </div>
-      </ThemeProvider>
+      <I18nProvider locale="pt-BR">
+        <ThemeProvider>
+          <div className="min-h-screen bg-background p-6 text-font">
+            <Story />
+          </div>
+        </ThemeProvider>
+      </I18nProvider>
     ),
   ],
 };

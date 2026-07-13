@@ -1,134 +1,83 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./atoms/button/button";
 
-const meta: Meta = {
-  title: "Introdução/Tech Challenge",
+const Introduction = () => (
+  <main className="mx-auto max-w-4xl p-8">
+    <h1 className="mb-6 text-4xl font-bold text-primary">
+      Design System — Tech Challenge FIAP
+    </h1>
+
+    <p className="mb-6 text-lg">
+      Este design system integra o Tech Challenge da Fase 2 e reúne os
+      componentes reutilizáveis das aplicações financeiras do monorepo.
+    </p>
+
+    <section className="mb-8">
+      <h2 className="mb-4 text-2xl font-semibold">Cobertura no Storybook</h2>
+      <p className="mb-4">
+        Os 17 componentes públicos possuem stories dedicadas: 5 atoms, 11
+        molecules e 1 organism. Os tokens de cores também têm uma documentação
+        visual própria.
+      </p>
+      <ul className="list-disc space-y-2 pl-6">
+        <li>
+          <strong>Atoms:</strong> Button, Input, Select, ThemeToggle e
+          Typography.
+        </li>
+        <li>
+          <strong>Molecules:</strong> UserMenu, SectionBox, SensitiveDataBox,
+          List, Navigation, LanguageSelector, InputWrapper, DialogModal,
+          SimpleBarChart, PieChart e ProgressBar.
+        </li>
+        <li>
+          <strong>Organism:</strong> Header.
+        </li>
+        <li>
+          <strong>Tokens:</strong> paleta de cores dos temas claro e escuro.
+        </li>
+      </ul>
+    </section>
+
+    <section className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+      <article className="rounded-lg border p-4">
+        <h2 className="mb-2 text-xl font-semibold">Temas e responsividade</h2>
+        <p className="mb-4 text-sm">
+          Todas as stories usam o ThemeProvider e podem ser avaliadas nos
+          viewports mobile, tablet e desktop configurados no preview.
+        </p>
+        <div className="flex gap-2">
+          <Button variant="primary">Primário</Button>
+          <Button variant="secondary">Secundário</Button>
+        </div>
+      </article>
+
+      <article className="rounded-lg border p-4">
+        <h2 className="mb-2 text-xl font-semibold">Documentação interativa</h2>
+        <p className="text-sm">
+          Use a navegação lateral para consultar props, variantes e exemplos de
+          uso isolados. Componentes com contexto recebem providers globais de
+          tema e internacionalização.
+        </p>
+      </article>
+    </section>
+
+    <section className="rounded-lg border border-primary/30 bg-primary/10 p-4">
+      <h2 className="mb-2 text-xl font-semibold text-primary">Tecnologias</h2>
+      <p>React, TypeScript, Tailwind CSS, Storybook e Vite.</p>
+    </section>
+  </main>
+);
+
+const meta = {
+  title: "Introdução/Fase 2",
+  component: Introduction,
   parameters: {
     layout: "fullscreen",
-    docs: {
-      page: () => (
-        <div className="p-8 max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-6 text-primary">
-            Design System - Tech Challenge FIAP
-          </h1>
-
-          <div className="prose max-w-none">
-            <p className="text-lg mb-6">
-              Este design system foi desenvolvido como parte do{" "}
-              <strong>Tech Challenge da Fase 01</strong>
-              do curso de Pós-graduação da FIAP. O sistema fornece uma
-              biblioteca de componentes reutilizáveis para a aplicação de
-              gerenciamento financeiro.
-            </p>
-
-            <h2 className="text-2xl font-semibold mb-4">
-              Melhorias Implementadas
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-semibold mb-2">🎨 Botões Aprimorados</h3>
-                <ul className="text-sm space-y-1 mb-3">
-                  <li>• Estados hover com feedback visual</li>
-                  <li>• Estados disabled com background cinza</li>
-                  <li>• Transições suaves e animações</li>
-                  <li>• Foco acessível</li>
-                </ul>
-                <div className="flex gap-2">
-                  <Button variant="primary" className="text-xs">
-                    Normal
-                  </Button>
-                  <Button variant="primary" disabled className="text-xs">
-                    Disabled
-                  </Button>
-                </div>
-              </div>
-
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-semibold mb-2">
-                  📜 Scrollbar Personalizada
-                </h3>
-                <ul className="text-sm space-y-1 mb-3">
-                  <li>• Design minimalista e limpo</li>
-                  <li>• Suporte a tema claro/escuro</li>
-                  <li>• Compatível com todos os navegadores</li>
-                  <li>• Bordas arredondadas</li>
-                </ul>
-                <div className="h-20 overflow-y-scroll border rounded p-2 text-xs">
-                  <div className="h-40">
-                    Conteúdo com scroll personalizado. Role para ver a scrollbar
-                    customizada em ação. Esta é apenas uma demonstração do novo
-                    design de scrollbar que foi implementado globalmente no
-                    projeto.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <h2 className="text-2xl font-semibold mb-4">
-              Estrutura do Sistema
-            </h2>
-
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
-              <h3 className="font-semibold mb-2">Organização Atômica</h3>
-              <ul className="text-sm space-y-1">
-                <li>
-                  <strong>Atoms:</strong> Componentes básicos (Button, Input,
-                  Select)
-                </li>
-                <li>
-                  <strong>Molecules:</strong> Combinações simples (InputWrapper,
-                  List)
-                </li>
-                <li>
-                  <strong>Organisms:</strong> Componentes complexos (Header,
-                  Navigation)
-                </li>
-                <li>
-                  <strong>Tokens:</strong> Variáveis de design (cores,
-                  tipografia, espaçamentos)
-                </li>
-              </ul>
-            </div>
-
-            <h2 className="text-2xl font-semibold mb-4">Tecnologias</h2>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {["React", "TypeScript", "Tailwind CSS", "Storybook", "Vite"].map(
-                (tech) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
-                  >
-                    {tech}
-                  </span>
-                ),
-              )}
-            </div>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="font-semibold text-blue-800 mb-2">💡 Como usar</h3>
-              <p className="text-blue-700 text-sm">
-                Navegue pelas seções à esquerda para explorar todos os
-                componentes disponíveis. Cada componente inclui documentação,
-                exemplos interativos e código para implementação.
-              </p>
-            </div>
-          </div>
-        </div>
-      ),
-    },
   },
   tags: ["autodocs"],
-};
+} satisfies Meta<typeof Introduction>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Story mínima apenas para manter a estrutura do Storybook funcionando
-export const Docs: Story = {
-  parameters: {
-    docs: {
-      disable: false,
-    },
-  },
-};
+export const Overview: Story = {};
