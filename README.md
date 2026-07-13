@@ -168,7 +168,7 @@ Uma app não deve importar código diretamente de outra app. Recursos comuns dev
 
 ### Pré-requisitos
 
-- Node.js 20.9.0 ou superior, conforme exigido pelo Next.js 16; Node.js 22 é a versão usada nas imagens Docker;
+- Node.js 20.11.1 na linha 20 LTS ou Node.js 22 ou superior; Node.js 22 é a versão usada nas imagens Docker;
 - Yarn Classic 1.22;
 - Git;
 - Docker e Docker Compose, somente para a execução conteinerizada.
@@ -284,10 +284,12 @@ PowerShell:
 Copy-Item .env.example .env
 ```
 
-Substitua `AUTH_SECRET` e gere `AUTH_MOCK_USER_PASSWORD_HASH` conforme o passo de configuração anterior. Como hashes bcrypt contêm `$`, coloque o valor entre aspas simples no `.env` para impedir interpolação pelo Compose:
+Substitua `AUTH_SECRET` (ou use `NEXTAUTH_SECRET`) e configure uma das estratégias de usuários: `AUTH_MOCK_USERS_JSON` ou o trio `AUTH_MOCK_USER_EMAIL`, `AUTH_MOCK_USER_NAME` e `AUTH_MOCK_USER_PASSWORD_HASH`. Como hashes bcrypt contêm `$`, coloque o hash - ou o JSON completo - entre aspas simples no `.env` para impedir interpolação pelo Compose:
 
 ```dotenv
 AUTH_MOCK_USER_PASSWORD_HASH='$2b$10$...'
+# ou
+AUTH_MOCK_USERS_JSON='[{"id":"1","name":"Maria","email":"maria@example.com","passwordHash":"$2b$10$..."}]'
 ```
 
 O `.dockerignore` exclui arquivos `.env` reais do contexto de build. Em seguida, inicie a stack:

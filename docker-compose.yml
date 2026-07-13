@@ -8,7 +8,7 @@ services:
         NEXT_PUBLIC_AUTH_ORIGIN: ${NEXT_PUBLIC_AUTH_ORIGIN:-http://localhost:3002}
         AUTH_ASSET_PREFIX: /auth-static
     environment:
-      AUTH_SECRET: ${AUTH_SECRET:?Defina AUTH_SECRET no arquivo .env}
+      AUTH_SECRET: ${AUTH_SECRET:-${NEXTAUTH_SECRET:?Defina AUTH_SECRET ou NEXTAUTH_SECRET no arquivo .env}}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-}
       AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN:-}
       AUTH_COOKIE_NAME: ${AUTH_COOKIE_NAME:-authjs.session-token}
@@ -18,7 +18,7 @@ services:
       AUTH_MOCK_USERS_JSON: ${AUTH_MOCK_USERS_JSON:-}
       AUTH_MOCK_USER_EMAIL: ${AUTH_MOCK_USER_EMAIL:-mariaj.lemos@yahoo.com}
       AUTH_MOCK_USER_NAME: ${AUTH_MOCK_USER_NAME:-maria}
-      AUTH_MOCK_USER_PASSWORD_HASH: ${AUTH_MOCK_USER_PASSWORD_HASH:?Defina AUTH_MOCK_USER_PASSWORD_HASH no arquivo .env}
+      AUTH_MOCK_USER_PASSWORD_HASH: ${AUTH_MOCK_USER_PASSWORD_HASH:-}
       NEXT_PUBLIC_APP_ORIGIN: ${NEXT_PUBLIC_APP_ORIGIN:-http://localhost:3000}
       NEXT_PUBLIC_AUTH_ORIGIN: ${NEXT_PUBLIC_AUTH_ORIGIN:-http://localhost:3002}
       NEXT_PUBLIC_INVESTMENTS_ORIGIN: ${NEXT_PUBLIC_INVESTMENTS_ORIGIN:-http://localhost:3001}
@@ -37,7 +37,7 @@ services:
         AUTH_ORIGIN: http://auth:3002
         NEXT_PUBLIC_AUTH_ORIGIN: ${NEXT_PUBLIC_AUTH_ORIGIN:-http://localhost:3002}
     environment:
-      AUTH_SECRET: ${AUTH_SECRET:?Defina AUTH_SECRET no arquivo .env}
+      AUTH_SECRET: ${AUTH_SECRET:-${NEXTAUTH_SECRET:?Defina AUTH_SECRET ou NEXTAUTH_SECRET no arquivo .env}}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-}
       AUTH_COOKIE_NAME: ${AUTH_COOKIE_NAME:-authjs.session-token}
       AUTH_ORIGIN: http://auth:3002
@@ -59,7 +59,7 @@ services:
       args:
         NEXT_PUBLIC_AUTH_ORIGIN: ${NEXT_PUBLIC_AUTH_ORIGIN:-http://localhost:3002}
     environment:
-      AUTH_SECRET: ${AUTH_SECRET:?Defina AUTH_SECRET no arquivo .env}
+      AUTH_SECRET: ${AUTH_SECRET:-${NEXTAUTH_SECRET:?Defina AUTH_SECRET ou NEXTAUTH_SECRET no arquivo .env}}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-}
       AUTH_COOKIE_NAME: ${AUTH_COOKIE_NAME:-authjs.session-token}
       AUTH_ORIGIN: http://auth:3002
