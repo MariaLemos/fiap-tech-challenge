@@ -2,37 +2,37 @@
 
 Aplicação de gerenciamento financeiro desenvolvida para o **Tech Challenge - Fase 2** da Pós-graduação FIAP. O projeto evolui a solução criada na Fase 1 para um monorepo com microfrontends em **Next.js/React** e **Angular**, autenticação centralizada, dashboards financeiros, gestão de transações e investimentos, conteinerização e preparação para deploy na Vercel.
 
-- Repositório: [github.com/MariaLemos/y](https://github.com/MariaLemos/y)
+- Repositório: [github.com/MariaLemos/fiap-tech-challenge](https://github.com/MariaLemos/fiap-tech-challenge)
 - Protótipo: [Figma - Projeto Financeiro](https://www.figma.com/design/ns5TC3X5Xr8V7I3LYKg9KA/Projeto-Financeiro?node-id=503-4264&t=gZy56WDAUfXtS23Y-1)
 - Vídeo demonstrativo: **link ainda não informado no repositório**
 - Aplicação em cloud: **URL pública ainda não informada no repositório**
 
 ## Requisitos do Tech Challenge - Fase 2
 
-Legenda: ✅ implementado; 🟡 implementado parcialmente ou preparado; ⬜ não evidenciado no repositório.
+Legenda: ✅ implementado; ⚠️ parcialmente implementado ou preparado; ⬜ não evidenciado.
 
-| Requisito do enunciado                            | Como o projeto atende                                                                                                                                                                                                                                                                          | Status |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----: |
-| Gráficos e análises financeiras na Home           | Gráfico de receitas x despesas, gráfico de despesas por categoria, saldo, extrato, métricas de investimentos, alocação da carteira e progresso das metas.                                                                                                                                      |   ✅   |
-| Personalização do dashboard com widgets           | Metas e alertas existem como áreas do dashboard, mas o usuário ainda não pode escolher, ordenar ou ocultar widgets. Este item é um **plus e não compõe a nota**, conforme o enunciado.                                                                                                         |   🟡   |
-| Filtros avançados e pesquisa de transações        | Pesquisa por descrição e filtros por tipo e categoria, com ação para limpar os filtros.                                                                                                                                                                                                        |   ✅   |
-| Paginação ou scroll infinito                      | A listagem filtrada é paginada em grupos de cinco transações, com controles de página anterior e próxima.                                                                                                                                                                                      |   ✅   |
-| Validação avançada ao adicionar/editar transações | Validação contínua de descrição, categoria, valor, tipo e data com React Hook Form. O valor deve ser positivo e limitado a R$ 1.000.000; datas futuras ou anteriores a um ano são rejeitadas.                                                                                                  |   ✅   |
-| Sugestão automática de categorias                 | Sugestões baseadas no tipo e em palavras-chave da descrição, como mercado, transporte, salário, aluguel e condomínio.                                                                                                                                                                          |   ✅   |
-| Anexos em transações                              | O formulário aceita imagens e PDFs, exibe os metadados e permite remover o anexo. Como não há backend, somente nome, tamanho e MIME type são persistidos; o conteúdo do arquivo não é enviado.                                                                                                 |   🟡   |
-| Containerização de frontend e componentes         | As quatro aplicações possuem Dockerfile próprio.                                                                                                                                                                                                                                               |   ✅   |
-| Docker Compose ou Kubernetes                      | `docker-compose.yml` orquestra `web`, `auth`, `investments` e `financial-alerts-angular`.                                                                                                                                                                                                      |   ✅   |
-| Deploy em ambiente cloud                          | Há configuração de Vercel Microfrontends para as apps Next.js e `vercel.json` para o Angular. A URL pública da entrega ainda precisa ser adicionada.                                                                                                                                           |   🟡   |
-| Autenticação e autorização                        | SSO por credenciais com Auth.js, sessão JWT, cookies protegidos, middlewares de rota, validação de sessão no Angular, hash bcrypt, limite de tentativas e redirects/origens permitidos. O controle de acesso atual diferencia usuário autenticado de não autenticado; não há perfis ou papéis. |   ✅   |
-| Microfrontends independentes                      | Shell e transações em `web`, área de investimentos em uma app Next.js independente e alertas em Angular.                                                                                                                                                                                       |   ✅   |
-| Integração por Single SPA ou Module Federation    | O Angular é montado no shell como parcel do Single SPA; as apps Next.js usam `@vercel/microfrontends`, roteamento entre aplicações e rewrites.                                                                                                                                                 |   ✅   |
-| Roteamento e comunicação entre microfrontends     | `/investments` é encaminhado para a app de investimentos; locale e dados de autenticação são enviados ao Angular por props; contratos, traduções e UI são compartilhados por packages.                                                                                                         |   ✅   |
-| Gestão de estado complexa                         | Redux Toolkit/React Redux gerencia metas, investimentos e aportes. Transações usam Context + `useReducer`.                                                                                                                                                                                     |   ✅   |
-| TypeScript                                        | Apps e packages são tipados e possuem tarefa de typecheck.                                                                                                                                                                                                                                     |   ✅   |
-| SSR ou SSG                                        | Os layouts Next.js usam Server Components para cookies, tema, idioma, sessão e metadados. A estratégia adotada é SSR; SSG não é usado nas áreas autenticadas.                                                                                                                                  |   ✅   |
-| UX e acessibilidade                               | Layout responsivo, navegação desktop/mobile, temas claro/escuro, português/inglês, feedback de erro/carregamento, HTML semântico, ARIA e modais com foco controlado, Escape e focus trap.                                                                                                      |   ✅   |
-| README com instruções de desenvolvimento          | Instalação, configuração, execução, URLs, comandos e limitações estão documentados abaixo.                                                                                                                                                                                                     |   ✅   |
-| Vídeo demonstrativo                               | Deve mostrar funcionalidades, integração dos microfrontends, deploy cloud e melhorias do frontend. O link ainda precisa ser incluído nesta página.                                                                                                                                             |   ⬜   |
+| Requisito                       | Evidência no projeto                                                                                     | Status |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------- | :----: |
+| Gráficos e análises na Home     | Receitas x despesas, categorias, saldo, carteira e metas.                                                |   ✅   |
+| Personalização por widgets      | Metas e alertas existem, mas os widgets não são configuráveis. **Plus opcional, não conta para a nota.** |   ⚠️   |
+| Filtros e pesquisa              | Busca por descrição e filtros por tipo e categoria.                                                      |   ✅   |
+| Paginação ou scroll infinito    | Paginação em grupos de cinco transações.                                                                 |   ✅   |
+| Validação avançada              | Validação contínua de descrição, categoria, valor, tipo e data.                                          |   ✅   |
+| Sugestão de categorias          | Sugestões pelo tipo e por palavras-chave da descrição.                                                   |   ✅   |
+| Anexos em transações            | Aceita imagens/PDFs, mas persiste somente os metadados.                                                  |   ⚠️   |
+| Containerização                 | As quatro aplicações possuem Dockerfile.                                                                 |   ✅   |
+| Orquestração                    | Docker Compose integra as quatro aplicações.                                                             |   ✅   |
+| Deploy em cloud                 | Configuração Vercel presente; URL pública ainda não informada.                                           |   ⚠️   |
+| Autenticação e autorização      | Auth centralizado, JWT, cookies protegidos e rotas autenticadas; sem RBAC.                               |   ✅   |
+| Microfrontends independentes    | Shell/transações, investimentos e alertas são apps separadas.                                            |   ✅   |
+| Single SPA ou Module Federation | Angular é montado no shell como parcel do Single SPA.                                                    |   ✅   |
+| Roteamento e comunicação        | Rewrites, props e packages compartilhados integram as apps.                                              |   ✅   |
+| Gestão de estado                | Redux Toolkit em investimentos e Context/`useReducer` em transações.                                     |   ✅   |
+| TypeScript                      | Apps e packages de código possuem typecheck.                                                             |   ✅   |
+| SSR ou SSG                      | Server Components renderizam sessão, cookies, tema e idioma no servidor.                                 |   ✅   |
+| UX e acessibilidade             | Responsividade, teclado, ARIA, temas, i18n e controle de foco.                                           |   ✅   |
+| README de desenvolvimento       | Instalação, configuração, comandos, URLs e limitações documentados.                                      |   ✅   |
+| Vídeo demonstrativo             | Link ainda não informado no repositório.                                                                 |   ⬜   |
 
 ## Funcionalidades
 
@@ -77,7 +77,7 @@ Legenda: ✅ implementado; 🟡 implementado parcialmente ou preparado; ⬜ não
 - validação da sessão central antes da exibição;
 - fallback no shell caso os bundles remotos estejam indisponíveis.
 
-### Autenticação unificada (SSO)
+### Autenticação centralizada
 
 - autoridade central em `apps/auth` com Auth.js/NextAuth.js;
 - login por credenciais e sessão JWT;
@@ -176,8 +176,8 @@ Uma app não deve importar código diretamente de outra app. Recursos comuns dev
 ### 1. Clonar e instalar
 
 ```sh
-git clone https://github.com/MariaLemos/y.git
-cd y
+git clone https://github.com/MariaLemos/fiap-tech-challenge.git
+cd fiap-tech-challenge
 yarn install --frozen-lockfile
 ```
 
