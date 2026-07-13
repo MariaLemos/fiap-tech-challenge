@@ -1,6 +1,6 @@
 "use client";
 
-import { Navigation, SectionBox, useIsMobile } from "@repo/design-system";
+import { SectionBox } from "@repo/design-system";
 import { EditTransaction } from "../../../components/EditTransaction/EditTransaction";
 import { useI18n } from "@repo/i18n/react";
 
@@ -9,12 +9,10 @@ export const EditTransactionPageClient = ({
 }: {
   transactionId: string;
 }) => {
-  const isMobile = useIsMobile();
   const { t } = useI18n();
 
   return (
     <main className="transactions-page gap-4 py-4 h-[calc(100vh-4rem)]">
-      {!isMobile && <Navigation />}
       <SectionBox
         title={t("transactions.edit")}
         variant="colored"

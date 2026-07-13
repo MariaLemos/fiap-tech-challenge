@@ -1,12 +1,8 @@
 .transactions-page {
   display: grid;
-  grid-template-areas: "nav statement";
-  grid-template-columns: 20% 1fr;
+  grid-template-areas: "statement";
+  grid-template-columns: 1fr;
   align-items: start;
-}
-
-.transactions-page .navigation {
-  grid-area: nav;
 }
 
 .transactions-page .statement {

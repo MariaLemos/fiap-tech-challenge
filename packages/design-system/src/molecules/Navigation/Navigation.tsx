@@ -1,97 +1,153 @@
 "use client";
 
-import React from "react";
+import { useId, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "../../atoms";
-import { SectionBox } from "../SectionBox/SectionBox";
 import Link from "next/link";
+import { ThemeToggle } from "../../atoms";
 import "./Navigation.css";
 import { useI18n } from "@repo/i18n/react";
 import { LanguageSelector } from "../LanguageSelector/LanguageSelector";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRightArrowLeft,
+  faChartLine,
+  faChevronLeft,
+  faChevronRight,
+  faHouse,
+  faLayerGroup,
+} from "@fortawesome/free-solid-svg-icons";
 
 const pagesList = [
-  { label: "navigation.home", path: "/" },
+  { label: "navigation.home", path: "/", icon: faHouse },
   {
     label: "navigation.transactions",
     path: "/transactions",
     zone: "transactions",
+    icon: faArrowRightArrowLeft,
   },
   {
     label: "navigation.investments",
     path: "/investments",
     zone: "investments",
+    icon: faChartLine,
+  },
+  {
+    label: "navigation.services",
+    path: "/services",
+    icon: faLayerGroup,
   },
 ] as const;
 
 const getZoneFromPath = (path: string) => {
-  if (path.startsWith("/transactions")) {
-    return "transactions";
-  }
-
-  if (path.startsWith("/investments")) {
-    return "investments";
-  }
-
+  if (path.startsWith("/transactions")) return "transactions";
+  if (path.startsWith("/investments")) return "investments";
   return "shell";
+};
+
+type NavigationProps = {
+  className?: string;
+  children?: ReactNode;
+  defaultOpen?: boolean;
+  id?: string;
+  onNavigate?: () => void;
+  onOpenChange?: (isOpen: boolean) => void;
 };
 
 export const Navigation = ({
   className,
   children,
-}: {
-  className?: string;
-  children?: React.ReactNode;
-}) => {
+  defaultOpen = true,
+  id,
+  onNavigate,
+  onOpenChange,
+}: NavigationProps) => {
   const pathname = usePathname();
   const { t } = useI18n();
+  const generatedId = useId();
+  const navigationId = id ?? `navigation-${generatedId.replaceAll(":", "")}`;
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  const toggleNavigation = () => {
+    const nextIsOpen = !isOpen;
+    setIsOpen(nextIsOpen);
+    onOpenChange?.(nextIsOpen);
+  };
 
   return (
-    <SectionBox
-      variant="colored"
-      className={`flex flex-wrap justify-between items-center w-full navigation ${className}`}
+    <aside
+      id={navigationId}
+      className={`navigation ${className ?? ""}`}
+      data-open={isOpen}
     >
-      {children}
-      <nav className="flex divide-primary divide-solid divide-y-2 w-full">
+      <div className="navigation-header">
+        {children && <div className="navigation-brand">{children}</div>}
+        <button
+          type="button"
+          className="navigation-toggle"
+          aria-controls={`${navigationId}-links`}
+          aria-expanded={isOpen}
+          aria-label={t(
+            isOpen ? "navigation.closeMenu" : "navigation.openMenu",
+          )}
+          onClick={toggleNavigation}
+        >
+          <FontAwesomeIcon
+            icon={isOpen ? faChevronLeft : faChevronRight}
+            aria-hidden="true"
+          />
+        </button>
+      </div>
+
+      <nav id={`${navigationId}-links`}>
         {pagesList.map((page) => {
-          const isActive = pathname === page.path;
+          const isActive =
+            pathname === page.path ||
+            (page.path !== "/" && pathname.startsWith(`${page.path}/`));
           const isCrossZone =
             getZoneFromPath(pathname) !== getZoneFromPath(page.path);
-          const className = `px-4 pt-4 pb-4 transition-all duration-300 ease-in-out rounded-md
-                ${
-                  isActive
-                    ? "bg-primary text-white font-semibold shadow-md"
-                    : "text-muted-foreground hover:bg-primary/10 hover:text-primary hover:scale-105 active:scale-95"
-                }
-                hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50
-              `;
+          const content = (
+            <>
+              <span className="navigation-link-icon" aria-hidden="true">
+                <FontAwesomeIcon icon={page.icon} />
+              </span>
+              <span className="navigation-link-label">{t(page.label)}</span>
+            </>
+          );
 
           if (isCrossZone) {
             return (
               <a
-                className={className}
+                className="navigation-link"
                 href={page.path}
                 key={page.label}
                 data-active={isActive}
+                onClick={onNavigate}
+                title={!isOpen ? t(page.label) : undefined}
               >
-                {t(page.label)}
+                {content}
               </a>
             );
           }
 
           return (
             <Link
-              className={className}
+              className="navigation-link"
               href={page.path}
               key={page.label}
               data-active={isActive}
+              onClick={onNavigate}
+              title={!isOpen ? t(page.label) : undefined}
             >
-              {t(page.label)}
+              {content}
             </Link>
           );
         })}
       </nav>
-      <LanguageSelector />
-      <ThemeToggle />
-    </SectionBox>
+
+      <div className="navigation-footer" aria-hidden={!isOpen}>
+        <LanguageSelector />
+        <ThemeToggle />
+      </div>
+    </aside>
   );
 };

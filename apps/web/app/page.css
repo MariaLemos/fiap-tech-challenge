@@ -1,22 +1,22 @@
 .home-page {
   display: grid;
   grid-template-areas: 
-    "nav welcome statement"
-    "nav new-transaction statement"
-    "nav alerts alerts"
-    "nav barchart piechart";
-  grid-template-columns:20% 1fr 30%;
-  grid-template-rows: 1fr 1fr auto;
+    "welcome statement"
+    "new-transaction statement"
+    "alerts alerts"
+    "barchart piechart";
+  grid-template-columns: 1fr minmax(18rem, 40%);
+  grid-template-rows: auto auto auto auto;
   justify-items: center;
   font-synthesis: none;
 }
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 1050px) {
   .home-page {
      grid-template-areas: 
-    "nav"
     "welcome"
     "new-transaction"
     "statement"
+    "barchart"
     "piechart"
     "alerts";
     grid-template-columns: 1fr;
@@ -39,10 +39,6 @@
   grid-area: piechart;
 }
 
-.navigation{
-  grid-area: nav;
-
-}
 .new-transaction{
   grid-area: new-transaction;
 

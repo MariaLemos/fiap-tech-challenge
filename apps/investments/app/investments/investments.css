@@ -1,4 +1,4 @@
-.investments-page { display: grid; grid-template-columns: minmax(220px, 20%) 1fr; gap: 1rem; min-height: calc(100vh - 4rem); padding: 1rem; align-items: start; }
+.investments-page { display: grid; grid-template-columns: 1fr; gap: 1rem; min-height: calc(100vh - 4rem); padding: 1rem; align-items: start; }
 .dashboard-content { display: grid; gap: 1rem; min-width: 0; }
 .metrics-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .metric-card { padding: 1rem; }
