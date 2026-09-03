@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "98992998792",
+    "project_id": "fiap-maria",
+    "storage_bucket": "fiap-maria.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98992998792:android:4deca0048bd9a0896dd23d",
+        "android_client_info": {
+          "package_name": "br.com.fiap.nexofinancas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMSqcshcWko5S4xuTunzrgUSY1kNhj08A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
