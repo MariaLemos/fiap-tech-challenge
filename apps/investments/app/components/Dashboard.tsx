@@ -7,6 +7,7 @@ import { DashboardMetrics } from "./dashboard/DashboardMetrics";
 import { GoalsOverviewSection } from "./dashboard/GoalsOverviewSection";
 import { UnassignedInvestmentsSection } from "./dashboard/UnassignedInvestmentsSection";
 import { useI18n } from "@repo/i18n/react";
+import { calculateDashboardMetrics } from "../modules/investments/domain/investmentRules";
 import { useAppSelector } from "../store/hooks";
 import {
   selectAllocationByAssetClass,
@@ -33,19 +34,8 @@ export function Dashboard() {
 
   if (!hydrated) return <main><p role="status" aria-live="polite">{t("common.loading")}</p></main>;
 
-  const totalPlanned = goals.reduce(
-    (total, goal) => total + goal.targetAmount,
-    0,
-  );
-  const goalCurrent = goals.reduce(
-    (total, goal) => total + (goalValues[goal.id] ?? 0),
-    0,
-  );
-  const onTrack = goals.filter(
-    (goal) =>
-      new Date(goal.targetDate) >= new Date() ||
-      (goalValues[goal.id] ?? 0) >= goal.targetAmount,
-  ).length;
+  const { totalPlanned, goalCurrent, onTrack, overallProgress } =
+    calculateDashboardMetrics(goals, goalValues, new Date());
 
   return (
     <main className="investments-page">
@@ -71,7 +61,7 @@ export function Dashboard() {
         />
 
         <ProgressBar
-          value={totalPlanned ? (goalCurrent / totalPlanned) * 100 : 0}
+          value={overallProgress}
           label={t("investments.metrics.overallProgress")}
         />
 

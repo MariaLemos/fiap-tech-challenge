@@ -153,6 +153,13 @@ em `infrastructure` e a composição React em `presentation`. O arquivo
 `app/hooks/UserInfo.provider.tsx` funciona como fachada temporária para manter a
 compatibilidade dos componentes existentes.
 
+O domínio de investimentos segue a mesma separação em
+`apps/investments/app/modules/investments`: cálculos financeiros puros em
+`domain`, operações de carteira e a porta de persistência em `application`,
+adaptação ao `localStorage` em `infrastructure` e Redux Toolkit em
+`presentation`. Os caminhos antigos em `app/store/investments` permanecem como
+fachadas de compatibilidade durante a migração dos componentes.
+
 ## Tecnologias
 
 - Next.js 16 e React 19;
@@ -395,8 +402,9 @@ O enunciado informa que o backend seria disponibilizado separadamente. Neste rep
 - ao limpar os dados do navegador, o estado volta aos mocks iniciais;
 - o rate limit atual fica em memória e deve ser substituído por uma solução distribuída em produção;
 - não há autorização baseada em papéis;
-- a cobertura automatizada inicial protege regras, casos de uso e persistência
-  do módulo de transações; as demais áreas ainda não possuem cobertura.
+- a cobertura automatizada protege regras, casos de uso e persistência dos
+  módulos de transações e investimentos; as demais áreas ainda não possuem
+  cobertura.
 
 ## Evolução desde a Fase 1
 
