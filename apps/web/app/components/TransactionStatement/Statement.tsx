@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SectionBox, List, Button } from "@repo/design-system";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
-import type { Transaction } from "../../hooks/UserInfo.provider";
+import type { Transaction } from "../../modules/transactions/domain/Transaction";
 import { DeleteTransaction } from "../DeleteTransaction/DeleteTransaction";
 import { EditTransaction } from "../EditTransaction/EditTransaction";
 import { Filters } from "../Filters/Filters";

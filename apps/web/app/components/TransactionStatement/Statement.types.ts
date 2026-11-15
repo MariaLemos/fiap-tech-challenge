@@ -1,4 +1,4 @@
-import type { Transaction } from "../../hooks/UserInfo.provider";
+import type { Transaction } from "../../modules/transactions/domain/Transaction";
 import type { FilterValues } from "../Filters/Filters.types";
 
 export type TransactionTypeFilter = "all" | Transaction["type"];

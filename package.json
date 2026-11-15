@@ -13,13 +13,16 @@
     "dev:financial-alerts": "yarn workspace financial-alerts-angular dev",
     "build:financial-alerts": "yarn workspace financial-alerts-angular build",
     "lint": "turbo run lint",
+    "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
     "prettier": "^3.7.4",
     "turbo": "^2.10.4",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vite": "^6.4.6",
+    "vitest": "^4.1.12"
   },
   "engines": {
     "node": "^20.11.1 || >=22.0.0"
@@ -29,6 +32,9 @@
     "apps/*",
     "packages/*"
   ],
+  "resolutions": {
+    "vitest/vite": "6.4.6"
+  },
   "dependencies": {
     "autoprefixer": "^10.5.0",
     "docker": "^1.0.0",

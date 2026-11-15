@@ -1,7 +1,8 @@
 "use client";
 
 import { SectionBox, List } from "@repo/design-system";
-import { Transaction, useUserInfo } from "../../hooks/UserInfo.provider";
+import { useUserInfo } from "../../hooks/UserInfo.provider";
+import type { Transaction } from "../../modules/transactions/domain/Transaction";
 import { useI18n } from "@repo/i18n/react";
 
 export const Statement = () => {

@@ -1,139 +1,49 @@
-# UserInfo Provider
+# Módulo de transações
 
-## Descrição
+O estado de transações está organizado em camadas em
+`app/modules/transactions`:
 
-Provider React que gerencia o estado do usuário, incluindo nome de usuário, transações financeiras e cálculo automático do saldo.
+- `domain`: tipos e regras puras, como sanitização, ordenação e saldo;
+- `application`: casos de uso, reducer e a porta `TransactionRepository`;
+- `infrastructure`: adaptador compatível com o `localStorage` e dados de demonstração;
+- `presentation`: contexto React, hidratação e persistência do estado.
 
-## Funcionalidades
+O arquivo `UserInfo.provider.tsx` permanece como uma fachada de compatibilidade.
+Ele mantém a API usada pelos componentes atuais, incluindo `userName`, enquanto
+delega o estado financeiro ao `TransactionsProvider`.
 
-### Estado Gerenciado
-
-- **userName**: Nome do usuário (string, não modificável)
-- **transactions**: Lista de transações (editável, adicionável, deletável)
-- **balance**: Saldo calculado automaticamente baseado nas transações
-
-### Operações de Transação
-
-- ✅ **Adicionar** nova transação
-- ✅ **Editar** transação existente
-- ✅ **Deletar** transação
-- ✅ **Limpar** todas as transações
-- ✅ **Recálculo automático** do saldo
-
-## Como Usar
-
-### 1. Configurar o Provider
+## Uso
 
 ```tsx
-import { UserInfoProvider } from "./hooks/UserInfo.provider";
+import { UserInfoProvider, useUserInfo } from "./hooks/UserInfo.provider";
 
-// Transações iniciais (opcional)
-const initialTransactions = [
-  {
-    id: "1",
-    description: "Salário",
-    amount: 5000,
-    type: "income",
-    date: "2024-04-01",
-    category: "Trabalho",
-  },
-];
+function App() {
+  return (
+    <UserInfoProvider>
+      <Dashboard />
+    </UserInfoProvider>
+  );
+}
 
-// Envolver sua aplicação
-<UserInfoProvider
-  userName="João Silva"
-  initialTransactions={initialTransactions}
->
-  {/* Seus componentes aqui */}
-</UserInfoProvider>;
-```
-
-### 2. Usar o Hook
-
-```tsx
-import { useUserInfo } from "./hooks/UserInfo.provider";
-
-function MyComponent() {
+function Dashboard() {
   const {
-    userName,
     transactions,
     balance,
+    isReady,
     addTransaction,
     updateTransaction,
     deleteTransaction,
   } = useUserInfo();
 
-  // Adicionar nova transação
-  const handleAdd = () => {
-    addTransaction({
-      description: "Compra no mercado",
-      amount: 250,
-      type: "expense",
-      date: "2024-04-29",
-      category: "Alimentação",
-    });
-  };
-
-  // Editar transação existente
-  const handleEdit = (id: string) => {
-    updateTransaction(id, {
-      description: "Novo nome",
-      amount: 300,
-    });
-  };
-
-  // Deletar transação
-  const handleDelete = (id: string) => {
-    deleteTransaction(id);
-  };
-
-  return (
-    <div>
-      <h1>Olá, {userName}!</h1>
-      <p>Saldo: R$ {balance.toFixed(2)}</p>
-      {/* Sua UI aqui */}
-    </div>
-  );
+  // Renderização omitida.
 }
 ```
 
-## Estrutura da Transação
+`initialTransactions` continua disponível no provider para cenários de teste e
+composição. A chave e o formato persistido permanecem compatíveis com a versão
+anterior: `transactions`, com datas em ISO no armazenamento e valores `Dayjs`
+na aplicação.
 
-```tsx
-interface Transaction {
-  id: string; // ID único (gerado automaticamente)
-  description: string; // Descrição da transação
-  amount: number; // Valor (sempre positivo)
-  type: "income" | "expense"; // Tipo: receita ou gasto
-  date: string; // Data no formato ISO (YYYY-MM-DD)
-  category?: string; // Categoria (opcional)
-}
-```
-
-## Cálculo do Saldo
-
-O saldo é calculado automaticamente:
-
-- **Receitas** (type: 'income'): somadas ao saldo
-- **Gastos** (type: 'expense'): subtraídas do saldo
-
-```tsx
-balance = ∑(receitas) - ∑(gastos)
-```
-
-## Exemplo Completo
-
-Veja o componente `UserDashboard` para um exemplo completo de como implementar:
-
-- Formulário para adicionar transações
-- Lista de transações com edição inline
-- Exibição do saldo formatado
-- Botões para deletar transações
-
-## Vantagens
-
-- ⚡ **Performance**: Usa `useReducer` e `useMemo` para otimizações
-- 🔒 **Type Safety**: Totalmente tipado com TypeScript
-- 🎯 **Simplicidade**: API intuitiva e fácil de usar
-- 🔄 **Reativo**: Saldo recalculado automaticamente
-- 💾 **Estado Centralizado**: Gerenciamento de estado consistente
+Novos códigos que precisem apenas do tipo `Transaction` devem importá-lo de
+`app/modules/transactions/domain/Transaction`, evitando depender da camada de
+apresentação.

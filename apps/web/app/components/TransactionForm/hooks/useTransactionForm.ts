@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, type ChangeEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import type { Transaction } from "../../../hooks/UserInfo.provider";
+import type { Transaction } from "../../../modules/transactions/domain/Transaction";
 import {
   formatFileSize,
   getAttachmentMetadata,

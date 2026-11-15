@@ -147,6 +147,12 @@ packages/
 
 Uma app não deve importar código diretamente de outra app. Recursos comuns devem ser movidos para `packages/*` ou expostos por um contrato bem definido.
 
+O domínio de transações do `web` está organizado em `app/modules/transactions`,
+com regras puras em `domain`, casos de uso e portas em `application`, adaptadores
+em `infrastructure` e a composição React em `presentation`. O arquivo
+`app/hooks/UserInfo.provider.tsx` funciona como fachada temporária para manter a
+compatibilidade dos componentes existentes.
+
 ## Tecnologias
 
 - Next.js 16 e React 19;
@@ -162,6 +168,7 @@ Uma app não deve importar código diretamente de outra app. Recursos comuns dev
 - Turborepo e Yarn Workspaces;
 - Storybook;
 - Docker, Docker Compose e Nginx;
+- Vitest;
 - ESLint e Prettier.
 
 ## Como executar em desenvolvimento
@@ -333,6 +340,7 @@ yarn build:financial-alerts
 # Qualidade
 yarn lint
 yarn check-types
+yarn test
 yarn format
 ```
 
@@ -387,7 +395,8 @@ O enunciado informa que o backend seria disponibilizado separadamente. Neste rep
 - ao limpar os dados do navegador, o estado volta aos mocks iniciais;
 - o rate limit atual fica em memória e deve ser substituído por uma solução distribuída em produção;
 - não há autorização baseada em papéis;
-- não há suíte de testes automatizados configurada no momento.
+- a cobertura automatizada inicial protege regras, casos de uso e persistência
+  do módulo de transações; as demais áreas ainda não possuem cobertura.
 
 ## Evolução desde a Fase 1
 

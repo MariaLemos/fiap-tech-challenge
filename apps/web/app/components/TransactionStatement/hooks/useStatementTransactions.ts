@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { Transaction } from "../../../hooks/UserInfo.provider";
+import type { Transaction } from "../../../modules/transactions/domain/Transaction";
 import { initialStatementFilters } from "../Statement.constants";
 import {
   filterTransactions,

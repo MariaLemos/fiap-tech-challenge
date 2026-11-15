@@ -1,5 +1,5 @@
 import { Button, InputWrapper } from "@repo/design-system";
-import type { Transaction } from "../../hooks/UserInfo.provider";
+import type { Transaction } from "../../modules/transactions/domain/Transaction";
 import { FormProvider } from "react-hook-form";
 import {
   getTransactionTypeOptions,

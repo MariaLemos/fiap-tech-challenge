@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import type { UseFormReturn } from "react-hook-form";
 import { useUserInfo } from "../../../hooks/UserInfo.provider";
-import type { Transaction } from "../../../hooks/UserInfo.provider";
+import type { Transaction } from "../../../modules/transactions/domain/Transaction";
 import type { TransactionFormData } from "../TransactionForm.types";
 
 const mergeDateWithTime = (dateValue: string, timeSource: dayjs.Dayjs) => {

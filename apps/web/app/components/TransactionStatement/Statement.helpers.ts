@@ -1,4 +1,4 @@
-import type { Transaction } from "../../hooks/UserInfo.provider";
+import type { Transaction } from "../../modules/transactions/domain/Transaction";
 import type {
   StatementFilterValues,
   TransactionTypeFilter,
