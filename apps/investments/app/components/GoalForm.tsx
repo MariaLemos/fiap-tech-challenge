@@ -1,47 +1,75 @@
 "use client";
 
 import { Button, InputWrapper, SectionBox } from "@repo/design-system";
+import type { InvestmentGoal } from "@repo/contracts";
 import { useI18n } from "@repo/i18n/react";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
+import {
+  createGoalFormValues,
+  getEntityFormStatus,
+  toGoalInput,
+  type GoalFormValues,
+} from "../modules/investments/presentation/investmentFormValues";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { goalAdded, goalUpdated } from "../store/investments/investmentsSlice";
-import { selectGoalById } from "../store/investments/investmentsSelectors";
-
-type GoalFormData = {
-  name: string;
-  category: string;
-  targetAmount: string | number;
-  targetDate: string;
-  description: string;
-};
+import {
+  selectGoalById,
+  selectHydrated,
+} from "../store/investments/investmentsSelectors";
 
 export function GoalForm({ goalId }: { goalId?: string }) {
-  const dispatch = useAppDispatch();
   const { t } = useI18n();
-  const router = useRouter();
+  const hydrated = useAppSelector(selectHydrated);
   const goal = useAppSelector((state) =>
     goalId ? selectGoalById(state, goalId) : undefined,
   );
-  const form = useForm<GoalFormData>({
+  const status = getEntityFormStatus(hydrated, goalId, goal);
+
+  if (status === "loading") {
+    return (
+      <SectionBox className="max-w-3xl">
+        <p role="status" aria-live="polite">
+          {t("common.loading")}
+        </p>
+      </SectionBox>
+    );
+  }
+
+  if (status === "notFound") {
+    return (
+      <SectionBox className="max-w-3xl">
+        <p role="status">{t("investments.goals.notFound")}</p>
+      </SectionBox>
+    );
+  }
+
+  return <GoalFormContent key={goalId ?? "new"} goalId={goalId} goal={goal} />;
+}
+
+function GoalFormContent({
+  goalId,
+  goal,
+}: {
+  goalId?: string;
+  goal?: InvestmentGoal;
+}) {
+  const dispatch = useAppDispatch();
+  const { t } = useI18n();
+  const router = useRouter();
+  const form = useForm<GoalFormValues>({
     mode: "onChange",
-    defaultValues: {
-      name: goal?.name ?? "",
-      category: goal?.category ?? "",
-      targetAmount: goal?.targetAmount ?? "",
-      targetDate: goal?.targetDate ?? "",
-      description: goal?.description ?? "",
-    },
+    defaultValues: createGoalFormValues(goal),
   });
   const {
     formState: { isSubmitting, isValid },
   } = form;
   const submit = form.handleSubmit(async (data) => {
-    const payload = { ...data, targetAmount: Number(data.targetAmount) };
+    const input = toGoalInput(data);
     if (goalId) {
-      dispatch(goalUpdated({ id: goalId, input: payload }));
+      dispatch(goalUpdated({ id: goalId, input }));
     } else {
-      dispatch(goalAdded(payload));
+      dispatch(goalAdded(input));
     }
     router.push(goalId ? `/investments/goals/${goalId}` : "/investments");
   });
@@ -50,9 +78,10 @@ export function GoalForm({ goalId }: { goalId?: string }) {
     validate: (value: unknown) =>
       String(value ?? "").trim().length > 0 || message,
   });
+
   return (
     <SectionBox
-      title={goal ? t("investments.goals.edit") : t("investments.goals.new")}
+      title={goalId ? t("investments.goals.edit") : t("investments.goals.new")}
       className="max-w-3xl"
     >
       <FormProvider {...form}>

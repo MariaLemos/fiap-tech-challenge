@@ -1,9 +1,17 @@
 "use client";
 
 import { Button, InputWrapper, SectionBox } from "@repo/design-system";
+import type { Investment, InvestmentGoal } from "@repo/contracts";
 import { useI18n } from "@repo/i18n/react";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
+import {
+  createInvestmentFormValues,
+  getEntityFormStatus,
+  resolveDefaultGoalId,
+  toInvestmentInput,
+  type InvestmentFormValues,
+} from "../modules/investments/presentation/investmentFormValues";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   investmentAdded,
@@ -11,68 +19,98 @@ import {
 } from "../store/investments/investmentsSlice";
 import {
   selectGoals,
+  selectHydrated,
   selectInvestmentById,
 } from "../store/investments/investmentsSelectors";
 
-type InvestmentFormData = {
-  goalId: string;
-  name: string;
-  assetClass: string;
-  initialAmount: string | number;
-  returnRate: string | number;
+type InvestmentFormProps = {
+  investmentId?: string;
+  defaultGoalId?: string;
 };
 
 export function InvestmentForm({
   investmentId,
   defaultGoalId,
-}: {
-  investmentId?: string;
-  defaultGoalId?: string;
-}) {
-  const dispatch = useAppDispatch();
-  const goals = useAppSelector(selectGoals);
+}: InvestmentFormProps) {
   const { t } = useI18n();
-  const router = useRouter();
+  const hydrated = useAppSelector(selectHydrated);
+  const goals = useAppSelector(selectGoals);
   const investment = useAppSelector((state) =>
     investmentId ? selectInvestmentById(state, investmentId) : undefined,
   );
-  const form = useForm<InvestmentFormData>({
+  const status = getEntityFormStatus(hydrated, investmentId, investment);
+
+  if (status === "loading") {
+    return (
+      <SectionBox className="max-w-3xl">
+        <p role="status" aria-live="polite">
+          {t("common.loading")}
+        </p>
+      </SectionBox>
+    );
+  }
+
+  if (status === "notFound") {
+    return (
+      <SectionBox className="max-w-3xl">
+        <p role="status">{t("investments.notFound")}</p>
+      </SectionBox>
+    );
+  }
+
+  const hydratedDefaultGoalId = resolveDefaultGoalId(goals, defaultGoalId);
+
+  return (
+    <InvestmentFormContent
+      key={investmentId ?? `new:${hydratedDefaultGoalId ?? ""}`}
+      investmentId={investmentId}
+      defaultGoalId={hydratedDefaultGoalId}
+      investment={investment}
+      goals={goals}
+    />
+  );
+}
+function InvestmentFormContent({
+  investmentId,
+  defaultGoalId,
+  investment,
+  goals,
+}: InvestmentFormProps & {
+  investment?: Investment;
+  goals: InvestmentGoal[];
+}) {
+  const dispatch = useAppDispatch();
+  const { t } = useI18n();
+  const router = useRouter();
+  const form = useForm<InvestmentFormValues>({
     mode: "onChange",
-    defaultValues: {
-      goalId: investment?.goalId ?? defaultGoalId ?? "",
-      name: investment?.name ?? "",
-      assetClass: investment?.assetClass ?? "",
-      initialAmount: investment?.initialAmount ?? 0,
-      returnRate: investment?.returnRate ?? 0,
-    },
+    defaultValues: createInvestmentFormValues(investment, defaultGoalId),
   });
   const {
     formState: { isSubmitting, isValid },
   } = form;
   const submit = form.handleSubmit(async (data) => {
-    const goalId = data.goalId || null;
-    const payload = {
-      goalId,
-      name: data.name,
-      assetClass: data.assetClass,
-      initialAmount: Number(data.initialAmount),
-      returnRate: Number(data.returnRate),
-    };
+    const input = toInvestmentInput(data);
     if (investmentId) {
-      dispatch(investmentUpdated({ id: investmentId, input: payload }));
+      dispatch(investmentUpdated({ id: investmentId, input }));
     } else {
-      dispatch(investmentAdded(payload));
+      dispatch(investmentAdded(input));
     }
-    router.push(goalId ? `/investments/goals/${goalId}` : "/investments");
+    router.push(
+      input.goalId ? `/investments/goals/${input.goalId}` : "/investments",
+    );
   });
   const textRules = {
     required: t("investments.validation.nameRequired"),
     minLength: { value: 2, message: t("investments.validation.nameMin") },
   };
+
   return (
     <SectionBox
       title={
-        investment ? t("investments.assets.edit") : t("investments.assets.new")
+        investmentId
+          ? t("investments.assets.edit")
+          : t("investments.assets.new")
       }
       className="max-w-3xl"
     >

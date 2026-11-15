@@ -396,6 +396,9 @@ O enunciado informa que o backend seria disponibilizado separadamente. Neste rep
 
 - transações começam com dados mockados e são persistidas no `localStorage`;
 - metas, investimentos e aportes usam Redux Toolkit com persistência no `localStorage`;
+- o estado persistido de investimentos é validado na carga; duplicatas e
+  referências órfãs são normalizadas, enquanto payloads inválidos voltam aos
+  dados iniciais;
 - alertas usam dados em memória no microfrontend Angular;
 - usuários são mockados por variáveis de ambiente;
 - anexos persistem somente metadados, não o arquivo;
