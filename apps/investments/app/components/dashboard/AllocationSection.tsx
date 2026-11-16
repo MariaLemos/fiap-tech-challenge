@@ -1,6 +1,7 @@
 "use client";
 
-import { PieChartComponent, SectionBox } from "@repo/design-system";
+import { SectionBox } from "@repo/design-system";
+import { PieChartComponent } from "@repo/design-system/charts";
 
 type AllocationSectionProps = {
   title: string;

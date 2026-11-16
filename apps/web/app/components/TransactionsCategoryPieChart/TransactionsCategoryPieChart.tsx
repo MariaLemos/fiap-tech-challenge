@@ -1,6 +1,7 @@
 "use client";
 
-import { PieChartComponent, SectionBox } from "@repo/design-system";
+import { SectionBox } from "@repo/design-system";
+import { PieChartComponent } from "@repo/design-system/charts";
 import { groupTransactionsByCategory } from "@repo/utils";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
 import { useI18n } from "@repo/i18n/react";

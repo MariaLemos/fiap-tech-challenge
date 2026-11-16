@@ -1,27 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { mountRootParcel, type LifeCycles, type Parcel } from "single-spa";
-import styles from "./FinancialAlertsMicrofrontend.module.css";
-import { useI18n } from "@repo/i18n/react";
 import type { Locale } from "@repo/i18n";
-
-type FinancialAlertsProps = {
-  name: string;
-  domElement: HTMLElement;
-  locale: Locale;
-  authOrigin: string;
-  authPathPrefix?: string;
-  returnTo: string;
-};
-
-type FinancialAlertsModule = LifeCycles<FinancialAlertsProps>;
-
-declare global {
-  interface Window {
-    financialAlertsAngular?: FinancialAlertsModule;
-  }
-}
+import { useI18n } from "@repo/i18n/react";
+import { mountRootParcel, type Parcel } from "single-spa";
+import { useEffect, useRef, useState } from "react";
+import {
+  loadFinancialAlertsModule,
+  type FinancialAlertsProps,
+} from "./financialAlertsLoader";
+import styles from "./FinancialAlertsMicrofrontend.module.css";
 
 const origin =
   process.env.NEXT_PUBLIC_FINANCIAL_ALERTS_ORIGIN ?? "http://localhost:4201";
@@ -31,48 +18,28 @@ function resolveAuthOrigin() {
   if (authPathPrefix && typeof window !== "undefined") {
     return window.location.origin;
   }
-  if (process.env.NEXT_PUBLIC_AUTH_ORIGIN)
+  if (process.env.NEXT_PUBLIC_AUTH_ORIGIN) {
     return process.env.NEXT_PUBLIC_AUTH_ORIGIN;
+  }
   if (typeof window !== "undefined") return window.location.origin;
   return "http://localhost:3002";
 }
 
-function loadScript(source: string) {
-  return new Promise<void>((resolve, reject) => {
-    const existing = document.querySelector<HTMLScriptElement>(
-      `script[data-financial-alerts-source="${source}"]`,
-    );
-    if (existing) {
-      if (existing.dataset.loaded === "true") resolve();
-      else {
-        existing.addEventListener("load", () => resolve(), { once: true });
-        existing.addEventListener(
-          "error",
-          () => reject(new Error(`Could not load ${source}`)),
-          { once: true },
-        );
-      }
-      return;
+async function unmountParcelAfterMount(parcel: Parcel): Promise<void> {
+  try {
+    await parcel.mountPromise;
+    if (parcel.getStatus() === "MOUNTED") {
+      await parcel.unmount();
     }
-
-    const script = document.createElement("script");
-    script.src = source;
-    script.dataset.financialAlertsSource = source;
-    script.onload = () => {
-      script.dataset.loaded = "true";
-      resolve();
-    };
-    script.onerror = () => {
-      script.remove();
-      reject(new Error(`Could not load ${source}`));
-    };
-    document.head.appendChild(script);
-  });
+  } catch {
+    // A failed mount has no active parcel to tear down.
+  }
 }
 
 export function FinancialAlertsMicrofrontend() {
   const { locale, t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
+  const teardownRef = useRef<Promise<void>>(Promise.resolve());
   const [status, setStatus] = useState<"loading" | "ready" | "unavailable">(
     "loading",
   );
@@ -81,33 +48,29 @@ export function FinancialAlertsMicrofrontend() {
     const domElement = containerRef.current;
     if (!domElement) return;
     const mountElement: HTMLElement = domElement;
+    const previousTeardown = teardownRef.current;
 
     let active = true;
     let parcel: Parcel | undefined;
-
-    async function loadAngular(): Promise<FinancialAlertsModule> {
-      await loadScript(`${origin}/runtime.js`);
-      await loadScript(`${origin}/polyfills.js`);
-      await loadScript(`${origin}/main.js`);
-      const lifecycles = window.financialAlertsAngular;
-      if (!lifecycles)
-        throw new Error("Single SPA lifecycles were not exposed");
-      return lifecycles;
-    }
+    setStatus("loading");
 
     async function mountAngularParcel() {
       try {
-        const lifecycles = await loadAngular();
+        const [lifecycles] = await Promise.all([
+          loadFinancialAlertsModule(origin),
+          previousTeardown,
+        ]);
         if (!active) return;
 
-        parcel = mountRootParcel(lifecycles, {
+        const props: FinancialAlertsProps = {
           name: "financial-alerts-angular",
           domElement: mountElement,
-          locale,
+          locale: locale as Locale,
           authOrigin: resolveAuthOrigin(),
           authPathPrefix,
           returnTo: window.location.href,
-        });
+        };
+        parcel = mountRootParcel(lifecycles, props);
         await parcel.mountPromise;
         if (active) setStatus("ready");
       } catch (error) {
@@ -119,7 +82,9 @@ export function FinancialAlertsMicrofrontend() {
     void mountAngularParcel();
     return () => {
       active = false;
-      if (parcel?.getStatus() === "MOUNTED") void parcel.unmount();
+      teardownRef.current = parcel
+        ? unmountParcelAfterMount(parcel)
+        : previousTeardown;
     };
   }, [locale]);
 

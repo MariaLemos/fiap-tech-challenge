@@ -1,6 +1,6 @@
 # Sistema de Gerenciamento Financeiro
 
-Aplicação de gerenciamento financeiro desenvolvida para o **Tech Challenge - Fase 2** da Pós-graduação FIAP. O projeto evolui a solução criada na Fase 1 para um monorepo com microfrontends em **Next.js/React** e **Angular**, autenticação centralizada, dashboards financeiros, gestão de transações e investimentos, conteinerização e preparação para deploy na Vercel.
+Aplicação de gerenciamento financeiro iniciada no **Tech Challenge - Fase 2** e evoluída para os requisitos da **Fase 4** da Pós-graduação FIAP. O projeto amplia a solução criada na Fase 1 para um monorepo com microfrontends em **Next.js/React** e **Angular**, autenticação centralizada, dashboards financeiros, gestão de transações e investimentos, arquitetura em camadas, otimizações de carregamento, conteinerização e preparação para deploy na Vercel.
 
 - Repositório: [github.com/MariaLemos/fiap-tech-challenge](https://github.com/MariaLemos/fiap-tech-challenge)
 - Protótipo: [Figma - Projeto Financeiro](https://www.figma.com/design/ns5TC3X5Xr8V7I3LYKg9KA/Projeto-Financeiro?node-id=503-4264&t=gZy56WDAUfXtS23Y-1)
@@ -33,6 +33,18 @@ Legenda: ✅ implementado; ⚠️ parcialmente implementado ou preparado; ⬜ n�
 | UX e acessibilidade             | Responsividade, teclado, ARIA, temas, i18n e controle de foco.                                           |   ✅   |
 | README de desenvolvimento       | Instalação, configuração, comandos, URLs e limitações documentados.                                      |   ✅   |
 | Vídeo demonstrativo             | Link ainda não informado no repositório.                                                                 |   ⬜   |
+
+## Requisitos do Tech Challenge - Fase 4
+
+| Requisito                       | Evidência atual                                                                                                                            | Status |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | :----: |
+| Arquitetura e padrões           | Transações e investimentos separam domínio, aplicação, infraestrutura e apresentação, com fachadas de migração e contratos compartilhados. |   ✅   |
+| Gerenciamento de estado         | Context + `useReducer` no shell e Redux Toolkit no microfrontend de investimentos.                                                         |   ✅   |
+| Lazy loading e pré-carregamento | Gráficos e alertas usam `next/dynamic`; bundles Angular são pré-carregados em paralelo e executados na ordem de dependência.               |   ✅   |
+| Cache para otimizar requisições | Promises dos bundles remotos são reutilizadas entre montagens; Docker/Nginx e Vercel enviam cache HTTP curto com `stale-while-revalidate`. |   ✅   |
+| Programação reativa             | React hooks, Context e Redux reagem ao estado; o fluxo Angular ainda pode aprofundar o uso de RxJS.                                        |   ⚠️   |
+| Autenticação e dados sensíveis  | Auth.js/JWT, cookies protegidos, bcrypt, rate limit e allowlists implementados; dados financeiros locais ainda não são criptografados.     |   ⚠️   |
+| Testes automatizados            | Vitest protege regras, casos de uso, persistência, hidratação e o carregador remoto dos microfrontends.                                    |   ✅   |
 
 ## Funcionalidades
 
@@ -72,6 +84,8 @@ Legenda: ✅ implementado; ⚠️ parcialmente implementado ou preparado; ⬜ n�
 
 - microfrontend desenvolvido em Angular;
 - montagem e desmontagem pelo ciclo de vida do Single SPA;
+- carregamento sob demanda no shell com cache de Promise;
+- preload paralelo de `runtime.js`, `polyfills.js` e `main.js`, mantendo execução sequencial;
 - filtros de alertas lidos e não lidos;
 - marcação de alerta como lido;
 - validação da sessão central antes da exibição;
@@ -106,7 +120,7 @@ flowchart LR
     F --> P
 ```
 
-Em desenvolvimento, o proxy do Vercel Microfrontends oferece a experiência integrada em `http://localhost:3024`; a app `web`, em `http://localhost:3000`, redireciona para esse proxy. A navegação para `/investments` cruza a fronteira entre as apps Next.js e faz o carregamento completo da nova zone. Os alertas Angular são carregados dinamicamente no dashboard e montados como um parcel do Single SPA. A autenticação é encaminhada por `/auth`, enquanto seus assets usam o prefixo exclusivo `/auth-static` para não colidir com os bundles do shell.
+Em desenvolvimento, o proxy do Vercel Microfrontends oferece a experiência integrada em `http://localhost:3024`; a app `web`, em `http://localhost:3000`, redireciona para esse proxy. A navegação para `/investments` cruza a fronteira entre as apps Next.js e faz o carregamento completo da nova zone. Gráficos e alertas ficam fora do chunk inicial da Home. Os três bundles Angular são pré-carregados, executados em ordem, armazenados em cache por Promise e então montados como um parcel do Single SPA. A autenticação é encaminhada por `/auth`, enquanto seus assets usam o prefixo exclusivo `/auth-static` para não colidir com os bundles do shell.
 
 ### Estrutura do monorepo
 
@@ -138,7 +152,7 @@ packages/
 
 ### Packages compartilhados
 
-- `@repo/design-system`: atoms, molecules e organisms reutilizáveis, gráficos Recharts, tokens, temas, navegação, modais e hooks;
+- `@repo/design-system`: atoms, molecules e organisms reutilizáveis, tokens, temas, navegação, modais e hooks; gráficos Recharts ficam no subpath `@repo/design-system/charts` para permitir code splitting;
 - `@repo/contracts`: tipos e contratos que evitam acoplamento direto entre apps;
 - `@repo/auth`: configuração de credenciais/JWT e clientes para consultar a sessão central;
 - `@repo/i18n`: traduções e troca de locale compartilhadas entre React e Angular;
@@ -401,6 +415,7 @@ O enunciado informa que o backend seria disponibilizado separadamente. Neste rep
   dados iniciais;
 - alertas usam dados em memória no microfrontend Angular;
 - usuários são mockados por variáveis de ambiente;
+- dados financeiros no `localStorage` não são criptografados;
 - anexos persistem somente metadados, não o arquivo;
 - ao limpar os dados do navegador, o estado volta aos mocks iniciais;
 - o rate limit atual fica em memória e deve ser substituído por uma solução distribuída em produção;

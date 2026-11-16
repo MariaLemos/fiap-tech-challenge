@@ -1,6 +1,7 @@
 "use client";
 
-import { SectionBox, SimpleBarChart } from "@repo/design-system";
+import { SectionBox } from "@repo/design-system";
+import { SimpleBarChart } from "@repo/design-system/charts";
 import { useUserInfo } from "../../hooks/UserInfo.provider";
 import type { Transaction } from "../../modules/transactions/domain/Transaction";
 import { useI18n } from "@repo/i18n/react";

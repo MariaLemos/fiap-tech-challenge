@@ -1,13 +1,44 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import "./page.css";
-import { Wellcome } from "./components/Welcome/welcome";
-import { Statement } from "./components/Statement/Statement";
+import { HomeWidgetLoading } from "./components/HomeWidgetLoading/HomeWidgetLoading";
 import { QuickTransactionStart } from "./components/QuickTransactionStart/QuickTransactionStart";
-import { FinancialAlertsMicrofrontend } from "./components/FinancialAlertsMicrofrontend/FinancialAlertsMicrofrontend";
+import { Statement } from "./components/Statement/Statement";
+import { Wellcome } from "./components/Welcome/welcome";
 
-import { TransactionsBarChart } from "./components/TransactionsBarChart/TransactionsBarChart";
-import { TransactionsPieChart } from "./components/TransactionsCategoryPieChart/TransactionsCategoryPieChart";
+const TransactionsBarChart = dynamic(
+  () =>
+    import("./components/TransactionsBarChart/TransactionsBarChart").then(
+      (module) => module.TransactionsBarChart,
+    ),
+  {
+    ssr: false,
+    loading: () => <HomeWidgetLoading area="barchart" />,
+  },
+);
+
+const TransactionsPieChart = dynamic(
+  () =>
+    import("./components/TransactionsCategoryPieChart/TransactionsCategoryPieChart").then(
+      (module) => module.TransactionsPieChart,
+    ),
+  {
+    ssr: false,
+    loading: () => <HomeWidgetLoading area="piechart" />,
+  },
+);
+
+const FinancialAlertsMicrofrontend = dynamic(
+  () =>
+    import("./components/FinancialAlertsMicrofrontend/FinancialAlertsMicrofrontend").then(
+      (module) => module.FinancialAlertsMicrofrontend,
+    ),
+  {
+    ssr: false,
+    loading: () => <HomeWidgetLoading area="financial-alerts-microfrontend" />,
+  },
+);
 
 export default function Home() {
   return (

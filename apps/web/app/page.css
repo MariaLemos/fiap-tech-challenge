@@ -1,6 +1,6 @@
 .home-page {
   display: grid;
-  grid-template-areas: 
+  grid-template-areas:
     "welcome statement"
     "new-transaction statement"
     "alerts alerts"
@@ -12,39 +12,51 @@
 }
 @media screen and (max-width: 1050px) {
   .home-page {
-     grid-template-areas: 
-    "welcome"
-    "new-transaction"
-    "statement"
-    "barchart"
-    "piechart"
-    "alerts";
+    grid-template-areas:
+      "welcome"
+      "new-transaction"
+      "statement"
+      "barchart"
+      "piechart"
+      "alerts";
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
-  
 }
-.welcome{
+.welcome {
   grid-area: welcome;
- 
 }
-.statement{
-  grid-area: statement;}
+.statement {
+  grid-area: statement;
+}
 
-.barchart{
+.barchart {
   grid-area: barchart;
 }
- 
-.piechart{
+
+.piechart {
   grid-area: piechart;
 }
 
-.new-transaction{
+.new-transaction {
   grid-area: new-transaction;
-
 }
 .financial-alerts-microfrontend {
   grid-area: alerts;
   width: min(100%, 960px);
   padding: 0 1rem 1rem;
+}
+.deferred-home-widget {
+  align-items: center;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #d8e1dd);
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  min-height: 12rem;
+  width: 100%;
+}
+.deferred-home-widget.barchart,
+.deferred-home-widget.piechart {
+  min-height: calc(100vh - 6rem);
 }
