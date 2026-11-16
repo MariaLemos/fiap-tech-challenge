@@ -23,9 +23,11 @@ export const useTransactionFormSubmit = ({
   onSubmitCallback?: () => void;
   transaction?: Transaction;
 }) => {
-  const { addTransaction, updateTransaction } = useUserInfo();
+  const { addTransaction, isReady, updateTransaction } = useUserInfo();
 
   return async (data: TransactionFormData) => {
+    if (!isReady) return;
+
     try {
       const parsedInputDate = dayjs(data.date);
       const transactionDate = transaction
@@ -66,5 +68,3 @@ export const useTransactionFormSubmit = ({
     }
   };
 };
-
-

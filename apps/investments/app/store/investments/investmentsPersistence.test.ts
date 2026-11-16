@@ -1,39 +1,48 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { InvestmentsRepository } from "../../modules/investments/application/ports/InvestmentsRepository";
+import type { PersistedInvestmentsState } from "../../modules/investments/domain/InvestmentPortfolio";
 import { createAppStore } from "../store";
+import { goalAdded, stateHydrated } from "./investmentsSlice";
 import {
-  goalAdded,
-  stateHydrated,
-} from "./investmentsSlice";
-import { startInvestmentsPersistence } from "./investmentsPersistence";
+  loadPersistedInvestmentsState,
+  startInvestmentsPersistence,
+} from "./investmentsPersistence";
 
-class MemoryStorage {
-  private readonly values = new Map<string, string>();
-  writes = 0;
+class RecordingRepository implements InvestmentsRepository {
+  readonly saves: PersistedInvestmentsState[] = [];
 
-  getItem(key: string): string | null {
-    return this.values.get(key) ?? null;
+  constructor(
+    private readonly persisted: PersistedInvestmentsState | null = null,
+  ) {}
+
+  async load(): Promise<PersistedInvestmentsState | null> {
+    return this.persisted;
   }
 
-  setItem(key: string, value: string): void {
-    this.writes += 1;
-    this.values.set(key, value);
-  }
-
-  removeItem(key: string): void {
-    this.values.delete(key);
+  async save(state: PersistedInvestmentsState): Promise<void> {
+    this.saves.push(state);
   }
 }
 
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
-
 describe("investments persistence facade", () => {
-  it("waits for hydration, deduplicates writes and respects unsubscribe", () => {
-    const storage = new MemoryStorage();
-    vi.stubGlobal("localStorage", storage);
+  it("delegates asynchronous hydration to the repository", async () => {
+    const repository = new RecordingRepository({
+      goals: [],
+      investments: [],
+      contributions: [],
+    });
+
+    await expect(loadPersistedInvestmentsState(repository)).resolves.toEqual({
+      goals: [],
+      investments: [],
+      contributions: [],
+    });
+  });
+
+  it("waits for hydration and respects unsubscribe", async () => {
+    const repository = new RecordingRepository();
     const store = createAppStore();
-    const unsubscribe = startInvestmentsPersistence(store);
+    const unsubscribe = startInvestmentsPersistence(store, repository);
     const input = {
       name: "Reserva",
       category: "Curto prazo",
@@ -42,16 +51,24 @@ describe("investments persistence facade", () => {
     };
 
     store.dispatch(goalAdded(input));
-    expect(storage.writes).toBe(0);
+    expect(repository.saves).toHaveLength(0);
 
     store.dispatch(stateHydrated());
-    expect(storage.writes).toBe(1);
-
-    store.dispatch(stateHydrated());
-    expect(storage.writes).toBe(1);
+    expect(repository.saves).toHaveLength(1);
 
     unsubscribe();
-    store.dispatch(goalAdded(input));
-    expect(storage.writes).toBe(1);
+    store.dispatch(goalAdded({ ...input, name: "Viagem" }));
+    expect(repository.saves).toHaveLength(1);
+  });
+
+  it("persists immediately when the store is already hydrated", () => {
+    const repository = new RecordingRepository();
+    const store = createAppStore();
+    store.dispatch(stateHydrated());
+
+    const unsubscribe = startInvestmentsPersistence(store, repository);
+
+    expect(repository.saves).toHaveLength(1);
+    unsubscribe();
   });
 });

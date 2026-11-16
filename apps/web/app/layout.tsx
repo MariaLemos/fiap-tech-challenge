@@ -71,6 +71,7 @@ export default async function RootLayout({
     authOrigin: authBackendOrigin,
     cookieHeader: buildCookieHeader(cookieStore),
   });
+  const userId = session.user?.id ?? null;
   const userName = session.user?.name ?? "Usuário";
 
   return (
@@ -78,7 +79,11 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <I18nProvider locale={locale}>
           <ThemeProvider defaultTheme={initialTheme}>
-            <UserInfoProvider>
+            <UserInfoProvider
+              key={userId ?? "anonymous"}
+              userId={userId}
+              userName={userName}
+            >
               <Header
                 userName={userName}
                 logoutHref={logoutTarget.toString()}

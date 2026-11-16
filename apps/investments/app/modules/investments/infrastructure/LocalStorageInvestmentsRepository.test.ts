@@ -1,69 +1,97 @@
+import type {
+  SecureStorageValue,
+  SecureStringStorage,
+} from "@repo/utils/secure-storage";
 import { describe, expect, it } from "vitest";
 import type { PersistedInvestmentsState } from "../domain/InvestmentPortfolio";
 import {
-  INVESTMENTS_STORAGE_KEY,
+  getInvestmentsStorageKey,
+  LEGACY_INVESTMENTS_STORAGE_KEY,
   LocalStorageInvestmentsRepository,
 } from "./LocalStorageInvestmentsRepository";
 
-class MemoryStorage {
-  private readonly values = new Map<string, string>();
+class MemorySecureStorage implements SecureStringStorage {
+  protected readonly values = new Map<string, SecureStorageValue>();
   writes = 0;
   removals = 0;
 
-  getItem(key: string): string | null {
+  async read(key: string): Promise<SecureStorageValue | null> {
     return this.values.get(key) ?? null;
   }
 
-  setItem(key: string, value: string): void {
+  async write(key: string, value: string): Promise<void> {
     this.writes += 1;
-    this.values.set(key, value);
+    this.values.set(key, { value, encrypted: true });
   }
 
-  removeItem(key: string): void {
+  async remove(key: string): Promise<void> {
     this.removals += 1;
     this.values.delete(key);
   }
+
+  seed(key: string, value: string, encrypted = false): void {
+    this.values.set(key, { value, encrypted });
+  }
+
+  get(key: string): SecureStorageValue | null {
+    return this.values.get(key) ?? null;
+  }
 }
 
-class FailingOnceStorage extends MemoryStorage {
-  private failNextWrite = true;
+class FailingReadStorage extends MemorySecureStorage {
+  override async read(): Promise<SecureStorageValue | null> {
+    throw new Error("storage unavailable");
+  }
+}
 
-  override setItem(key: string, value: string): void {
-    if (this.failNextWrite) {
-      this.failNextWrite = false;
+class FailingOnceStorage extends MemorySecureStorage {
+  attempts = 0;
+
+  override async write(key: string, value: string): Promise<void> {
+    this.attempts += 1;
+    if (this.attempts === 1) {
       throw new Error("storage unavailable");
     }
-    super.setItem(key, value);
+
+    await super.write(key, value);
   }
 }
 
-class FailingCleanupStorage extends MemoryStorage {
-  override removeItem(): void {
-    throw new Error("cleanup unavailable");
-  }
-}
+class FailingOnceRemovalStorage extends MemorySecureStorage {
+  removalAttempts = 0;
 
-class FailingReadStorage extends MemoryStorage {
-  override getItem(): string | null {
-    throw new Error("read unavailable");
-  }
-}
-
-class ControllableWriteStorage extends MemoryStorage {
-  private shouldFail = false;
-
-  failNextWrite(): void {
-    this.shouldFail = true;
-  }
-
-  override setItem(key: string, value: string): void {
-    if (this.shouldFail) {
-      this.shouldFail = false;
-      throw new Error("write unavailable");
+  override async remove(key: string): Promise<void> {
+    this.removalAttempts += 1;
+    if (this.removalAttempts === 1) {
+      throw new Error("cleanup unavailable");
     }
-    super.setItem(key, value);
+
+    await super.remove(key);
   }
 }
+
+class DelayedFirstWriteStorage extends MemorySecureStorage {
+  private releaseFirst!: () => void;
+  private shouldDelay = true;
+  readonly firstWriteStarted = new Promise<void>((resolve) => {
+    this.releaseFirst = resolve;
+  });
+
+  release(): void {
+    this.releaseFirst();
+  }
+
+  override async write(key: string, value: string): Promise<void> {
+    if (this.shouldDelay) {
+      this.shouldDelay = false;
+      await this.firstWriteStarted;
+    }
+
+    await super.write(key, value);
+  }
+}
+
+const storageKey = getInvestmentsStorageKey("user/1");
 
 const persistedState: PersistedInvestmentsState = {
   goals: [
@@ -101,124 +129,218 @@ const persistedState: PersistedInvestmentsState = {
 };
 
 describe("LocalStorageInvestmentsRepository", () => {
-  it("returns null when no state is persisted", () => {
+  it("builds a user-scoped storage key", () => {
+    expect(storageKey).toBe("investments:v3:user%2F1");
+  });
+
+  it("returns null when no state is persisted", async () => {
     const repository = new LocalStorageInvestmentsRepository(
-      new MemoryStorage(),
+      new MemorySecureStorage(),
+      storageKey,
     );
 
-    expect(repository.load()).toBeNull();
+    await expect(repository.load()).resolves.toBeNull();
   });
 
-  it("contains storage read failures", () => {
+  it("contains secure storage read failures", async () => {
+    const storage = new FailingReadStorage();
     const repository = new LocalStorageInvestmentsRepository(
-      new FailingReadStorage(),
+      storage,
+      storageKey,
     );
 
-    expect(() => repository.load()).not.toThrow();
-    expect(repository.load()).toBeNull();
+    await expect(repository.load()).resolves.toBeNull();
+    await repository.save(persistedState);
+    expect(storage.writes).toBe(0);
   });
 
-  it("round-trips the existing storage envelope", () => {
-    const storage = new MemoryStorage();
-    const repository = new LocalStorageInvestmentsRepository(storage);
-
-    repository.save(persistedState);
-
-    expect(
-      JSON.parse(storage.getItem(INVESTMENTS_STORAGE_KEY) ?? "null"),
-    ).toEqual(persistedState);
-    expect(repository.load()).toEqual(persistedState);
-    expect(storage.writes).toBe(1);
-  });
-
-  it("removes invalid JSON and invalid envelopes", () => {
-    const invalidJsonStorage = new MemoryStorage();
-    invalidJsonStorage.setItem(INVESTMENTS_STORAGE_KEY, "invalid-json");
-    const invalidJsonRepository = new LocalStorageInvestmentsRepository(
-      invalidJsonStorage,
+  it("round-trips the validated state", async () => {
+    const storage = new MemorySecureStorage();
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
     );
 
-    expect(invalidJsonRepository.load()).toBeNull();
-    expect(invalidJsonStorage.removals).toBe(1);
+    await repository.save(persistedState);
 
-    const invalidEnvelopeStorage = new MemoryStorage();
-    invalidEnvelopeStorage.setItem(
-      INVESTMENTS_STORAGE_KEY,
-      JSON.stringify({
-        goals: [null],
-        investments: [],
-        contributions: [],
-      }),
-    );
-    const invalidEnvelopeRepository = new LocalStorageInvestmentsRepository(
-      invalidEnvelopeStorage,
-    );
-
-    expect(invalidEnvelopeRepository.load()).toBeNull();
-    expect(invalidEnvelopeStorage.removals).toBe(1);
+    expect(storage.get(storageKey)?.encrypted).toBe(true);
+    await expect(repository.load()).resolves.toEqual(persistedState);
   });
 
-  it("does not write the same serialized state twice", () => {
-    const storage = new MemoryStorage();
-    const repository = new LocalStorageInvestmentsRepository(storage);
+  it("encrypts valid legacy state before removing the plaintext", async () => {
+    const storage = new MemorySecureStorage();
+    storage.seed(
+      LEGACY_INVESTMENTS_STORAGE_KEY,
+      JSON.stringify(persistedState),
+    );
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
 
-    repository.save(persistedState);
-    repository.save({ ...persistedState });
-
-    expect(storage.writes).toBe(1);
+    await expect(repository.load()).resolves.toEqual(persistedState);
+    expect(storage.get(storageKey)).toEqual({
+      value: JSON.stringify(persistedState),
+      encrypted: true,
+    });
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).toBeNull();
+    expect(storage.removals).toBe(1);
   });
 
-  it("rewrites a normalized state during load", () => {
-    const storage = new MemoryStorage();
-    storage.setItem(
-      INVESTMENTS_STORAGE_KEY,
+  it("removes leftover legacy plaintext after loading a valid scoped state", async () => {
+    const storage = new MemorySecureStorage();
+    storage.seed(storageKey, JSON.stringify(persistedState), true);
+    storage.seed(
+      LEGACY_INVESTMENTS_STORAGE_KEY,
+      JSON.stringify(persistedState),
+    );
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+
+    await expect(repository.load()).resolves.toEqual(persistedState);
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).toBeNull();
+  });
+
+  it("falls back to valid legacy state after removing invalid scoped data", async () => {
+    const storage = new MemorySecureStorage();
+    storage.seed(storageKey, "invalid-json", true);
+    storage.seed(
+      LEGACY_INVESTMENTS_STORAGE_KEY,
+      JSON.stringify(persistedState),
+    );
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+
+    await expect(repository.load()).resolves.toEqual(persistedState);
+    expect(storage.get(storageKey)).toEqual({
+      value: JSON.stringify(persistedState),
+      encrypted: true,
+    });
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).toBeNull();
+  });
+
+  it("keeps valid legacy data when encryption fails so a save can retry", async () => {
+    const storage = new FailingOnceStorage();
+    storage.seed(
+      LEGACY_INVESTMENTS_STORAGE_KEY,
+      JSON.stringify(persistedState),
+    );
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+
+    await expect(repository.load()).resolves.toEqual(persistedState);
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).not.toBeNull();
+
+    await repository.save(persistedState);
+    expect(storage.get(storageKey)?.encrypted).toBe(true);
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).toBeNull();
+  });
+
+  it("retries legacy cleanup after a successful migration", async () => {
+    const storage = new FailingOnceRemovalStorage();
+    storage.seed(
+      LEGACY_INVESTMENTS_STORAGE_KEY,
+      JSON.stringify(persistedState),
+    );
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+
+    await expect(repository.load()).resolves.toEqual(persistedState);
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).not.toBeNull();
+
+    await repository.save(persistedState);
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).toBeNull();
+    expect(storage.removalAttempts).toBe(2);
+  });
+
+  it("removes invalid legacy data", async () => {
+    const storage = new MemorySecureStorage();
+    storage.seed(LEGACY_INVESTMENTS_STORAGE_KEY, "invalid-json");
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+
+    await expect(repository.load()).resolves.toBeNull();
+    expect(storage.get(LEGACY_INVESTMENTS_STORAGE_KEY)).toBeNull();
+  });
+
+  it("normalizes and rewrites a persisted encrypted state", async () => {
+    const storage = new MemorySecureStorage();
+    storage.seed(
+      storageKey,
       JSON.stringify({ ...persistedState, futureProperty: true }),
+      true,
     );
-    const repository = new LocalStorageInvestmentsRepository(storage);
-
-    expect(repository.load()).toEqual(persistedState);
-    expect(storage.writes).toBe(2);
-    repository.save(persistedState);
-    expect(storage.writes).toBe(2);
-    expect(
-      JSON.parse(storage.getItem(INVESTMENTS_STORAGE_KEY) ?? "null"),
-    ).toEqual(persistedState);
-  });
-
-  it("hydrates normalized data even when its immediate rewrite fails", () => {
-    const storage = new ControllableWriteStorage();
-    storage.setItem(
-      INVESTMENTS_STORAGE_KEY,
-      JSON.stringify({ ...persistedState, futureProperty: true }),
-    );
-    storage.failNextWrite();
-    const repository = new LocalStorageInvestmentsRepository(storage);
-
-    expect(repository.load()).toEqual(persistedState);
-    expect(storage.writes).toBe(1);
-
-    repository.save(persistedState);
-    expect(storage.writes).toBe(2);
-  });
-
-  it("contains storage errors and retries a failed save", () => {
-    const failingWriteStorage = new FailingOnceStorage();
     const repository = new LocalStorageInvestmentsRepository(
-      failingWriteStorage,
+      storage,
+      storageKey,
     );
 
-    expect(() => repository.save(persistedState)).not.toThrow();
-    expect(failingWriteStorage.writes).toBe(0);
-    expect(() => repository.save(persistedState)).not.toThrow();
-    expect(failingWriteStorage.writes).toBe(1);
-
-    const failingCleanupStorage = new FailingCleanupStorage();
-    failingCleanupStorage.setItem(INVESTMENTS_STORAGE_KEY, "invalid-json");
-    const cleanupRepository = new LocalStorageInvestmentsRepository(
-      failingCleanupStorage,
+    await expect(repository.load()).resolves.toEqual(persistedState);
+    expect(storage.writes).toBe(1);
+    expect(JSON.parse(storage.get(storageKey)?.value ?? "null")).toEqual(
+      persistedState,
     );
 
-    expect(() => cleanupRepository.load()).not.toThrow();
-    expect(cleanupRepository.load()).toBeNull();
+    await repository.save(persistedState);
+    expect(storage.writes).toBe(1);
+  });
+
+  it("does not write the same serialized state twice", async () => {
+    const storage = new MemorySecureStorage();
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+
+    await repository.save(persistedState);
+    await repository.save({ ...persistedState });
+
+    expect(storage.writes).toBe(1);
+  });
+
+  it("retries a failed save", async () => {
+    const storage = new FailingOnceStorage();
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+
+    await repository.save(persistedState);
+    await repository.save(persistedState);
+
+    expect(storage.attempts).toBe(2);
+    expect(storage.writes).toBe(1);
+  });
+
+  it("serializes concurrent saves so the newest state wins", async () => {
+    const storage = new DelayedFirstWriteStorage();
+    const repository = new LocalStorageInvestmentsRepository(
+      storage,
+      storageKey,
+    );
+    const newestState: PersistedInvestmentsState = {
+      ...persistedState,
+      goals: [{ ...persistedState.goals[0]!, targetAmount: 20000 }],
+    };
+
+    const firstSave = repository.save(persistedState);
+    const secondSave = repository.save(newestState);
+    storage.release();
+    await Promise.all([firstSave, secondSave]);
+
+    expect(JSON.parse(storage.get(storageKey)?.value ?? "null")).toEqual(
+      newestState,
+    );
+    expect(storage.writes).toBe(2);
   });
 });

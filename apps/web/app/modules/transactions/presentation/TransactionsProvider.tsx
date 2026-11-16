@@ -58,18 +58,37 @@ export function TransactionsProvider({
   const idGeneratorRef = useRef(idGenerator);
 
   useEffect(() => {
-    const repository = repositoryFactoryRef.current();
-    repositoryRef.current = repository;
+    let cancelled = false;
+    let repository: TransactionRepository | null = null;
 
-    const persistedTransactions = repository.load();
-    if (persistedTransactions) {
-      dispatch({
-        type: "TRANSACTIONS_HYDRATED",
-        payload: persistedTransactions,
-      });
-    }
+    void (async () => {
+      try {
+        repository = repositoryFactoryRef.current();
+        repositoryRef.current = repository;
+        const persistedTransactions = await repository.load();
+        if (cancelled) return;
 
-    setIsReady(true);
+        if (persistedTransactions) {
+          dispatch({
+            type: "TRANSACTIONS_HYDRATED",
+            payload: persistedTransactions,
+          });
+        }
+      } catch {
+        // Keep the in-memory seed state when browser persistence is unavailable.
+      } finally {
+        if (!cancelled) {
+          setIsReady(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      if (repository && repositoryRef.current === repository) {
+        repositoryRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -77,7 +96,7 @@ export function TransactionsProvider({
       return;
     }
 
-    repositoryRef.current.save(state.transactions);
+    void repositoryRef.current.save(state.transactions);
   }, [isReady, state.transactions]);
 
   const balance = useMemo(
@@ -86,6 +105,8 @@ export function TransactionsProvider({
   );
 
   const addTransaction = (transaction: NewTransaction) => {
+    if (!isReady) return;
+
     dispatch({
       type: "TRANSACTION_ADDED",
       payload: createTransaction(transaction, idGeneratorRef.current),
@@ -93,6 +114,8 @@ export function TransactionsProvider({
   };
 
   const updateTransaction = (id: string, transaction: TransactionUpdate) => {
+    if (!isReady) return;
+
     dispatch({
       type: "TRANSACTION_UPDATED",
       payload: { id, transaction },
@@ -100,6 +123,8 @@ export function TransactionsProvider({
   };
 
   const deleteTransaction = (id: string) => {
+    if (!isReady) return;
+
     dispatch({ type: "TRANSACTION_DELETED", payload: id });
   };
 

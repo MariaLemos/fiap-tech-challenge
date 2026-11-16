@@ -27,13 +27,14 @@ export default async function RootLayout({
     cookieHeader: buildCookieHeader(cookieStore),
   });
   const userName = session.user?.name ?? "Usuário";
+  const userId = session.user?.id ?? null;
 
   return (
     <html lang={locale} data-theme={initialTheme} suppressHydrationWarning>
       <body>
         <I18nProvider locale={locale}>
           <ThemeProvider defaultTheme={initialTheme}>
-            <StoreProvider>
+            <StoreProvider key={userId ?? "anonymous"} userId={userId}>
               <Header userName={userName} />
               {children}
             </StoreProvider>

@@ -1,6 +1,6 @@
 import type { Transaction } from "../../domain/Transaction";
 
 export interface TransactionRepository {
-  load(): Transaction[] | null;
-  save(transactions: Transaction[]): void;
+  load(): Promise<Transaction[] | null>;
+  save(transactions: Transaction[]): Promise<void>;
 }

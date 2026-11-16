@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, type ChangeEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  type ChangeEvent,
+} from "react";
 import { useForm, useWatch } from "react-hook-form";
 import type { Transaction } from "../../../modules/transactions/domain/Transaction";
 import {
@@ -10,6 +16,7 @@ import type { TransactionFormData } from "../TransactionForm.types";
 import { useTransactionCategorySuggestion } from "./useTransactionCategorySuggestion";
 import { useTransactionFormSubmit } from "./useTransactionFormSubmit";
 import { useI18n } from "@repo/i18n/react";
+import { useUserInfo } from "../../../hooks/UserInfo.provider";
 
 export const useTransactionForm = ({
   transaction,
@@ -21,6 +28,7 @@ export const useTransactionForm = ({
   onSubmitCallback?: () => void;
 }) => {
   const { t } = useI18n();
+  const { isReady } = useUserInfo();
   const attachmentInputRef = useRef<HTMLInputElement | null>(null);
   const defaultValues = useMemo(
     () => getTransactionFormDefaultValues({ transaction, initialValues }),
@@ -105,9 +113,8 @@ export const useTransactionForm = ({
     formMethods,
     handleAttachmentChange,
     handleAttachmentRemove,
-    isSubmitDisabled: isSubmitting || !isValid,
+    isSubmitDisabled: !isReady || isSubmitting || !isValid,
     onSubmit: submitHandler,
     submitLabel,
   };
 };
-

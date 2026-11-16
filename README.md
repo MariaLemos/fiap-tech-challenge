@@ -43,8 +43,8 @@ Legenda: ✅ implementado; ⚠️ parcialmente implementado ou preparado; ⬜ n�
 | Lazy loading e pré-carregamento | Gráficos e alertas usam `next/dynamic`; bundles Angular são pré-carregados em paralelo e executados na ordem de dependência.               |   ✅   |
 | Cache para otimizar requisições | Promises dos bundles remotos são reutilizadas entre montagens; Docker/Nginx e Vercel enviam cache HTTP curto com `stale-while-revalidate`. |   ✅   |
 | Programação reativa             | React hooks, Context e Redux reagem ao estado; o fluxo Angular ainda pode aprofundar o uso de RxJS.                                        |   ⚠️   |
-| Autenticação e dados sensíveis  | Auth.js/JWT, cookies protegidos, bcrypt, rate limit e allowlists implementados; dados financeiros locais ainda não são criptografados.     |   ⚠️   |
-| Testes automatizados            | Vitest protege regras, casos de uso, persistência, hidratação e o carregador remoto dos microfrontends.                                    |   ✅   |
+| Autenticação e dados sensíveis  | Auth.js/JWT, cookies protegidos, bcrypt e rate limit; dados locais usam AES-256-GCM, chave não extraível e escopo por usuário.             |   ✅   |
+| Testes automatizados            | Vitest protege regras, casos de uso, persistência criptografada, hidratação e o carregador remoto dos microfrontends.                      |   ✅   |
 
 ## Funcionalidades
 
@@ -136,7 +136,7 @@ packages/
   contracts/                  # contratos de transações, metas, investimentos e aportes
   design-system/              # UI, tema, gráficos, hooks e Storybook
   i18n/                       # catálogos e providers pt-BR/en-US
-  utils/                      # moeda, datas, saldo e agrupamentos
+  utils/                      # utilitários puros e armazenamento seguro compartilhado
   eslint-config/              # configurações compartilhadas do ESLint
   typescript-config/          # configurações compartilhadas do TypeScript
 ```
@@ -156,7 +156,7 @@ packages/
 - `@repo/contracts`: tipos e contratos que evitam acoplamento direto entre apps;
 - `@repo/auth`: configuração de credenciais/JWT e clientes para consultar a sessão central;
 - `@repo/i18n`: traduções e troca de locale compartilhadas entre React e Angular;
-- `@repo/utils`: funções puras para moeda, datas, saldo e agrupamento de transações;
+- `@repo/utils`: funções puras e armazenamento seguro compartilhado com Web Crypto;
 - `@repo/eslint-config` e `@repo/typescript-config`: padronização de qualidade e compilação.
 
 Uma app não deve importar código diretamente de outra app. Recursos comuns devem ser movidos para `packages/*` ou expostos por um contrato bem definido.
@@ -408,21 +408,31 @@ O `Header` usa internamente a navegação mobile. A cobertura atual do Storybook
 
 O enunciado informa que o backend seria disponibilizado separadamente. Neste repositório, a interface continua independente de uma API real:
 
-- transações começam com dados mockados e são persistidas no `localStorage`;
-- metas, investimentos e aportes usam Redux Toolkit com persistência no `localStorage`;
+- transações começam com dados mockados e são persistidas de forma criptografada no `localStorage`;
+- metas, investimentos e aportes usam Redux Toolkit com persistência local criptografada;
 - o estado persistido de investimentos é validado na carga; duplicatas e
   referências órfãs são normalizadas, enquanto payloads inválidos voltam aos
   dados iniciais;
+- cada usuário autenticado usa uma chave lógica própria; o conteúdo é cifrado
+  com AES-256-GCM e IV aleatório, enquanto a `CryptoKey` não extraível fica no
+  IndexedDB do mesmo navegador;
+- dados legados em texto simples são validados, cifrados no novo escopo e só
+  então removidos; navegadores sem Web Crypto/IndexedDB continuam utilizáveis,
+  mas não recebem fallback de persistência em texto simples;
+- como o formato legado não registrava o proprietário, a migração o associa ao
+  usuário autenticado que primeiro abrir cada app após a atualização; perfis de
+  navegador compartilhados devem revisar esse dado antes de alternar contas;
 - alertas usam dados em memória no microfrontend Angular;
 - usuários são mockados por variáveis de ambiente;
-- dados financeiros no `localStorage` não são criptografados;
 - anexos persistem somente metadados, não o arquivo;
 - ao limpar os dados do navegador, o estado volta aos mocks iniciais;
 - o rate limit atual fica em memória e deve ser substituído por uma solução distribuída em produção;
 - não há autorização baseada em papéis;
-- a cobertura automatizada protege regras, casos de uso e persistência dos
-  módulos de transações e investimentos; as demais áreas ainda não possuem
-  cobertura.
+- a criptografia protege os dados em repouso contra leitura direta do
+  `localStorage`, mas não substitui uma API segura e não protege contra XSS
+  ativo, sessão comprometida ou acesso completo ao perfil do navegador;
+- a cobertura automatizada protege regras, casos de uso, persistência e o
+  carregador remoto; a cobertura ainda não é integral em todas as interfaces.
 
 ## Evolução desde a Fase 1
 
