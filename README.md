@@ -42,9 +42,9 @@ Legenda: ✅ implementado; ⚠️ parcialmente implementado ou preparado; ⬜ n�
 | Gerenciamento de estado         | Context + `useReducer` no shell e Redux Toolkit no microfrontend de investimentos.                                                         |   ✅   |
 | Lazy loading e pré-carregamento | Gráficos e alertas usam `next/dynamic`; bundles Angular são pré-carregados em paralelo e executados na ordem de dependência.               |   ✅   |
 | Cache para otimizar requisições | Promises dos bundles remotos são reutilizadas entre montagens; Docker/Nginx e Vercel enviam cache HTTP curto com `stale-while-revalidate`. |   ✅   |
-| Programação reativa             | React hooks, Context e Redux reagem ao estado; o fluxo Angular ainda pode aprofundar o uso de RxJS.                                        |   ⚠️   |
+| Programação reativa             | Angular usa `BehaviorSubject`, `combineLatest`, `switchMap`, `shareReplay` e `AsyncPipe`; React usa Context, hooks e Redux.                |   ✅   |
 | Autenticação e dados sensíveis  | Auth.js/JWT, cookies protegidos, bcrypt e rate limit; dados locais usam AES-256-GCM, chave não extraível e escopo por usuário.             |   ✅   |
-| Testes automatizados            | Vitest protege regras, casos de uso, persistência criptografada, hidratação e o carregador remoto dos microfrontends.                      |   ✅   |
+| Testes automatizados            | Vitest protege regras, persistência criptografada, hidratação, sessão reativa e o carregador remoto dos microfrontends.                    |   ✅   |
 
 ## Funcionalidades
 
@@ -88,7 +88,9 @@ Legenda: ✅ implementado; ⚠️ parcialmente implementado ou preparado; ⬜ n�
 - preload paralelo de `runtime.js`, `polyfills.js` e `main.js`, mantendo execução sequencial;
 - filtros de alertas lidos e não lidos;
 - marcação de alerta como lido;
+- estado derivado por facade RxJS, com atualizações imutáveis e `AsyncPipe`;
 - validação da sessão central antes da exibição;
+- consulta de sessão compartilhada entre assinantes, sem fetch ou redirect duplicado;
 - fallback no shell caso os bundles remotos estejam indisponíveis.
 
 ### Autenticação centralizada
@@ -120,7 +122,7 @@ flowchart LR
     F --> P
 ```
 
-Em desenvolvimento, o proxy do Vercel Microfrontends oferece a experiência integrada em `http://localhost:3024`; a app `web`, em `http://localhost:3000`, redireciona para esse proxy. A navegação para `/investments` cruza a fronteira entre as apps Next.js e faz o carregamento completo da nova zone. Gráficos e alertas ficam fora do chunk inicial da Home. Os três bundles Angular são pré-carregados, executados em ordem, armazenados em cache por Promise e então montados como um parcel do Single SPA. A autenticação é encaminhada por `/auth`, enquanto seus assets usam o prefixo exclusivo `/auth-static` para não colidir com os bundles do shell.
+Em desenvolvimento, o proxy do Vercel Microfrontends oferece a experiência integrada em `http://localhost:3024`; a app `web`, em `http://localhost:3000`, redireciona para esse proxy. A navegação para `/investments` cruza a fronteira entre as apps Next.js e faz o carregamento completo da nova zone. Gráficos e alertas ficam fora do chunk inicial da Home. Os três bundles Angular são pré-carregados, executados em ordem, armazenados em cache por Promise e então montados como um parcel do Single SPA. Dentro do parcel, um único view model RxJS combina autenticação, filtros e alertas com detecção `OnPush`. A autenticação é encaminhada por `/auth`, enquanto seus assets usam o prefixo exclusivo `/auth-static` para não colidir com os bundles do shell.
 
 ### Estrutura do monorepo
 
@@ -182,6 +184,7 @@ fachadas de compatibilidade durante a migração dos componentes.
 - Single SPA e `single-spa-angular`;
 - Vercel Microfrontends;
 - Redux Toolkit e React Redux;
+- RxJS;
 - Auth.js/NextAuth.js e bcrypt;
 - React Hook Form;
 - Recharts;

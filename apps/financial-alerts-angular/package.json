@@ -6,7 +6,8 @@
     "dev": "ng serve --port 4201",
     "build": "ng build",
     "lint": "tsc -p tsconfig.app.json --noEmit",
-    "check-types": "tsc -p tsconfig.app.json --noEmit"
+    "check-types": "tsc -p tsconfig.app.json --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@repo/i18n": "*",
@@ -27,6 +28,7 @@
     "@angular-devkit/build-angular": "^18.2.0",
     "@angular/cli": "^18.2.0",
     "@angular/compiler-cli": "^18.2.0",
-    "typescript": "~5.5.4"
+    "typescript": "~5.5.4",
+    "vitest": "^4.1.12"
   }
 }
